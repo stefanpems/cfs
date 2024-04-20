@@ -11,8 +11,10 @@ paths:
         get: 
             operationId: ListCodeScanningAlertsForARepository
             summary: Lists the alerts produced as result of the code scanning executed by GitHub Advanced Security (GhAS) 
-                This provides details of the most recent instance of this alert for the default branch.
-                The tool field in the response is the name of the code scanning tool that raised the alert.
+                Each alert is related to a specific code vulnerability found in one or more files in the repo.
+                In each alert listed in the response, the field named "tool" contains the name of the code scanning tool that raised the alert.
+                The field "most_recent_instance" contains the location (path, start line & column, end line & column) of the most recent instance of this alert in the default branch.
+                The field "rule" contains the logic that found the code vulnerability and triggered the alert; the most relevant attributes for this rule are its "description" and its "severity".
             parameters:
                 - in: header
                   name: User-Agent 
@@ -29,7 +31,7 @@ paths:
                     description: Successful authentication. 
                 401:
                     description: Unsuccessful authentication.
-    /{REPO}/code-scanning/alerts/{alert_num}:
+    /{repo}/code-scanning/alerts/{alertnumber}:
         get: 
             operationId: GetCodeScanningAlert
             summary: Gets a single code scanning alert. 
@@ -45,7 +47,7 @@ paths:
                     type: string
                   required: true
                 - in: path
-                  name: alert_num 
+                  name: alertnumber 
                   schema:
                     type: string
                   required: true
@@ -54,7 +56,7 @@ paths:
                     description: Successful authentication. 
                 401:
                     description: Unsuccessful authentication.                    
-    /{REPO}/code-scanning/alerts/{alert_num}/instances:
+    /{repo}/code-scanning/alerts/{alertnumber}/instances:
         get: 
             operationId: GetCodeScanningAlertInstances
             summary: Lists all instances of the specified code scanning alert. 
@@ -70,7 +72,7 @@ paths:
                     type: string
                   required: true
                 - in: path
-                  name: alert_num 
+                  name: alertnumber 
                   schema:
                     type: string
                   required: true
