@@ -1,0 +1,17 @@
+Descriptor:
+  Name: GitHub Advanced Security Code Scanning
+  DisplayName: GitHub Advanced Security Code Scanning
+  Description: Skills to retrieve and update code scanning alerts for the default branch for all eligible repositories in an organization. Eligible repositories are repositories that are owned by organizations that you own or for which you are a security manager.
+  SupportedAuthTypes:
+    - ApiKey
+  Authorization:
+    Type: APIKey
+    Key: Authorization
+    Location: Header
+    AuthScheme: 'Bearer '
+
+SkillGroups:
+  - Format: API
+    Settings:
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurity-CustomPlugin/GitHubAdvancedSecurityPlugin-Specification.yaml
+                      
