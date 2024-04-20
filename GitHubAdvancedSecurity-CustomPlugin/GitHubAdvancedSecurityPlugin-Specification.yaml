@@ -11,6 +11,11 @@ paths:
             operationId: ListCodeScanningAlertsForARepository
             summary: Lists code scanning alerts. The response includes a most_recent_instance object. This provides details of the most recent instance of this alert for the default branch (or for the specified Git reference if you used ref in the request).
             parameters:
+                - in: header
+                  name: User-Agent 
+                  schema:
+                    type: string
+                  required: false
                 - in: path
                   name: repo 
                   schema:
