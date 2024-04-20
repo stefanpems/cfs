@@ -5,11 +5,8 @@ info:
     description: Skills to retrieve code scanning default settings and code scanning alerts for the default branch for all eligible repositories (repos) in an organization. Eligible repositories are repositories that are owned by organizations that you own or for which you are a security manager.
     version: "0.0.1"
 
-servers:
-    - url: https://api.github.com/repos
-
 paths:
-    /{owner}/{repo}/code-scanning/alerts:
+    /{repo}/code-scanning/alerts:
         get: 
             operationId: ListCodeScanningAlertsForARepository
             summary: Lists code scanning alerts. The response includes a most_recent_instance object. This provides details of the most recent instance of this alert for the default branch (or for the specified Git reference if you used ref in the request).
@@ -29,7 +26,7 @@ paths:
                     description: Successful authentication. 
                 401:
                     description: Unsuccessful authentication.
-    /{owner}/{REPO}/code-scanning/alerts/{alert_num}:
+    /{REPO}/code-scanning/alerts/{alert_num}:
         get: 
             operationId: GetCodeScanningAlert
             summary: Gets a single code scanning alert. 
