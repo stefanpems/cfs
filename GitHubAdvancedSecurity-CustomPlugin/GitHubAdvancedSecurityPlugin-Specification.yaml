@@ -15,7 +15,7 @@ paths:
                   name: User-Agent 
                   schema:
                     type: string
-                  required: false
+                  required: true
                 - in: path
                   name: repo 
                   schema:
@@ -30,10 +30,12 @@ paths:
         get: 
             operationId: GetCodeScanningAlert
             summary: Gets a single code scanning alert. 
-            headers:
-              - name: User-Agent
-                value: 'any'
             parameters:
+                - in: header
+                  name: User-Agent 
+                  schema:
+                    type: string
+                  required: true
                 - in: path
                   name: repo 
                   schema:
