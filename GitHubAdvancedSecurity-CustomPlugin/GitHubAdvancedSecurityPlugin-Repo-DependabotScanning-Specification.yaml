@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
     title: GitHub Advanced Security Dependabot Scanning for GitHub Repositories
-    description: Skills to retrieve Dependabot Scanning default settings and Dependabot alerts for the default branch of a specific GitHub repository (repo). 
+    description: Skills to retrieve Dependabot Scanning alerts for the default branch of a specific GitHub repository (repo). 
         These Dependabot scannings are executed by GitHub Advanced Security (GhAS).
     version: "0.0.1"
 
