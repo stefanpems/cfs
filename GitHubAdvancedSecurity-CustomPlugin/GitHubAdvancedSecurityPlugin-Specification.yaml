@@ -15,7 +15,7 @@ paths:
                   name: User-Agent 
                   schema:
                     type: string
-                  required: true
+                  required: false
                 - in: path
                   name: repo 
                   schema:
@@ -35,7 +35,7 @@ paths:
                   name: User-Agent 
                   schema:
                     type: string
-                  required: true
+                  required: false
                 - in: path
                   name: repo 
                   schema:
