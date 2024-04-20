@@ -33,7 +33,7 @@ paths:
                     description: Successful authentication. 
                 401:
                     description: Unsuccessful authentication.
-    /{REPO}/dependabot/alerts/{alert_num}:
+    /{repo}/dependabot/alerts/{alertnumber}:
         get: 
             operationId: GetDependabotAlert
             summary: Gets a single dependabot alert. 
@@ -54,7 +54,7 @@ paths:
                     type: string
                   required: true
                 - in: path
-                  name: alert_num 
+                  name: alertnumber 
                   schema:
                     type: string
                   required: true
