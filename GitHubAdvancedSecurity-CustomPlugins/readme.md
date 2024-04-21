@@ -13,7 +13,7 @@ Instructions
 - Use the different skills in these 2 plugins. 
 
 Note:
-- In this initial first preview release, all skills require to specify in input a "User-Agent" parameter. This is a temporary workaround for ensuring that Copilot for Security writes this parameter in the header of its calls to the GitHub APIs (without that header, the APIs return access denied). **In that parameter you can set any value** (the value of that parameter is not relevant)
+- In this initial first preview release, all skills require to specify in input a "User-Agent" parameter. This is a temporary workaround for ensuring that Copilot for Security writes this parameter in the header of its calls to the GitHub APIs (without that header, the APIs return access denied). **In that parameter you can set any value** (the value of that parameter is not relevant). Typically you have to write set its value only once in a session: in the following prompts Copilot assumes that its value remains the same.  
 
 Author:
 Stefano Pescosolido
