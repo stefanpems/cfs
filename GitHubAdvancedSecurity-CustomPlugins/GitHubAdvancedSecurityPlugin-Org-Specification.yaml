@@ -31,12 +31,6 @@ paths:
                 The field "value" with type "CVE" under "identifiers" gives the CVE name of the vulnerability found in the affected  software component.
                 The field named "references" include the links to all relevant official resources describing the vulnerability.
                 The fields named "vulnerable_version_range" and "first_patched_version" describe the versions that are vulnerable and the one where the vulnerability has been removed.
-            parameters:
-                - in: header
-                  name: User-Agent 
-                  schema:
-                    type: string
-                  required: true
             responses:
                 200:
                     description: Successful authentication. 
@@ -51,12 +45,6 @@ paths:
                 The field named "secret" include the content of the secret found. 
                 The filed "login" in the element "push_protection_bypassed_by" is the login name of the user who introduced that secret in the code.
                 Use the GetSecretScanningAlertLocations skill to get the location (path URL) of the file containing the secret.
-            parameters:
-                - in: header
-                  name: User-Agent 
-                  schema:
-                    type: string
-                  required: true
             responses:
                 200:
                     description: Successful authentication. 
