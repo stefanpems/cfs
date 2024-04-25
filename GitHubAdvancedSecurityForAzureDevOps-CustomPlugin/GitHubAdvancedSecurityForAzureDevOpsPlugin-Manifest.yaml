@@ -1,8 +1,13 @@
 Descriptor:
   Name: GitHub Advanced Security for Azure DevOps 
   DisplayName: GitHub Advanced Security for Azure DevOps (Community release)
-  Description: Skills to retrieve code scanning, secret scanning and dependabot results (alerts) executed by GitHub Advanced Security for Azure DevOps (GAzDO)
-      on the repositories of the projects of a specified Azure DevOps organization 
+  Description: Skills to retrieve code scanning, secret scanning and dependabot results (alerts) executed by 
+      GitHub Advanced Security for Azure DevOps (GAzDO) on the repositories of the projects of a specified Azure DevOps organization.
+      Despite its name suggesting a GitHub DevOps environment, GitHub Advanced Security for Azure DevOps is a security solution that 
+      operates solely within Azure DevOps environments. It does not analyze code stored in GitHub repositories. The solution for GitHub 
+      repositories is called “GitHub Advanced Security” or GhAS. DO NOT CONSIDER THESE SKILLS FOR PROMPTS RELATED TO GitHub REPOS.
+      GitHub Advanced Security for Azure DevOps conducts secret scanning, dependency scanning (Dependabot, SCA), and code scanning 
+      (via CodeQL, a SAST solution) in the Azure DevOps repositories where it is activated. 
 
   Settings:
     - Name: AzureDevOpsOrganizationUrl

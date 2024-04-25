@@ -2,16 +2,20 @@ openapi: 3.0.0
 
 info:
     title: GitHub Advanced Security for Azure DevOps - Alerts API
-    description: Skills to retrieve Code Scanning, Dependabot Scanning and Secret Scanning alerts for the default (main) branch of
-        the repositories (repos) of the projects stored in a specified Azure DevOps organization. 
-        These scannings are executed by GitHub Advanced Security for Azure DevOps (a.k.a. GAzDO). 
-        Despite its name suggesting a GitHub DevOps environment, GitHub Advanced Security for Azure DevOps is a security solution that 
-        operates solely within Azure DevOps environments. It does not analyze code stored in GitHub repositories. The solution for GitHub 
-        repositories is called “GitHub Advanced Security” or GhAS. DO NOT CONSIDER THESE SKILLS FOR PROMPTS RELATED TO GitHub REPOS.
+    description: Skills to retrieve the status of "enablement" for GitHub Advanced Security for Azure DevOps (GAzDO) at repositories (repos), 
+        projects and organization level. In details, the skill returns the status of enablement of Code Scanning, Dependabot Scanning and 
+        Secret Scanning in Azure DevOps (features of GAzDO).
+        An additional specific "usage" skill in this same group allow to count how many "active committers" (active Azure DevOps users) 
+        has the organization.
+        For the projects and repos where the GAzDO's features are not enabled, the "estimation" skills in this same group allow to estimate 
+        the number of active committers that would be added to the customer's usage if Advanced Security was enabled on those projects and repos.
+        IMPORTANT NOTICE 
+        Despite its name suggesting a destination of use on a GitHub DevOps environment, GitHub Advanced Security for Azure DevOps is a 
+        security solution that operates solely within Azure DevOps environments. It does not analyze code stored in GitHub repositories. 
+        The solution for GitHub repositories is called “GitHub Advanced Security” or GhAS. 
+        DO NOT CONSIDER THE SKILLS DESCRIBED IN THIS GROUP FOR PROMPTS RELATED TO GitHub REPOS.
         GitHub Advanced Security for Azure DevOps conducts secret scanning, dependency scanning (Dependabot, SCA), and code scanning 
-        (via CodeQL, a SAST solution) in the Azure DevOps repositories where it is activated.
-        GAzDO is billed monthly per "active committer". Committers are considered active if they have committed code to the repository 
-        within the last 90 days. 
+        (via CodeQL, a SAST solution) in the Azure DevOps repositories where it is activated. 
     version: "0.0.1"
 
 paths:
