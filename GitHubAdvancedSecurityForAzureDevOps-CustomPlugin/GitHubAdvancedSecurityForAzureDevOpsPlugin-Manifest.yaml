@@ -2,7 +2,7 @@ Descriptor:
   Name: GitHub Advanced Security for Azure DevOps 
   DisplayName: GitHub Advanced Security for Azure DevOps (Community release)
   Description: Skills to retrieve the alerts resulting from the code scanning, secret scanning and dependabot scanning executed by 
-      GitHub Advanced Security for Azure DevOps (GAzDO) on the repositories of the projects of a specified Azure DevOps organizations
+      GitHub Advanced Security for Azure DevOps (GAzDO) on the repositories of the projects of a specified Azure DevOps organizations.
 
   Settings:
     - Name: AzureDevOpsOrganizationUrl
