@@ -1,0 +1,32 @@
+Descriptor:
+  Name: GitHub Advanced Security for Azure DevOps 
+  DisplayName: GitHub Advanced Security for Azure DevOps (Community release)
+  Description: Skills to retrieve code scanning, secret scanning and dependabot results (alerts) executed by GitHub Advanced Security for Azure DevOps (GAzDO)
+      on the repositories of the projects of a specified Azure DevOps organization 
+
+  Settings:
+    - Name: AzureDevOpsOrganizationUrl
+      Label: Azure DevOps API URL including the name of your Organization
+      Description: The URL of the Azure DevOps API for accessing your Organization. Specify the name of your Organization.
+      HintText: "https://advsec.dev.azure.com/MyOrganizationName"
+      DefaultValue: "https://advsec.dev.azure.com/<InsertYourOrganizationNameHere>"
+      SettingType: String
+      Required: true
+
+  SupportedAuthTypes:
+    - ApiKey
+  Authorization:
+    Type: APIKey
+    Key: Authorization
+    Location: Header
+    AuthScheme: 'Basic'
+
+SkillGroups:
+  - Format: API
+    Settings:
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurityForAzureDevOps-CustomPlugin/GitHubAdvancedSecurityForAzureDevOpsPlugin-Alerts-Specification.yaml
+      EndpointUrlSettingName: GitHubOrganizationUrl
+  - Format: API
+    Settings:
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurityForAzureDevOps-CustomPlugin/GitHubAdvancedSecurityForAzureDevOpsPlugin-Management-Specification.yaml
+      EndpointUrlSettingName: GitHubOrganizationUrl
