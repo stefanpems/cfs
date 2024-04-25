@@ -22,6 +22,8 @@ paths:
                   schema:
                     type: string
                   required: true
+                  default: Copilot-For-Security
+                  description: Fixed value for the User-Agent header. Required by GitHub API
             responses:
                 200:
                     description: Successful authentication. 
