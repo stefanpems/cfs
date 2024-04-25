@@ -23,6 +23,7 @@ paths:
                   schema:
                     type: string
                   required: true
+                  description: You can write any text here. This parameter is added as a temporary workaround to make the call succeed.
                 - in: path
                   name: repo 
                   schema:
@@ -48,6 +49,7 @@ paths:
                   schema:
                     type: string
                   required: true
+                  description: You can write any text here. This parameter is added as a temporary workaround to make the call succeed.
                 - in: path
                   name: repo 
                   schema:
