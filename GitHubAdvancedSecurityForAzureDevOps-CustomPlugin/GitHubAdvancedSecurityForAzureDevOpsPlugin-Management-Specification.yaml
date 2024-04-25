@@ -82,7 +82,7 @@ paths:
                     description: Unsuccessful authentication.
     /{project}/_apis/management/repositories/{repository}/enablement?api-version=7.2-preview.1:
         get: 
-            operationId: ADO-Project-Enablement
+            operationId: ADO-Repo-Enablement
             summary: Get the current status (configuration) of Advanced Security (GAzDO) for a specific repo in a specific project in the organization.
                 This method returns configuration details for each repo of the specified project in the Azure DevOps organization. 
                 Specifically, the output advSecEnabled specifies if Advanced Security (then CodeQL) is enabled. 
