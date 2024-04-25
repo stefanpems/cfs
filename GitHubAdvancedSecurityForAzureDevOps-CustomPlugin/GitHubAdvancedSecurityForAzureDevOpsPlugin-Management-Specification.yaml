@@ -52,3 +52,35 @@ paths:
                     description: Successful authentication. 
                 401:
                     description: Unsuccessful authentication.
+    /{project}/_apis/management/enablement?api-version=7.2-preview.1:
+        get: 
+            operationId: ADO-Project-Enablement
+            summary: Get the current status (configuration) of Advanced Security (GAzDO) for each repo of a specific project in the organization.
+                This method returns configuration details for each repo of the specified project in the Azure DevOps organization. 
+            parameters:
+                - in: path
+                  name: project 
+                  schema:
+                    type: string
+                  required: true
+            responses:
+                200:
+                    description: Successful authentication. 
+                401:
+                    description: Unsuccessful authentication.
+    /{project}/_apis/management/meterUsageEstimate?api-version=7.2-preview.1:
+        get: 
+            operationId: ADO-Project-Estimation
+            summary: Estimate the number of active committers that would be added to the customer's usage 
+                if Advanced Security was enabled for this project.
+            parameters:
+                - in: path
+                  name: project 
+                  schema:
+                    type: string
+                  required: true
+            responses:
+                200:
+                    description: Successful authentication. 
+                401:
+                    description: Unsuccessful authentication.
