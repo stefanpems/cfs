@@ -26,7 +26,3 @@ SkillGroups:
     Settings:
       OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurityForAzureDevOps-CustomPlugin/GitHubAdvancedSecurityForAzureDevOpsPlugin-Alerts-Specification.yaml
       EndpointUrlSettingName: AzureDevOpsOrganizationUrl
-  - Format: API
-    Settings:
-      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurityForAzureDevOps-CustomPlugin/GitHubAdvancedSecurityForAzureDevOpsPlugin-Management-Specification.yaml
-      EndpointUrlSettingName: AzureDevOpsOrganizationUrl
