@@ -16,6 +16,12 @@ paths:
                 In each alert listed in the response, the field named "tool" contains the name of the code scanning tool that raised the alert.
                 The field "most_recent_instance" contains the location (path, start line & column, end line & column) of the most recent instance of this alert in the default branch.
                 The field "rule" contains the logic that found the code vulnerability and triggered the alert; the most relevant attributes for this rule are its "description" and its "severity".
+            parameters:
+                - in: header
+                  name: User-Agent 
+                  schema:
+                    type: string
+                  required: true
             responses:
                 200:
                     description: Successful authentication. 
@@ -31,6 +37,12 @@ paths:
                 The field "value" with type "CVE" under "identifiers" gives the CVE name of the vulnerability found in the affected  software component.
                 The field named "references" include the links to all relevant official resources describing the vulnerability.
                 The fields named "vulnerable_version_range" and "first_patched_version" describe the versions that are vulnerable and the one where the vulnerability has been removed.
+            parameters:
+                - in: header
+                  name: User-Agent 
+                  schema:
+                    type: string
+                  required: true
             responses:
                 200:
                     description: Successful authentication. 
@@ -45,6 +57,12 @@ paths:
                 The field named "secret" include the content of the secret found. 
                 The filed "login" in the element "push_protection_bypassed_by" is the login name of the user who introduced that secret in the code.
                 Use the GetSecretScanningAlertLocations skill to get the location (path URL) of the file containing the secret.
+            parameters:
+                - in: header
+                  name: User-Agent 
+                  schema:
+                    type: string
+                  required: true
             responses:
                 200:
                     description: Successful authentication. 
