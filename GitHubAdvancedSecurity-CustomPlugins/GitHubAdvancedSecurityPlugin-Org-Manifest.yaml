@@ -24,5 +24,5 @@ Descriptor:
 SkillGroups:
   - Format: API
     Settings:
-      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs-dev/main/GitHubAdvancedSecurity-CustomPlugins/GitHubAdvancedSecurityPlugin-Org-Specification.yaml
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/GitHubAdvancedSecurity-CustomPlugins/GitHubAdvancedSecurityPlugin-Org-Specification.yaml
       EndpointUrlSettingName: GitHubOrganizationUrl
