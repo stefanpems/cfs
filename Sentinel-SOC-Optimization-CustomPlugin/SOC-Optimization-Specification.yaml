@@ -79,10 +79,10 @@ paths:
 
             parameters:
                 - in: query
-                  name: search 
+                  name: top 
                   schema:
-                    type: string
-                  required: true
+                    type: integer
+                  required: false
                   
             responses:
                 200:
