@@ -69,7 +69,7 @@ paths:
 
                     
 
-    /contentProductTemplates?api-version=2024-01-01-preview&search="":
+    /contentProductTemplates?api-version=2024-01-01-preview:
         get: 
             operationId: GetSentinelContentHubAvailableArtifactsTemplates
             summary: Retrieves the list of all “artifact templates” present in the Content Hub “catalog” within Microsoft Sentinel. 
