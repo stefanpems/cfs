@@ -10,6 +10,25 @@ paths:
         get: 
             operationId: GetRecommendations
             summary: Gets a list of all recommendations made available by the "SOC Optimization" experience in Microsoft Sentinel.
+
+                For each of the returned recommendations, the response include its type and a set of suggestions. 
+
+                The types of recommendations are "Precision_Coverage" for the improvement of the coverage on threat detection against a specific
+                threat or attack and "Precision_DataValue" for improvement on the usage of the data ingested into a specific table
+                in the Log Analytics workspace used as storage for the Sentinel workspace under analysis.
+
+                Each suggestion related to a specific recommendation may include "additional properties".
+
+                Suggestions related to recommendations of type "Precision_Coverage" inlude the list of "TemplateIds" (IDs of the solutions, that can 
+                be found in the Microsoft Sentinel Content Hub, containing artifacts for improving that coverage), the list of "Tactics" (including
+                the MITRE ATT&CK Tactics and Techniques included in the threat considered by the analyzed coverage), the list of "CoverageEntities" 
+                (including a list of artifacts, which are Templates in the Content Hub in Sentinel,  - described in terms of Identifier Id and Name 
+                plus MITRE ATT&CK Tactics and Techniques), a list of "DataSources" (representing the names of the tables in Log Analytics that 
+                inlcude data that may be useful to improve the coverage) and a list of "ConnectorIds" (representing the names of 
+                the connectors that can be found in the Content Hub in Sentinel and that may be useful to improve the coverage)
+                
+                Suggestions related to recommendations of type "Precision_DataValue" inlude the list of of "TemplateIds" (IDs of the solutions, that  
+                can be found in the Microsoft Sentinel Content Hub, containing artifacts that can use the data collected in the considered table) 
             responses:
                 200:
                     description: Successful authentication. 
