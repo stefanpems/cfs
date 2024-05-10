@@ -61,20 +61,6 @@ paths:
                 The result for each package includes a list of "dependecies" which are basically the artifacts included in the 
                 solution (analytic rules, threat hunting queries, notebooks, workbooks,...)
 
-            parameters:
-                - in: query
-                  name: search 
-                  schema:
-                    type: string
-                  required: true
-
-            parameters:
-                - in: query
-                  name: top 
-                  schema:
-                    type: int
-                  required: false
-                  
             responses:
                 200:
                     description: Successful authentication. 
@@ -91,6 +77,20 @@ paths:
                 Each of the results in the response includes the type of artifacts (field "contentKind"), the name and identifier 
                 of the package that contains that artifact (field "source") and references to the author and to the support.                     
 
+            parameters:
+                - in: query
+                  name: search 
+                  schema:
+                    type: string
+                  required: true
+
+            parameters:
+                - in: query
+                  name: top 
+                  schema:
+                    type: int
+                  required: false
+                  
             responses:
                 200:
                     description: Successful authentication. 
