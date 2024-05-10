@@ -83,13 +83,6 @@ paths:
                   schema:
                     type: string
                   required: true
-
-            parameters:
-                - in: query
-                  name: top 
-                  schema:
-                    type: integer
-                  required: false
                   
             responses:
                 200:
