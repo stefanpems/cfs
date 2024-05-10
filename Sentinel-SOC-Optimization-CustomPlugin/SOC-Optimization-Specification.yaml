@@ -88,7 +88,7 @@ paths:
                 - in: query
                   name: top 
                   schema:
-                    type: int
+                    type: integer
                   required: false
                   
             responses:
