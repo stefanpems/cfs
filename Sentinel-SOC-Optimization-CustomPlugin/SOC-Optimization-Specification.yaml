@@ -74,14 +74,8 @@ paths:
             operationId: GetSentinelContentHubAvailableArtifactsTemplates
             summary: Retrieves the list of all “artifact templates” present in the Content Hub “catalog” within Microsoft Sentinel. 
                 This includes those templates in packages not currently installed within the specified Sentinel workspace.
-
-                Each of the results in the response includes
-
-                    the type of artifacts (field "contentKind"), 
-
-                    the name and identifier of the package that contains that artifact (field "source"),
-
-                    the references of the author and of the support.                     
+                Each of the results in the response includes the type of artifacts (field "contentKind"), the name and identifier 
+                of the package that contains that artifact (field "source") and references to the author and to the support.                     
 
             responses:
                 200:
