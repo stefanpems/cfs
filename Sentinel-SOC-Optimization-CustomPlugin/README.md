@@ -11,8 +11,8 @@ The code in this custom plugin is also an example on how to query, from Copilot 
 
 ### Instructions: 
 1. Download the "manfiest" YAML file in this folder. Save it locally
-3. Add the custom plugin in Copilot for Security by uploading the manfiest YAML file (see https://learn.microsoft.com/en-us/copilot/security/manage-plugins?tabs=securitycopilotplugin)
+3. Add the custom plugin in Copilot for Security by uploading the manfiest YAML file (see [Manage plugins in Microsoft Copilot for Security](https://learn.microsoft.com/en-us/copilot/security/manage-plugins?tabs=securitycopilotplugin))
 
 ### References:
 * [SOC optimization - unlock the power of precision-driven security management](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/soc-optimization-unlock-the-power-of-precision-driven-security/ba-p/4130589)
-* [Azure REST API reference] https://learn.microsoft.com/en-us/rest/api/azure/
+* [Azure REST API reference](https://learn.microsoft.com/en-us/rest/api/azure/)
