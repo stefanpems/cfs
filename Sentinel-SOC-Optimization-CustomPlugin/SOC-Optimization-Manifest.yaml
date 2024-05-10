@@ -28,5 +28,5 @@ Descriptor:
 SkillGroups:
   - Format: API
     Settings:
-      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/sentinel-utilities/main/CfS/SOC-Optimization-Specification.yaml
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/main/Sentinel-SOC-Optimization-CustomPlugin/SOC-Optimization-Specification.yaml
       EndpointUrlSettingName: SentinelApiUrl
