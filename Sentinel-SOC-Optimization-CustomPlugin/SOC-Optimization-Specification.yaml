@@ -72,8 +72,8 @@ paths:
     contentProductTemplates?api-version=2024-01-01-preview:
         get: 
             operationId: GetSentinelContentHubAvailableArtifacts
-            summary: Gets a list of all the "artifacts templates" available in the "catalog" of the Content Hub in Microsoft Sentinel, including
-                those that are not used in any installed package in the referenced Sentinel workspace.
+            summary: Retrieves the list of all “artifact templates” present in the Content Hub “catalog” within Microsoft Sentinel. 
+                This includes those templates in packages not currently installed within the specified Sentinel workspace.
 
                 Each of the results in the response includes
 
