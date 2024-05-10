@@ -8,7 +8,7 @@ info:
 paths:
     /recommendations?api-version=2024-01-01-preview:
         get: 
-            operationId: GetRecommendations
+            operationId: GetSentinelSOCOptimizationRecommendations
             summary: Gets a list of all recommendations made available by the "SOC Optimization" experience in Microsoft Sentinel.
 
                 There are two types of recommendations.
@@ -44,7 +44,44 @@ paths:
                 
                 Suggestions related to recommendations of type "Precision_DataValue" inlude the list of of "TemplateIds" (IDs of the solutions, that  
                 can be found in the Microsoft Sentinel Content Hub, containing artifacts that can use the data collected in the considered table) 
-                
+
+            responses:
+                200:
+                    description: Successful authentication. 
+                401:
+                    description: Unsuccessful authentication.
+
+
+    /contentPackages?api-version=2024-01-01-preview:
+        get: 
+            operationId: GetSentinelContentHubInstalledPackages
+            summary: Gets a list of all the "packages" (a.k.a. "solutions") available in the Content Hub in Microsoft Sentinel
+                and already installed in the Sentinel workspace.
+
+                The result for each package includes a list of "dependecies" which are basically the artifacts included in the 
+                solution (analytic rules, threat hunting queries, notebooks, workbooks,...)
+
+            responses:
+                200:
+                    description: Successful authentication. 
+                401:
+                    description: Unsuccessful authentication.
+
+                    
+
+    contentProductTemplates?api-version=2024-01-01-preview:
+        get: 
+            operationId: GetSentinelContentHubAvailableArtifacts
+            summary: Gets a list of all the artifacts available in the Content Hub in Microsoft Sentinel.
+
+                Each of the results in the response includes
+
+                    the type of artifacts (field "contentKind"), 
+
+                    the name and identifier of the package that contains that artifact (field "source"),
+
+                    the references of the author and of the support.                     
+
             responses:
                 200:
                     description: Successful authentication. 
