@@ -17,7 +17,7 @@ Descriptor:
   Settings:
   - Name: SentinelApiUrl
     Label: Microsoft Sentinel APIs URL
-    Description: The URL of the Microsoft Sentinel APIs. Specify your subscriptionId, resourceGroupName and workspaceName.
+    Description: ATTENTION! In the URL below, be sure to replace the placehoders SUBSCRIPTION-ID, RESOURCE-GROUP-NAME and SENTINEL-WORKSPACE-NAME with their correct values in your environment. Do not change the rest of the URL.
     HintText: ATTENTION! In the URL below, be sure to replace the placehoders SUBSCRIPTION-ID, RESOURCE-GROUP-NAME and SENTINEL-WORKSPACE-NAME with their correct values in your environment. Do not change the rest of the URL.
     DefaultValue: https://management.azure.com/subscriptions/SUBSCRIPTION-ID/resourceGroups/RESOURCE-GROUP-NAME/providers/Microsoft.OperationalInsights/workspaces/SENTINEL-WORKSPACE-NAME/providers/Microsoft.SecurityInsights
     SettingType: String
