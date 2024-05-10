@@ -56,7 +56,7 @@ paths:
         get: 
             operationId: GetSentinelContentHubInstalledPackages
             summary: Gets a list of all the "packages" (a.k.a. "solutions") available in the Content Hub in Microsoft Sentinel
-                and already installed in the Sentinel workspace.
+                and already installed in the referenced Sentinel workspace.
 
                 The result for each package includes a list of "dependecies" which are basically the artifacts included in the 
                 solution (analytic rules, threat hunting queries, notebooks, workbooks,...)
@@ -72,8 +72,8 @@ paths:
     contentProductTemplates?api-version=2024-01-01-preview:
         get: 
             operationId: GetSentinelContentHubAvailableArtifacts
-            summary: Gets a list of all the artifacts available in the Content Hub catalog in Microsoft Sentinel, including
-                those that are not installed in the Sentinel workspace.
+            summary: Gets a list of all the "artifacts templates" available in the "catalog" of the Content Hub in Microsoft Sentinel, including
+                those that are not used in any installed package in the referenced Sentinel workspace.
 
                 Each of the results in the response includes
 
