@@ -61,6 +61,13 @@ paths:
                 The result for each package includes a list of "dependecies" which are basically the artifacts included in the 
                 solution (analytic rules, threat hunting queries, notebooks, workbooks,...)
 
+            parameters:
+                - in: query
+                  name: search 
+                  schema:
+                    type: string
+                  required: true
+
             responses:
                 200:
                     description: Successful authentication. 
@@ -69,7 +76,7 @@ paths:
 
                     
 
-    /contentProductTemplates?api-version=2024-01-01-preview:
+    /contentProductTemplates?api-version=2024-01-01-preview&search="":
         get: 
             operationId: GetSentinelContentHubAvailableArtifactsTemplates
             summary: Retrieves the list of all “artifact templates” present in the Content Hub “catalog” within Microsoft Sentinel. 
