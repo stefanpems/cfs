@@ -68,6 +68,13 @@ paths:
                     type: string
                   required: true
 
+            parameters:
+                - in: query
+                  name: top 
+                  schema:
+                    type: int
+                  required: false
+                  
             responses:
                 200:
                     description: Successful authentication. 
