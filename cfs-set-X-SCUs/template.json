@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -135,15 +135,15 @@
     },
     "paramCapacityName": {
       "type": "string",
-      "defaultValue": "CfS1"
+      "defaultValue": ""
     },
     "paramSubscriptionID": {
       "type": "string",
-      "defaultValue": "360cf1d1-629e-40f8-a227-2b91113d300a"
+      "defaultValue": ""
     },
     "paramResourceGroup": {
       "type": "string",
-      "defaultValue": "rg-CfS1"
+      "defaultValue": ""
     },
     "paramLocation": {
       "type": "string",
