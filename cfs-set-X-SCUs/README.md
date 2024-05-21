@@ -1,4 +1,4 @@
-# ARM Template - Azure Logic App - Scheduling the provision of SCUs 
+# Azure Logic App ARM Template for scheduling Copilot for Security SCU provisioning. 
 
 The file template.json is an ARM template for creating an Azure Logic App that is capable of automatically changing the capacity (SCUs) of Copilot for Security based on the time of the day and wheater the day is a workday, weekend of national holiday.
 
