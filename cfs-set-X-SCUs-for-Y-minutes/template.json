@@ -138,7 +138,7 @@
             }
           },
           "actions": {
-              "Create_or_Update_Capacity": {
+              "Create_Capacity": {
                 "type": "ApiConnection",
                 "inputs": {
                   "host": {
@@ -163,7 +163,7 @@
               },
               "Delay": {
                   "runAfter": {
-                      "Create_or_Update_Capacity": [
+                      "Create_Capacity": [
                           "Succeeded"
                       ]
                   },
