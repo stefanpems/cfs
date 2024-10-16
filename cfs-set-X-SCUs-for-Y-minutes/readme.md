@@ -1,6 +1,7 @@
 # Azure Logic App (ARM Template) for creating Capacity on demand for a short period of time, for testing / lab purposes. 
 
 This Logic App creates X Security Compute Units (SCUs) of capacity for Security Copilot and deletes them after Y minutes. The values of X and Y can be specified as parameters. The Logic App can be run manually or scheduled periodically.
+If you want to understand how to deploy and use this logic app, watch this short video: https://youtu.be/iwwQMiXbW9Q
 
 Please consider that:
 * This Logic App is intended to help those who need to deploy capacity in lab environments for minimal testing purposes. It is not meant to be used in a production environment, where the capacity for Security Copilot should be kept active.
