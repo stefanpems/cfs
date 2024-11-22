@@ -29,7 +29,7 @@
     },
     "parameters":  {
         "PlaybookName":  {
-            "defaultValue":  "CfS-SendPromptbookResults",
+            "defaultValue":  "CfS-SendPromptbookResultsByEmail",
             "type":  "string"
         },
         "HtmlBodyHeader":  {
@@ -1086,7 +1086,7 @@
             "type":  "Microsoft.Logic/workflows",
             "location":  "[resourceGroup().location]",
             "tags":  {
-                "hidden-SentinelTemplateName":  "CfS-SendPromptbookResults",
+                "hidden-SentinelTemplateName":  "CfS-SendPromptbookResultsByEmail",
                 "hidden-SentinelTemplateVersion":  "1.0"
             },
             "identity":  {
