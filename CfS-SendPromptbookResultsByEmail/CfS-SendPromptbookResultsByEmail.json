@@ -442,8 +442,11 @@
                                                                         },
                                                                         "Parse_JSON_-_MdToHtml_Response":  {
                                                                             "runAfter":  {
-                                                                                "CfS_-_Convert_MD_response_to_HTML":  [
-                                                                                    "Succeeded"
+                                                                                "CfS_-_Convert_MD_response_to_HTML":  [                                                                                    
+                                                                                    "Succeeded",
+                                                                                    "TimedOut",
+                                                                                    "Skipped",
+                                                                                    "Failed"
                                                                                 ]
                                                                             },
                                                                             "type":  "ParseJson",
