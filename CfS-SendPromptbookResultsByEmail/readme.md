@@ -13,6 +13,7 @@ This Logic App executes the specified Promptbook in Security Copilot (Copilot fo
 4. In the workflow editor, open the parameters and set the desired email title, subject, and recipients.
 5. In the workflow editor, in the parameters list, if needed, specify the indexes of the prompts that should not be included in the email (use the SkipPromptsInOutput parameter).
 6. In the workflow editor, if needed, further customize the email subject (e.g., if you have changed the trigger to MS Sentinel Incident, you may want to include the incident ID at the end of the email subject).
+7. Enable the Logic App (the template deploys it in disabled state).
 
 ## Deployment button
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2FCfS-SendPromptbookResultsByEmail%2FCfS-SendPromptbookResultsByEmail.json)
