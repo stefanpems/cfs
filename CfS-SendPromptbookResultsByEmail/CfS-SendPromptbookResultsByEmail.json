@@ -453,105 +453,47 @@
                                                                             "inputs":  {
                                                                                 "content":  "@outputs('CfS_-_Convert_MD_response_to_HTML')",
                                                                                 "schema":  {
-                                                                                    "type":  "object",
-                                                                                    "properties":  {
-                                                                                        "statusCode":  {
-                                                                                            "type":  "integer"
-                                                                                        },
-                                                                                        "headers":  {
-                                                                                            "type":  "object",
-                                                                                            "properties":  {
-                                                                                                "Cache-Control":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Pragma":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Transfer-Encoding":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Vary":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Set-Cookie":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Strict-Transport-Security":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "x-ms-request-id":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "X-Content-Type-Options":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "X-Frame-Options":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "x-ms-dlp-re":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "x-ms-dlp-gu":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Timing-Allow-Origin":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "x-ms-apihub-cached-response":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "x-ms-apihub-obo":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Date":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Content-Type":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Expires":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "Content-Length":  {
-                                                                                                    "type":  "string"
-                                                                                                }
+                                                                                    "type": "object",
+                                                                                    "properties": {
+                                                                                      "statusCode": {
+                                                                                        "type": "integer"
+                                                                                      },
+                                                                                      "headers": {},
+                                                                                      "body": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                          "sessionId": {
+                                                                                            "type": "string"
+                                                                                          },
+                                                                                          "skillName": {
+                                                                                            "type": ["string","null"]
+                                                                                          },
+                                                                                          "promptContent": {
+                                                                                            "type":  ["string","null"]
+                                                                                          },
+                                                                                          "evaluationResultType": {
+                                                                                            "type":  ["string","null"]
+                                                                                          },
+                                                                                          "evaluationResultContent": {
+                                                                                            "type":  ["string","null"]
+                                                                                          },
+                                                                                          "skillSources": {
+                                                                                            "type": ["array","null"]
+                                                                                          },
+                                                                                          "status": {
+                                                                                            "type": ["integer","null"]
+                                                                                          },
+                                                                                          "errors": {
+                                                                                            "type": ["array","null"],
+                                                                                            "items": {
+                                                                                              "type": "string"
                                                                                             }
-                                                                                        },
-                                                                                        "body":  {
-                                                                                            "type":  "object",
-                                                                                            "properties":  {
-                                                                                                "sessionId":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "skillName":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "promptContent":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "evaluationResultType":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "evaluationResultContent":  {
-                                                                                                    "type":  "string"
-                                                                                                },
-                                                                                                "skillSources":  {
-                                                                                                    "type":  "array"
-                                                                                                },
-                                                                                                "status":  {
-                                                                                                    "type":  "integer"
-                                                                                                },
-                                                                                                "errors":  {
-                                                                                                    "type":  "array",
-                                                                                                    "items":  {
-                                                                                                        "type":  "string"
-                                                                                                    }
-                                                                                                },
-                                                                                                "debugInfo":  {
-                                                                                                    "type":  "string"
-                                                                                                }
-                                                                                            }
+                                                                                          },
+                                                                                          "debugInfo": {
+                                                                                            "type": ["string","null"]
+                                                                                          }
                                                                                         }
+                                                                                      }
                                                                                     }
                                                                                 }
                                                                             }
