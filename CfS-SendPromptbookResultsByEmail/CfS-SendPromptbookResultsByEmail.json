@@ -11,7 +11,8 @@
             "3. In the workflow editor, if needed, modify the trigger type and/or parameters (e.g., change the recurrence date and time or replace the trigger with the Microsoft Sentinel Incident trigger).",
             "4. In the workflow editor, open the parameters and set the desired email title, subject, and recipients.",
             "5. In the workflow editor, in the parameters list, if needed, specify the indexes of the prompts that should not be included in the email (use the SkipPromptsInOutput parameter).",
-            "6. In the workflow editor, if needed, further customize the email subject (e.g., if you have changed the trigger to MS Sentinel Incident, you may want to include the incident ID at the end of the email subject)."
+            "6. In the workflow editor, if needed, further customize the email subject (e.g., if you have changed the trigger to MS Sentinel Incident, you may want to include the incident ID at the end of the email subject).",
+            "7. Enable the Logic App (the template deploys it in the disabled state)."
         ],
         "prerequisitesDeployTemplateFile":  "",
         "lastUpdateTime":  "",
@@ -159,9 +160,7 @@
                                 "method":  "post",
                                 "body":  {
                                     "PromptbookId":  "",
-                                    "PromptbookInputs":  {
-                                        "THREATACTORNAME":  ""
-                                    }
+                                    "PromptbookInputs":  {}
                                 },
                                 "path":  "/run-promptbook"
                             }
@@ -192,8 +191,21 @@
                                                 "body":  {
                                                     "type":  "object",
                                                     "properties":  {
+                                                        "error":  {
+                                                            "type":  [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "message":  [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
                                                         "SessionId":  {
-                                                            "type":  "string"
+                                                            "type":  [
+                                                                "string",
+                                                                "null"
+                                                            ]
                                                         },
                                                         "evaluationResults":  {
                                                             "type":  [
@@ -298,7 +310,7 @@
                             "inputs":  {
                                 "variables":  [
                                     {
-                                        "name":  "Result",
+                                        "name":  "SkillSources",
                                         "type":  "string"
                                     }
                                 ]
@@ -376,384 +388,6 @@
                                                         }
                                                     }
                                                 },
-                                                "Condition_-_evaluationResultType":  {
-                                                    "actions":  {
-                                                        "Condition_-_evaluationResultContent_is_MD":  {
-                                                            "actions":  {
-                                                                "CfS_-_Convert_MD_response_to_HTML":  {
-                                                                    "type":  "ApiConnection",
-                                                                    "inputs":  {
-                                                                        "host":  {
-                                                                            "connection":  {
-                                                                                "name":  "@parameters('$connections')['securitycopilot']['connectionId']"
-                                                                            }
-                                                                        },
-                                                                        "method":  "post",
-                                                                        "body":  {
-                                                                            "PromptContent":  "Convert the following markup string to HTML. Do not include the doctype tag and the header. Write only the content of the HTML body, without the opening and closing \"body\" tag. Do not write any character before and after that HTML content. This is the string written in lightweight markup language to be converted in HTML format: @{body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']}"
-                                                                        },
-                                                                        "path":  "/process-prompt"
-                                                                    }
-                                                                },
-                                                                "Parse_JSON_-_MdToHtml_Response":  {
-                                                                    "runAfter":  {
-                                                                        "CfS_-_Convert_MD_response_to_HTML":  [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type":  "ParseJson",
-                                                                    "inputs":  {
-                                                                        "content":  "@outputs('CfS_-_Convert_MD_response_to_HTML')",
-                                                                        "schema":  {
-                                                                            "type":  "object",
-                                                                            "properties":  {
-                                                                                "statusCode":  {
-                                                                                    "type":  "integer"
-                                                                                },
-                                                                                "headers":  {
-                                                                                    "type":  "object",
-                                                                                    "properties":  {
-                                                                                        "Cache-Control":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Pragma":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Transfer-Encoding":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Vary":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Set-Cookie":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Strict-Transport-Security":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "x-ms-request-id":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "X-Content-Type-Options":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "X-Frame-Options":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "x-ms-dlp-re":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "x-ms-dlp-gu":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Timing-Allow-Origin":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "x-ms-apihub-cached-response":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "x-ms-apihub-obo":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Date":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Content-Type":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Expires":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "Content-Length":  {
-                                                                                            "type":  "string"
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "body":  {
-                                                                                    "type":  "object",
-                                                                                    "properties":  {
-                                                                                        "sessionId":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "skillName":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "promptContent":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "evaluationResultType":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "evaluationResultContent":  {
-                                                                                            "type":  "string"
-                                                                                        },
-                                                                                        "skillSources":  {
-                                                                                            "type":  "array"
-                                                                                        },
-                                                                                        "status":  {
-                                                                                            "type":  "integer"
-                                                                                        },
-                                                                                        "errors":  {
-                                                                                            "type":  "array",
-                                                                                            "items":  {
-                                                                                                "type":  "string"
-                                                                                            }
-                                                                                        },
-                                                                                        "debugInfo":  {
-                                                                                            "type":  "string"
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Switch_-_MdToHtml_statusCode":  {
-                                                                    "runAfter":  {
-                                                                        "Parse_JSON_-_MdToHtml_Response":  [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "cases":  {
-                                                                        "Case_-_MdToHtml_statusCode_-_200":  {
-                                                                            "case":  200,
-                                                                            "actions":  {
-                                                                                "Compose_-_Html_Row_-_200":  {
-                                                                                    "runAfter":  {
-                                                                                        "For_each_-_skillSources":  [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type":  "Compose",
-                                                                                    "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',body('Parse_JSON_-_MdToHtml_Response')?['body']?['evaluationResultContent'])"
-                                                                                },
-                                                                                "Set_variable_-_HtmlRow_-_200":  {
-                                                                                    "runAfter":  {
-                                                                                        "Compose_-_Html_Row_-_200":  [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type":  "SetVariable",
-                                                                                    "inputs":  {
-                                                                                        "name":  "HtmlRow",
-                                                                                        "value":  "@outputs('Compose_-_Html_Row_-_200')"
-                                                                                    }
-                                                                                },
-                                                                                "For_each_-_skillSources":  {
-                                                                                    "foreach":  "@body('Parse_JSON_-_evaluationResult')?['skillSources']",
-                                                                                    "actions":  {
-                                                                                        "Parse_JSON_-_skillSource":  {
-                                                                                            "type":  "ParseJson",
-                                                                                            "inputs":  {
-                                                                                                "content":  "@items('For_each_-_skillSources')",
-                                                                                                "schema":  {
-                                                                                                    "type":  "object",
-                                                                                                    "properties":  {
-                                                                                                        "displayName":  {
-                                                                                                            "type":  "string"
-                                                                                                        },
-                                                                                                        "sourceType":  {
-                                                                                                            "type":  "string"
-                                                                                                        },
-                                                                                                        "sourceContent":  {
-                                                                                                            "type":  "string"
-                                                                                                        },
-                                                                                                        "sourceSerializedData":  {
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        },
-                                                                                        "Append_to_string_variable_-_Result_-_skillSource":  {
-                                                                                            "runAfter":  {
-                                                                                                "Parse_JSON_-_skillSource":  [
-                                                                                                    "Succeeded"
-                                                                                                ]
-                                                                                            },
-                                                                                            "type":  "AppendToStringVariable",
-                                                                                            "inputs":  {
-                                                                                                "name":  "Result",
-                                                                                                "value":  ".......\ndisplayName: @{body('Parse_JSON_-_skillSource')?['displayName']}\n.......\nsourceContent: @{body('Parse_JSON_-_skillSource')?['sourceContent']}\n"
-                                                                                            }
-                                                                                        }
-                                                                                    },
-                                                                                    "type":  "Foreach"
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "Case_-_MdToHtml_statusCode_-_404":  {
-                                                                            "case":  404,
-                                                                            "actions":  {
-                                                                                "Compose_-_Html_Row_-_404":  {
-                                                                                    "type":  "Compose",
-                                                                                    "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot not available!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
-                                                                                },
-                                                                                "Set_variable_-_HtmlRow_-_404":  {
-                                                                                    "runAfter":  {
-                                                                                        "Compose_-_Html_Row_-_404":  [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type":  "SetVariable",
-                                                                                    "inputs":  {
-                                                                                        "name":  "HtmlRow",
-                                                                                        "value":  "@outputs('Compose_-_Html_Row_-_404')"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        },
-                                                                        "Case_-_MdToHtml_statusCode_-_429":  {
-                                                                            "case":  429,
-                                                                            "actions":  {
-                                                                                "Compose_-_Html_Row_-_429":  {
-                                                                                    "type":  "Compose",
-                                                                                    "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot is no longer available due to exceeding capacity!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
-                                                                                },
-                                                                                "Set_variable_-_HtmlRow_-_429":  {
-                                                                                    "runAfter":  {
-                                                                                        "Compose_-_Html_Row_-_429":  [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type":  "SetVariable",
-                                                                                    "inputs":  {
-                                                                                        "name":  "HtmlRow",
-                                                                                        "value":  "@outputs('Compose_-_Html_Row_-_429')"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "default":  {
-                                                                        "actions":  {
-                                                                            "Compose_-_Html_Row_-_Default":  {
-                                                                                "type":  "Compose",
-                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR while calling Copilot! Error number: ',body('Parse_JSON_-_MdToHtml_Response')?['statusCode'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
-                                                                            },
-                                                                            "Set_variable_-_HtmlRow_-_Default":  {
-                                                                                "runAfter":  {
-                                                                                    "Compose_-_Html_Row_-_Default":  [
-                                                                                        "Succeeded"
-                                                                                    ]
-                                                                                },
-                                                                                "type":  "SetVariable",
-                                                                                "inputs":  {
-                                                                                    "name":  "HtmlRow",
-                                                                                    "value":  "@outputs('Compose_-_Html_Row_-_Default')"
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    "expression":  "@body('Parse_JSON_-_MdToHtml_Response')?['statusCode']",
-                                                                    "type":  "Switch"
-                                                                }
-                                                            },
-                                                            "else":  {
-                                                                "actions":  {
-                                                                    "Compose_-_Html_Row_-_Plain_text":  {
-                                                                        "type":  "Compose",
-                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent'],'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
-                                                                    },
-                                                                    "Set_variable_-_HtmlRow_-_Plain_text":  {
-                                                                        "runAfter":  {
-                                                                            "Compose_-_Html_Row_-_Plain_text":  [
-                                                                                "Succeeded"
-                                                                            ]
-                                                                        },
-                                                                        "type":  "SetVariable",
-                                                                        "inputs":  {
-                                                                            "name":  "HtmlRow",
-                                                                            "value":  "@outputs('Compose_-_Html_Row_-_Plain_text')"
-                                                                        }
-                                                                    }
-                                                                }
-                                                            },
-                                                            "expression":  {
-                                                                "or":  [
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "#"
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "*"
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "+"
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "\\n"
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "["
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "|"
-                                                                        ]
-                                                                    },
-                                                                    {
-                                                                        "contains":  [
-                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
-                                                                            "`"
-                                                                        ]
-                                                                    }
-                                                                ]
-                                                            },
-                                                            "type":  "If"
-                                                        }
-                                                    },
-                                                    "runAfter":  {
-                                                        "Set_variable_-_Reset_HtmlRow":  [
-                                                            "Succeeded"
-                                                        ]
-                                                    },
-                                                    "else":  {
-                                                        "actions":  {
-                                                            "Compose_-_Html_Row_-_Not_Success":  {
-                                                                "type":  "Compose",
-                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: orange;\"\u003eWARNING! The prompt was not successful. Response type: ',body('Parse_JSON_-_evaluationResult')?['evaluationResultType'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
-                                                            },
-                                                            "Set_variable_-_HtmlRow_-_Not_Success":  {
-                                                                "runAfter":  {
-                                                                    "Compose_-_Html_Row_-_Not_Success":  [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "type":  "SetVariable",
-                                                                "inputs":  {
-                                                                    "name":  "HtmlRow",
-                                                                    "value":  "@outputs('Compose_-_Html_Row_-_Not_Success')"
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "expression":  {
-                                                        "and":  [
-                                                            {
-                                                                "equals":  [
-                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultType']",
-                                                                    "Success"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    },
-                                                    "type":  "If"
-                                                },
                                                 "Set_variable_-_Reset_HtmlRow":  {
                                                     "runAfter":  {
                                                         "Parse_JSON_-_evaluationResult":  [
@@ -776,11 +410,389 @@
                                                 "Condition_-_Do_not_skip":  {
                                                     "actions":  {
                                                         "Append_to_string_variable_-_HtmlBody":  {
+                                                            "runAfter":  {
+                                                                "Condition_-_evaluationResultType":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
                                                             "type":  "AppendToStringVariable",
                                                             "inputs":  {
                                                                 "name":  "HtmlBody",
                                                                 "value":  "@{variables('HtmlRow')}\n\n"
                                                             }
+                                                        },
+                                                        "Condition_-_evaluationResultType":  {
+                                                            "actions":  {
+                                                                "Condition_-_evaluationResultContent_is_MD":  {
+                                                                    "actions":  {
+                                                                        "CfS_-_Convert_MD_response_to_HTML":  {
+                                                                            "type":  "ApiConnection",
+                                                                            "inputs":  {
+                                                                                "host":  {
+                                                                                    "connection":  {
+                                                                                        "name":  "@parameters('$connections')['securitycopilot']['connectionId']"
+                                                                                    }
+                                                                                },
+                                                                                "method":  "post",
+                                                                                "body":  {
+                                                                                    "PromptContent":  "Convert the following markup string to HTML. Do not include the doctype tag and the header. Write only the content of the HTML body, without the opening and closing \"body\" tag. Do not write any character before and after that HTML content. This is the string written in lightweight markup language to be converted in HTML format: @{body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']}"
+                                                                                },
+                                                                                "path":  "/process-prompt"
+                                                                            }
+                                                                        },
+                                                                        "Parse_JSON_-_MdToHtml_Response":  {
+                                                                            "runAfter":  {
+                                                                                "CfS_-_Convert_MD_response_to_HTML":  [
+                                                                                    "Succeeded"
+                                                                                ]
+                                                                            },
+                                                                            "type":  "ParseJson",
+                                                                            "inputs":  {
+                                                                                "content":  "@outputs('CfS_-_Convert_MD_response_to_HTML')",
+                                                                                "schema":  {
+                                                                                    "type":  "object",
+                                                                                    "properties":  {
+                                                                                        "statusCode":  {
+                                                                                            "type":  "integer"
+                                                                                        },
+                                                                                        "headers":  {
+                                                                                            "type":  "object",
+                                                                                            "properties":  {
+                                                                                                "Cache-Control":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Pragma":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Transfer-Encoding":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Vary":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Set-Cookie":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Strict-Transport-Security":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "x-ms-request-id":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "X-Content-Type-Options":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "X-Frame-Options":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "x-ms-dlp-re":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "x-ms-dlp-gu":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Timing-Allow-Origin":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "x-ms-apihub-cached-response":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "x-ms-apihub-obo":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Date":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Content-Type":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Expires":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "Content-Length":  {
+                                                                                                    "type":  "string"
+                                                                                                }
+                                                                                            }
+                                                                                        },
+                                                                                        "body":  {
+                                                                                            "type":  "object",
+                                                                                            "properties":  {
+                                                                                                "sessionId":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "skillName":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "promptContent":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "evaluationResultType":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "evaluationResultContent":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "skillSources":  {
+                                                                                                    "type":  "array"
+                                                                                                },
+                                                                                                "status":  {
+                                                                                                    "type":  "integer"
+                                                                                                },
+                                                                                                "errors":  {
+                                                                                                    "type":  "array",
+                                                                                                    "items":  {
+                                                                                                        "type":  "string"
+                                                                                                    }
+                                                                                                },
+                                                                                                "debugInfo":  {
+                                                                                                    "type":  "string"
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "Switch_-_MdToHtml_statusCode":  {
+                                                                            "runAfter":  {
+                                                                                "Parse_JSON_-_MdToHtml_Response":  [
+                                                                                    "Succeeded"
+                                                                                ]
+                                                                            },
+                                                                            "cases":  {
+                                                                                "Case_-_MdToHtml_statusCode_-_200":  {
+                                                                                    "case":  200,
+                                                                                    "actions":  {
+                                                                                        "Compose_-_Html_Row_-_200":  {
+                                                                                            "runAfter":  {
+                                                                                                "For_each_-_skillSources":  [
+                                                                                                    "Succeeded"
+                                                                                                ]
+                                                                                            },
+                                                                                            "type":  "Compose",
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat(body('Parse_JSON_-_MdToHtml_Response')?['body']?['evaluationResultContent'],variables('SkillSources')))"
+                                                                                        },
+                                                                                        "Set_variable_-_HtmlRow_-_200":  {
+                                                                                            "runAfter":  {
+                                                                                                "Compose_-_Html_Row_-_200":  [
+                                                                                                    "Succeeded"
+                                                                                                ]
+                                                                                            },
+                                                                                            "type":  "SetVariable",
+                                                                                            "inputs":  {
+                                                                                                "name":  "HtmlRow",
+                                                                                                "value":  "@outputs('Compose_-_Html_Row_-_200')"
+                                                                                            }
+                                                                                        },
+                                                                                        "For_each_-_skillSources":  {
+                                                                                            "foreach":  "@body('Parse_JSON_-_evaluationResult')?['skillSources']",
+                                                                                            "actions":  {
+                                                                                                "Parse_JSON_-_skillSource":  {
+                                                                                                    "type":  "ParseJson",
+                                                                                                    "inputs":  {
+                                                                                                        "content":  "@items('For_each_-_skillSources')",
+                                                                                                        "schema":  {
+                                                                                                            "type":  "object",
+                                                                                                            "properties":  {
+                                                                                                                "displayName":  {
+                                                                                                                    "type":  "string"
+                                                                                                                },
+                                                                                                                "sourceType":  {
+                                                                                                                    "type":  "string"
+                                                                                                                },
+                                                                                                                "sourceContent":  {
+                                                                                                                    "type":  "string"
+                                                                                                                },
+                                                                                                                "sourceSerializedData":  {
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                },
+                                                                                                "Append_to_string_variable_-_Result_-_skillSource":  {
+                                                                                                    "runAfter":  {
+                                                                                                        "Parse_JSON_-_skillSource":  [
+                                                                                                            "Succeeded"
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    "type":  "AppendToStringVariable",
+                                                                                                    "inputs":  {
+                                                                                                        "name":  "SkillSources",
+                                                                                                        "value":  "\u003cP\u003e\n\u003cB\u003eSource:\u003c/B\u003e@{body('Parse_JSON_-_skillSource')?['displayName']} - @{body('Parse_JSON_-_skillSource')?['sourceContent']}\n\u003c/P\u003e"
+                                                                                                    }
+                                                                                                }
+                                                                                            },
+                                                                                            "type":  "Foreach"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                "Case_-_MdToHtml_statusCode_-_404":  {
+                                                                                    "case":  404,
+                                                                                    "actions":  {
+                                                                                        "Compose_-_Html_Row_-_404":  {
+                                                                                            "type":  "Compose",
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot not available!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                        },
+                                                                                        "Set_variable_-_HtmlRow_-_404":  {
+                                                                                            "runAfter":  {
+                                                                                                "Compose_-_Html_Row_-_404":  [
+                                                                                                    "Succeeded"
+                                                                                                ]
+                                                                                            },
+                                                                                            "type":  "SetVariable",
+                                                                                            "inputs":  {
+                                                                                                "name":  "HtmlRow",
+                                                                                                "value":  "@outputs('Compose_-_Html_Row_-_404')"
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                "Case_-_MdToHtml_statusCode_-_429":  {
+                                                                                    "case":  429,
+                                                                                    "actions":  {
+                                                                                        "Compose_-_Html_Row_-_429":  {
+                                                                                            "type":  "Compose",
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot is no longer available due to exceeding capacity!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                        },
+                                                                                        "Set_variable_-_HtmlRow_-_429":  {
+                                                                                            "runAfter":  {
+                                                                                                "Compose_-_Html_Row_-_429":  [
+                                                                                                    "Succeeded"
+                                                                                                ]
+                                                                                            },
+                                                                                            "type":  "SetVariable",
+                                                                                            "inputs":  {
+                                                                                                "name":  "HtmlRow",
+                                                                                                "value":  "@outputs('Compose_-_Html_Row_-_429')"
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "default":  {
+                                                                                "actions":  {
+                                                                                    "Compose_-_Html_Row_-_Default":  {
+                                                                                        "type":  "Compose",
+                                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR while calling Copilot! Error number: ',body('Parse_JSON_-_MdToHtml_Response')?['statusCode'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                    },
+                                                                                    "Set_variable_-_HtmlRow_-_Default":  {
+                                                                                        "runAfter":  {
+                                                                                            "Compose_-_Html_Row_-_Default":  [
+                                                                                                "Succeeded"
+                                                                                            ]
+                                                                                        },
+                                                                                        "type":  "SetVariable",
+                                                                                        "inputs":  {
+                                                                                            "name":  "HtmlRow",
+                                                                                            "value":  "@outputs('Compose_-_Html_Row_-_Default')"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "expression":  "@body('Parse_JSON_-_MdToHtml_Response')?['statusCode']",
+                                                                            "type":  "Switch"
+                                                                        }
+                                                                    },
+                                                                    "else":  {
+                                                                        "actions":  {
+                                                                            "Compose_-_Html_Row_-_Plain_text":  {
+                                                                                "type":  "Compose",
+                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent'],'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
+                                                                            },
+                                                                            "Set_variable_-_HtmlRow_-_Plain_text":  {
+                                                                                "runAfter":  {
+                                                                                    "Compose_-_Html_Row_-_Plain_text":  [
+                                                                                        "Succeeded"
+                                                                                    ]
+                                                                                },
+                                                                                "type":  "SetVariable",
+                                                                                "inputs":  {
+                                                                                    "name":  "HtmlRow",
+                                                                                    "value":  "@outputs('Compose_-_Html_Row_-_Plain_text')"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "expression":  {
+                                                                        "or":  [
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "#"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "*"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "+"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "\\n"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "["
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "|"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "contains":  [
+                                                                                    "@body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']",
+                                                                                    "`"
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "type":  "If"
+                                                                }
+                                                            },
+                                                            "else":  {
+                                                                "actions":  {
+                                                                    "Compose_-_Html_Row_-_Not_Success":  {
+                                                                        "type":  "Compose",
+                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: orange;\"\u003eWARNING! The prompt was not successful. Response type: ',body('Parse_JSON_-_evaluationResult')?['evaluationResultType'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
+                                                                    },
+                                                                    "Set_variable_-_HtmlRow_-_Not_Success":  {
+                                                                        "runAfter":  {
+                                                                            "Compose_-_Html_Row_-_Not_Success":  [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type":  "SetVariable",
+                                                                        "inputs":  {
+                                                                            "name":  "HtmlRow",
+                                                                            "value":  "@outputs('Compose_-_Html_Row_-_Not_Success')"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "expression":  {
+                                                                "and":  [
+                                                                    {
+                                                                        "equals":  [
+                                                                            "@body('Parse_JSON_-_evaluationResult')?['evaluationResultType']",
+                                                                            "Success"
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type":  "If"
                                                         }
                                                     },
                                                     "runAfter":  {
@@ -806,7 +818,7 @@
                                                 },
                                                 "Set_variable_-_SkipPrompt":  {
                                                     "runAfter":  {
-                                                        "Condition_-_evaluationResultType":  [
+                                                        "Set_variable_-_Reset_SkillSources":  [
                                                             "Succeeded"
                                                         ]
                                                     },
@@ -814,6 +826,18 @@
                                                     "inputs":  {
                                                         "name":  "SkipPrompt",
                                                         "value":  "@contains(parameters('SkipPromptsInOutput'),variables('LoopIndex'))"
+                                                    }
+                                                },
+                                                "Set_variable_-_Reset_SkillSources":  {
+                                                    "runAfter":  {
+                                                        "Set_variable_-_Reset_HtmlRow":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "SkillSources",
+                                                        "value":  " "
                                                     }
                                                 }
                                             },
@@ -908,12 +932,12 @@
                             "default":  {
                                 "actions":  {
                                     "For_each_-_Default_error":  {
-                                        "foreach":  "@body('Parse_JSON_-_Pb_execution_result')?['body']?['errors']",
+                                        "foreach":  "@body('Parse_JSON_-_Pb_execution_result')?['content']?['body']?['error']",
                                         "actions":  {
                                             "Append_to_string_variable_-_Default_error":  {
                                                 "type":  "AppendToStringVariable",
                                                 "inputs":  {
-                                                    "name":  "Result",
+                                                    "name":  "ErrorMsg",
                                                     "value":  "Error: @{items('For_each_-_Default_error')}"
                                                 }
                                             }
