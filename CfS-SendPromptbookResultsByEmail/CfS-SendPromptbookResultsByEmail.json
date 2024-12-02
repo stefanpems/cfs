@@ -178,103 +178,134 @@
                             "inputs":  {
                                 "content":  "@outputs('Run_a_Security_Copilot_promptbook')",
                                 "schema":  {
-                                    "type":  "object",
-                                    "properties":  {
-                                        "content":  {
-                                            "type":  "object",
-                                            "properties":  {
-                                                "statusCode":  {
-                                                    "type":  "integer"
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "object",
+                                            "properties": {
+                                                "statusCode": {
+                                                    "type": "integer"
                                                 },
-                                                "headers":  {
-                                                },
-                                                "body":  {
-                                                    "type":  "object",
-                                                    "properties":  {
-                                                        "error":  {
-                                                            "type":  [
-                                                                "object",
+                                                "headers": {},
+                                                "body": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "error": {
+                                                            "type": [
+                                                                [
+                                                                    "array",
+                                                                    "null"
+                                                                ],
                                                                 "null"
                                                             ],
-                                                            "message":  [
+                                                            "message": [
+                                                                [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "SessionId": {
+                                                            "type": [
                                                                 "string",
                                                                 "null"
                                                             ]
                                                         },
-                                                        "SessionId":  {
-                                                            "type":  [
-                                                                "string",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "evaluationResults":  {
-                                                            "type":  [
-                                                                "array",
+                                                        "evaluationResults": {
+                                                            "type": [
+                                                                [
+                                                                    "array",
+                                                                    "null"
+                                                                ],
                                                                 "null"
                                                             ],
-                                                            "items":  {
-                                                                "type":  [
+                                                            "items": {
+                                                                "type": [
                                                                     "object",
                                                                     "null"
                                                                 ],
-                                                                "properties":  {
-                                                                    "skillName":  {
-                                                                        "type":  [
-                                                                            "string",
+                                                                "properties": {
+                                                                    "skillName": {
+                                                                        "type": [
+                                                                            [
+                                                                                "string",
+                                                                                "null"
+                                                                            ],
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "promptContent":  {
-                                                                        "type":  [
-                                                                            "string",
+                                                                    "promptContent": {
+                                                                        "type": [
+                                                                            [
+                                                                                "string",
+                                                                                "null"
+                                                                            ],
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "evaluationResultType":  {
-                                                                        "type":  [
-                                                                            "string",
+                                                                    "evaluationResultType": {
+                                                                        "type": [
+                                                                            [
+                                                                                "string",
+                                                                                "null"
+                                                                            ],
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "evaluationResultContent":  {
-                                                                        "type":  [
-                                                                            "string",
+                                                                    "evaluationResultContent": {
+                                                                        "type": [
+                                                                            [
+                                                                                "string",
+                                                                                "null"
+                                                                            ],
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "skillSources":  {
-                                                                        "type":  [
-                                                                            "array",
+                                                                    "skillSources": {
+                                                                        "type": [
+                                                                            [
+                                                                                "array",
+                                                                                "null"
+                                                                            ],
                                                                             "null"
                                                                         ],
-                                                                        "items":  {
-                                                                            "type":  [
+                                                                        "items": {
+                                                                            "type": [
                                                                                 "object",
                                                                                 "null"
                                                                             ],
-                                                                            "properties":  {
-                                                                                "displayName":  {
-                                                                                    "type":  [
-                                                                                        "string",
+                                                                            "properties": {
+                                                                                "displayName": {
+                                                                                    "type": [
+                                                                                        [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ],
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceType":  {
-                                                                                    "type":  [
-                                                                                        "string",
+                                                                                "sourceType": {
+                                                                                    "type": [
+                                                                                        [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ],
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceContent":  {
-                                                                                    "type":  [
-                                                                                        "string",
+                                                                                "sourceContent": {
+                                                                                    "type": [
+                                                                                        [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ],
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceSerializedData":  {
-                                                                                }
+                                                                                "sourceSerializedData": {}
                                                                             },
-                                                                            "required":  [
+                                                                            "required": [
                                                                                 "displayName",
                                                                                 "sourceType",
                                                                                 "sourceContent",
@@ -283,7 +314,7 @@
                                                                         }
                                                                     }
                                                                 },
-                                                                "required":  [
+                                                                "required": [
                                                                     "skillName",
                                                                     "promptContent",
                                                                     "evaluationResultType",
@@ -642,7 +673,7 @@
                                                                         "actions":  {
                                                                             "Compose_-_Html_Row_-_Plain_text":  {
                                                                                 "type":  "Compose",
-                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent'],'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
+                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent'])"
                                                                             },
                                                                             "Set_variable_-_HtmlRow_-_Plain_text":  {
                                                                                 "runAfter":  {
