@@ -192,17 +192,11 @@
                                                     "properties": {
                                                         "error": {
                                                             "type": [
-                                                                [
-                                                                    "array",
-                                                                    "null"
-                                                                ],
+                                                                "object",
                                                                 "null"
                                                             ],
                                                             "message": [
-                                                                [
-                                                                    "string",
-                                                                    "null"
-                                                                ],
+                                                                "string",
                                                                 "null"
                                                             ]
                                                         },
@@ -214,10 +208,7 @@
                                                         },
                                                         "evaluationResults": {
                                                             "type": [
-                                                                [
-                                                                    "array",
-                                                                    "null"
-                                                                ],
+                                                                "array",
                                                                 "null"
                                                             ],
                                                             "items": {
@@ -228,46 +219,31 @@
                                                                 "properties": {
                                                                     "skillName": {
                                                                         "type": [
-                                                                            [
-                                                                                "string",
-                                                                                "null"
-                                                                            ],
+                                                                            "string",
                                                                             "null"
                                                                         ]
                                                                     },
                                                                     "promptContent": {
                                                                         "type": [
-                                                                            [
-                                                                                "string",
-                                                                                "null"
-                                                                            ],
+                                                                            "string",
                                                                             "null"
                                                                         ]
                                                                     },
                                                                     "evaluationResultType": {
                                                                         "type": [
-                                                                            [
-                                                                                "string",
-                                                                                "null"
-                                                                            ],
+                                                                            "string",
                                                                             "null"
                                                                         ]
                                                                     },
                                                                     "evaluationResultContent": {
                                                                         "type": [
-                                                                            [
-                                                                                "string",
-                                                                                "null"
-                                                                            ],
+                                                                            "string",
                                                                             "null"
                                                                         ]
                                                                     },
                                                                     "skillSources": {
                                                                         "type": [
-                                                                            [
-                                                                                "array",
-                                                                                "null"
-                                                                            ],
+                                                                            "array",
                                                                             "null"
                                                                         ],
                                                                         "items": {
@@ -278,28 +254,19 @@
                                                                             "properties": {
                                                                                 "displayName": {
                                                                                     "type": [
-                                                                                        [
-                                                                                            "string",
-                                                                                            "null"
-                                                                                        ],
+                                                                                        "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
                                                                                 "sourceType": {
                                                                                     "type": [
-                                                                                        [
-                                                                                            "string",
-                                                                                            "null"
-                                                                                        ],
+                                                                                        "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
                                                                                 "sourceContent": {
                                                                                     "type": [
-                                                                                        [
-                                                                                            "string",
-                                                                                            "null"
-                                                                                        ],
+                                                                                        "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
