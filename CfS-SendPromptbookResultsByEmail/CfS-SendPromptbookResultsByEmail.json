@@ -11,8 +11,9 @@
             "3. In the workflow editor, if needed, modify the trigger type and/or parameters (e.g., change the recurrence date and time or replace the trigger with the Microsoft Sentinel Incident trigger).",
             "4. In the workflow editor, open the parameters and set the desired email title, subject, and recipients.",
             "5. In the workflow editor, in the parameters list, if needed, specify the indexes of the prompts that should not be included in the email (use the SkipPromptsInOutput parameter).",
-            "6. In the workflow editor, if needed, further customize the email subject (e.g., if you have changed the trigger to MS Sentinel Incident, you may want to include the incident ID at the end of the email subject).",
-            "7. Enable the Logic App (the template deploys it in the disabled state)."
+            "6. In the workflow editor, in the parameters list, if needed, specify the prompts that should be replaced in the email (use the ReplacePromptsInOutput parameter).",
+            "7. In the workflow editor, if needed, further customize the email subject in the send email action (e.g., if you have changed the trigger to 'MS Sentinel Incident', you may want to dynamically include the incident ID or title at the end of the email subject; this cannot be done in the paramteres).",
+            "8. Enable the Logic App (the template deploys it in the disabled state)."
         ],
         "prerequisitesDeployTemplateFile":  "",
         "lastUpdateTime":  "",
@@ -79,7 +80,14 @@
             "defaultValue": [],
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter comma separated list of the indexes of the prompts in the promptbook that should not be included in the email. You can modify it later in the Logic App paramters list. The index number starts from 1."
+                "description":  "Enter comma separated list of the indexes of the prompts in the promptbook that should not be included in the email or leave '[]' for an empty array. You can modify it later in the Logic App paramters list. The index number starts from 1."
+            }
+        },
+        "ReplacePromptsInOutput":  {
+            "defaultValue": [],
+            "type":  "Array",
+            "metadata":  {
+                "description":  "Enter a comma-separated list of replacements for the prompts that should be written in the email, or leave '[]' for an empty array. You can modify it later in the Logic App parameters list. The prompts are replaced by their position in the array and the corresponding position in the promptbook. Leave an empty string for the prompts that do not need to be replaced."
             }
         }
     },
@@ -103,31 +111,59 @@
                         },
                         "HtmlBodyHeader":  {
                             "defaultValue":  "[parameters('HtmlBodyHeader')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter the template header of the HTML email body. The HTML must contain the text-placehoder ***EMAILTITLE***"
+                            }
                         },
                         "HtmlBodyRow":  {
                             "defaultValue":  "[parameters('HtmlBodyRow')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter the template row of the HTML email body. The HTML must contain the text-placehoders ***CONTENT1*** and ***CONTENT2***."
+                            }
                         },
                         "HtmlBodyFooter":  {
                             "defaultValue":  "[parameters('HtmlBodyFooter')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter the template footer of the HTML email body."
+                            }
                         },
                         "EmailTitle":  {
                             "defaultValue":  "[parameters('EmailTitle')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter value for the title to be specified in the HTML header of the email."
+                            }
                         },
                         "Email Subject":  {
                             "defaultValue":  "[parameters('Email Subject')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter value for email subject. "
+                            }
                         },
                         "EmailRecipients":  {
                             "defaultValue":  "[parameters('EmailRecipients')]",
-                            "type":  "String"
+                            "type":  "String",
+                            "metadata":  {
+                                "description":  "Enter value for email recipients. You can enter multiple email addresses separated by commas."
+                            }
                         },
                         "SkipPromptsInOutput":  {
                             "defaultValue":  "[parameters('SkipPromptsInOutput')]",
-                            "type":  "Array"
+                            "type":  "Array",
+                            "metadata":  {
+                                "description":  "Enter comma separated list of the indexes of the prompts in the promptbook that should not be included in the email or leave '[]' for an empty array. The index number starts from 1."
+                            }
+                        },
+                        "ReplacePromptsInOutput":  {
+                            "defaultValue":  "[parameters('ReplacePromptsInOutput')]",
+                            "type":  "Array",
+                            "metadata":  {
+                                "description":  "Enter a comma-separated list of replacements for the prompts that should be written in the email, or leave '[]' for an empty array. The prompts are replaced by their position in the array and the corresponding position in the promptbook. Leave an empty string for the prompts that do not need to be replaced."
+                            }
                         }
                     },
                     "triggers":  {
@@ -146,7 +182,7 @@
                     "actions":  {
                         "Run_a_Security_Copilot_promptbook":  {
                             "runAfter":  {
-                                "Initialize_variable_-_SkipPrompt":  [
+                                "Initialize_variable_-_PromptReplacement":  [
                                     "Succeeded"
                                 ]
                             },
@@ -178,101 +214,103 @@
                             "inputs":  {
                                 "content":  "@outputs('Run_a_Security_Copilot_promptbook')",
                                 "schema":  {
-                                    "type": "object",
-                                    "properties": {
-                                        "content": {
-                                            "type": "object",
-                                            "properties": {
-                                                "statusCode": {
-                                                    "type": "integer"
+                                    "type":  "object",
+                                    "properties":  {
+                                        "content":  {
+                                            "type":  "object",
+                                            "properties":  {
+                                                "statusCode":  {
+                                                    "type":  "integer"
                                                 },
-                                                "headers": {},
-                                                "body": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "error": {
-                                                            "type": [
+                                                "headers":  {
+                                                },
+                                                "body":  {
+                                                    "type":  "object",
+                                                    "properties":  {
+                                                        "error":  {
+                                                            "type":  [
                                                                 "object",
                                                                 "null"
                                                             ],
-                                                            "message": [
+                                                            "message":  [
                                                                 "string",
                                                                 "null"
                                                             ]
                                                         },
-                                                        "SessionId": {
-                                                            "type": [
+                                                        "SessionId":  {
+                                                            "type":  [
                                                                 "string",
                                                                 "null"
                                                             ]
                                                         },
-                                                        "evaluationResults": {
-                                                            "type": [
+                                                        "evaluationResults":  {
+                                                            "type":  [
                                                                 "array",
                                                                 "null"
                                                             ],
-                                                            "items": {
-                                                                "type": [
+                                                            "items":  {
+                                                                "type":  [
                                                                     "object",
                                                                     "null"
                                                                 ],
-                                                                "properties": {
-                                                                    "skillName": {
-                                                                        "type": [
+                                                                "properties":  {
+                                                                    "skillName":  {
+                                                                        "type":  [
                                                                             "string",
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "promptContent": {
-                                                                        "type": [
+                                                                    "promptContent":  {
+                                                                        "type":  [
                                                                             "string",
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "evaluationResultType": {
-                                                                        "type": [
+                                                                    "evaluationResultType":  {
+                                                                        "type":  [
                                                                             "string",
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "evaluationResultContent": {
-                                                                        "type": [
+                                                                    "evaluationResultContent":  {
+                                                                        "type":  [
                                                                             "string",
                                                                             "null"
                                                                         ]
                                                                     },
-                                                                    "skillSources": {
-                                                                        "type": [
+                                                                    "skillSources":  {
+                                                                        "type":  [
                                                                             "array",
                                                                             "null"
                                                                         ],
-                                                                        "items": {
-                                                                            "type": [
+                                                                        "items":  {
+                                                                            "type":  [
                                                                                 "object",
                                                                                 "null"
                                                                             ],
-                                                                            "properties": {
-                                                                                "displayName": {
-                                                                                    "type": [
+                                                                            "properties":  {
+                                                                                "displayName":  {
+                                                                                    "type":  [
                                                                                         "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceType": {
-                                                                                    "type": [
+                                                                                "sourceType":  {
+                                                                                    "type":  [
                                                                                         "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceContent": {
-                                                                                    "type": [
+                                                                                "sourceContent":  {
+                                                                                    "type":  [
                                                                                         "string",
                                                                                         "null"
                                                                                     ]
                                                                                 },
-                                                                                "sourceSerializedData": {}
+                                                                                "sourceSerializedData":  {
+                                                                                }
                                                                             },
-                                                                            "required": [
+                                                                            "required":  [
                                                                                 "displayName",
                                                                                 "sourceType",
                                                                                 "sourceContent",
@@ -281,7 +319,7 @@
                                                                         }
                                                                     }
                                                                 },
-                                                                "required": [
+                                                                "required":  [
                                                                     "skillName",
                                                                     "promptContent",
                                                                     "evaluationResultType",
@@ -440,7 +478,7 @@
                                                                         },
                                                                         "Parse_JSON_-_MdToHtml_Response":  {
                                                                             "runAfter":  {
-                                                                                "CfS_-_Convert_MD_response_to_HTML":  [                                                                                    
+                                                                                "CfS_-_Convert_MD_response_to_HTML":  [
                                                                                     "Succeeded",
                                                                                     "TimedOut",
                                                                                     "Skipped",
@@ -451,47 +489,72 @@
                                                                             "inputs":  {
                                                                                 "content":  "@outputs('CfS_-_Convert_MD_response_to_HTML')",
                                                                                 "schema":  {
-                                                                                    "type": "object",
-                                                                                    "properties": {
-                                                                                      "statusCode": {
-                                                                                        "type": "integer"
-                                                                                      },
-                                                                                      "headers": {},
-                                                                                      "body": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                          "sessionId": {
-                                                                                            "type": "string"
-                                                                                          },
-                                                                                          "skillName": {
-                                                                                            "type": ["string","null"]
-                                                                                          },
-                                                                                          "promptContent": {
-                                                                                            "type":  ["string","null"]
-                                                                                          },
-                                                                                          "evaluationResultType": {
-                                                                                            "type":  ["string","null"]
-                                                                                          },
-                                                                                          "evaluationResultContent": {
-                                                                                            "type":  ["string","null"]
-                                                                                          },
-                                                                                          "skillSources": {
-                                                                                            "type": ["array","null"]
-                                                                                          },
-                                                                                          "status": {
-                                                                                            "type": ["integer","null"]
-                                                                                          },
-                                                                                          "errors": {
-                                                                                            "type": ["array","null"],
-                                                                                            "items": {
-                                                                                              "type": "string"
+                                                                                    "type":  "object",
+                                                                                    "properties":  {
+                                                                                        "statusCode":  {
+                                                                                            "type":  "integer"
+                                                                                        },
+                                                                                        "headers":  {
+                                                                                        },
+                                                                                        "body":  {
+                                                                                            "type":  "object",
+                                                                                            "properties":  {
+                                                                                                "sessionId":  {
+                                                                                                    "type":  "string"
+                                                                                                },
+                                                                                                "skillName":  {
+                                                                                                    "type":  [
+                                                                                                        "string",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "promptContent":  {
+                                                                                                    "type":  [
+                                                                                                        "string",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "evaluationResultType":  {
+                                                                                                    "type":  [
+                                                                                                        "string",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "evaluationResultContent":  {
+                                                                                                    "type":  [
+                                                                                                        "string",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "skillSources":  {
+                                                                                                    "type":  [
+                                                                                                        "array",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "status":  {
+                                                                                                    "type":  [
+                                                                                                        "integer",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                },
+                                                                                                "errors":  {
+                                                                                                    "type":  [
+                                                                                                        "array",
+                                                                                                        "null"
+                                                                                                    ],
+                                                                                                    "items":  {
+                                                                                                        "type":  "string"
+                                                                                                    }
+                                                                                                },
+                                                                                                "debugInfo":  {
+                                                                                                    "type":  [
+                                                                                                        "string",
+                                                                                                        "null"
+                                                                                                    ]
+                                                                                                }
                                                                                             }
-                                                                                          },
-                                                                                          "debugInfo": {
-                                                                                            "type": ["string","null"]
-                                                                                          }
                                                                                         }
-                                                                                      }
                                                                                     }
                                                                                 }
                                                                             }
@@ -513,7 +576,7 @@
                                                                                                 ]
                                                                                             },
                                                                                             "type":  "Compose",
-                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat(body('Parse_JSON_-_MdToHtml_Response')?['body']?['evaluationResultContent'],variables('SkillSources')))"
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',concat(body('Parse_JSON_-_MdToHtml_Response')?['body']?['evaluationResultContent'],variables('SkillSources')))"
                                                                                         },
                                                                                         "Set_variable_-_HtmlRow_-_200":  {
                                                                                             "runAfter":  {
@@ -561,7 +624,7 @@
                                                                                                     "type":  "AppendToStringVariable",
                                                                                                     "inputs":  {
                                                                                                         "name":  "SkillSources",
-                                                                                                        "value":  "\u003cP\u003e\n\u003cB\u003eSource:\u003c/B\u003e@{body('Parse_JSON_-_skillSource')?['displayName']} - @{body('Parse_JSON_-_skillSource')?['sourceContent']}\n\u003c/P\u003e"
+                                                                                                        "value":  "\u003cP\u003e\n\u003cB\u003eSource: \u003c/B\u003e\u003cA href=\"@{body('Parse_JSON_-_skillSource')?['sourceContent']}\"\u003e@{body('Parse_JSON_-_skillSource')?['displayName']}\u003c/A\u003e\n\u003c/P\u003e"
                                                                                                     }
                                                                                                 }
                                                                                             },
@@ -574,7 +637,7 @@
                                                                                     "actions":  {
                                                                                         "Compose_-_Html_Row_-_404":  {
                                                                                             "type":  "Compose",
-                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot not available!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot not available!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
                                                                                         },
                                                                                         "Set_variable_-_HtmlRow_-_404":  {
                                                                                             "runAfter":  {
@@ -595,7 +658,7 @@
                                                                                     "actions":  {
                                                                                         "Compose_-_Html_Row_-_429":  {
                                                                                             "type":  "Compose",
-                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot is no longer available due to exceeding capacity!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                            "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR: Copilot is no longer available due to exceeding capacity!\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
                                                                                         },
                                                                                         "Set_variable_-_HtmlRow_-_429":  {
                                                                                             "runAfter":  {
@@ -616,7 +679,7 @@
                                                                                 "actions":  {
                                                                                     "Compose_-_Html_Row_-_Default":  {
                                                                                         "type":  "Compose",
-                                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR while calling Copilot! Error number: ',body('Parse_JSON_-_MdToHtml_Response')?['statusCode'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
+                                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',concat('\u003cp style=\"color: red;\"\u003eERROR while calling Copilot! Error number: ',body('Parse_JSON_-_MdToHtml_Response')?['statusCode'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_MdToHtml_Response')?['body']?['errors']))"
                                                                                     },
                                                                                     "Set_variable_-_HtmlRow_-_Default":  {
                                                                                         "runAfter":  {
@@ -640,7 +703,7 @@
                                                                         "actions":  {
                                                                             "Compose_-_Html_Row_-_Plain_text":  {
                                                                                 "type":  "Compose",
-                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent'])"
+                                                                                "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent'])"
                                                                             },
                                                                             "Set_variable_-_HtmlRow_-_Plain_text":  {
                                                                                 "runAfter":  {
@@ -709,7 +772,7 @@
                                                                 "actions":  {
                                                                     "Compose_-_Html_Row_-_Not_Success":  {
                                                                         "type":  "Compose",
-                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',body('Parse_JSON_-_evaluationResult')?['promptContent']),'***CONTENT2***',concat('\u003cp style=\"color: orange;\"\u003eWARNING! The prompt was not successful. Response type: ',body('Parse_JSON_-_evaluationResult')?['evaluationResultType'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
+                                                                        "inputs":  "@replace(replace(parameters('HtmlBodyRow'),'***CONTENT1***',variables('PromptInOutput')),'***CONTENT2***',concat('\u003cp style=\"color: orange;\"\u003eWARNING! The prompt was not successful. Response type: ',body('Parse_JSON_-_evaluationResult')?['evaluationResultType'],'\u003c/P\u003eDETAILS:',body('Parse_JSON_-_evaluationResult')?['evaluationResultContent']))"
                                                                     },
                                                                     "Set_variable_-_HtmlRow_-_Not_Success":  {
                                                                         "runAfter":  {
@@ -761,7 +824,7 @@
                                                 },
                                                 "Set_variable_-_SkipPrompt":  {
                                                     "runAfter":  {
-                                                        "Set_variable_-_Reset_SkillSources":  [
+                                                        "Condition_-_PromptReplacement_is_empty":  [
                                                             "Succeeded"
                                                         ]
                                                     },
@@ -781,6 +844,69 @@
                                                     "inputs":  {
                                                         "name":  "SkillSources",
                                                         "value":  " "
+                                                    }
+                                                },
+                                                "Condition_-_PromptReplacement_is_empty":  {
+                                                    "actions":  {
+                                                        "Set_variable_-_PromptInOutput_-_Original":  {
+                                                            "type":  "SetVariable",
+                                                            "inputs":  {
+                                                                "name":  "PromptInOutput",
+                                                                "value":  "@body('Parse_JSON_-_evaluationResult')?['promptContent']"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter":  {
+                                                        "Set_variable_-_Read_PromptReplacement":  [
+                                                            "Succeeded",
+                                                            "Failed"
+                                                        ]
+                                                    },
+                                                    "else":  {
+                                                        "actions":  {
+                                                            "Set_variable_-_PromptInOutput_-_Replaced":  {
+                                                                "type":  "SetVariable",
+                                                                "inputs":  {
+                                                                    "name":  "PromptInOutput",
+                                                                    "value":  "@variables('PromptReplacement')"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression":  {
+                                                        "and":  [
+                                                            {
+                                                                "equals":  [
+                                                                    "@variables('PromptReplacement')",
+                                                                    "@trim('')"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type":  "If"
+                                                },
+                                                "Set_variable_-_Read_PromptReplacement":  {
+                                                    "runAfter":  {
+                                                        "Set_variable_-_Reset_PromptReplacement":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "PromptReplacement",
+                                                        "value":  "@trim(parameters('ReplacePromptsInOutput')[sub(variables('LoopIndex'),1)])"
+                                                    }
+                                                },
+                                                "Set_variable_-_Reset_PromptReplacement":  {
+                                                    "runAfter":  {
+                                                        "Set_variable_-_Reset_SkillSources":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "PromptReplacement",
+                                                        "value":  "@trim('')"
                                                     }
                                                 }
                                             },
@@ -1024,6 +1150,38 @@
                                         "name":  "SkipPrompt",
                                         "type":  "boolean",
                                         "value":  false
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_-_PromptInOutput":  {
+                            "runAfter":  {
+                                "Initialize_variable_-_SkipPrompt":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "PromptInOutput",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_-_PromptReplacement":  {
+                            "runAfter":  {
+                                "Initialize_variable_-_PromptInOutput":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "PromptReplacement",
+                                        "type":  "string"
                                     }
                                 ]
                             }
