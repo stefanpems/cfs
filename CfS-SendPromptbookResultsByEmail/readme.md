@@ -2,7 +2,7 @@
 
 This Logic App executes the specified Promptbook in Security Copilot (Copilot for Security). It then converts each prompt's response, written in the simplified markdown language of Security Copilot, into HTML. Using these HTML excerpts or plain text responses and starting from a customizable HTML template, it constructs the HTML body of an email and finally sends that email to the specified recipients. It is possible to exclude one or more of the promptbook responses from the email by their position index (1, 2, 3, etc.); it is also possible to replace the text of one or more prompts in the email for the sake of readability.
 
-Please refer to this article for further details and for a video on how to deploy and use it: https://www.linkedin.com/pulse/sending-security-copilot-promptbook-responses-via-stefano-pescosolido-wcalf/?trackingId=Okhay20K5Xyp62xsRizN2g%3D%3D.
+Please refer to this article for further details and for a video on how to deploy and use it: https://www.linkedin.com/pulse/sending-security-copilot-promptbook-responses-via-stefano-pescosolido-wcalf.
 
 ### Prerequisites:
 * This Logic App is useful when you have active Security Compute Units (SCUs) for Security Copilot
