@@ -17,3 +17,12 @@ This Logic App executes the specified Promptbook in Security Copilot (Copilot fo
 
 ## Deployment button
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2FCfS-SendPromptbookResultsByEmail%2FCfS-SendPromptbookResultsByEmail.json)
+
+## Example of email customization:
+The following image shows:
+1. The standard promptbook "Vulnerability impact assessment" used as an example
+2. The email delivered using the default HTML template
+3. The customization of 3 parameters: HtmlBodyHeader (for changing the colors), SkipPromptsInOutput (for hiding the second prompt and response in the email) and ReplacePromptsInOutput (for replacing, in the email, the text of the first and third prompt. Note: the second prompt in the array is left as empty string "", meaning that there should be no replacement; the last prompt is not even included, which also means no replacement)  
+4. The email delivered using that customization
+   
+![Example of email customirzation](./Example%20of%20email%20customirzation.png)
