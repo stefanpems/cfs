@@ -6,7 +6,7 @@ info:
     version: "0.0.1"
 
 paths:
-    /aaa:
+    /:
         get: 
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
