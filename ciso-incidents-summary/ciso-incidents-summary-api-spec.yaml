@@ -6,7 +6,7 @@ info:
     version: "0.0.1"
 
 paths:
-    /https://prod-26.northeurope.logic.azure.com:443/workflows/449ca749a10e454c842aac22dd203ac0/triggers/AnalyzeUPNsCall/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FAnalyzeUPNsCall%2Frun&sv=1.0:
+    /:
         post: 
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
