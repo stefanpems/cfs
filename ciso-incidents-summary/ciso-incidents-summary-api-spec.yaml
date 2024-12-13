@@ -6,12 +6,12 @@ info:
     version: "0.0.1"
 
 paths:
-    /:
-        post: 
+    /aaa:
+        get: 
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
             parameters:
-                - in: body
+                - in: query
                   name: users_upn 
                   schema:
                     type: string
