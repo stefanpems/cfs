@@ -1,0 +1,24 @@
+openapi: 3.0.0
+
+info:
+    title: CISO Incidents Summary API Helper
+    description: Helper skills used to get specific summary info on the incidents in Defender
+    version: "0.0.1"
+
+paths:
+    /https://prod-26.northeurope.logic.azure.com:443/workflows/449ca749a10e454c842aac22dd203ac0/triggers/AnalyzeUPNsCall/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FAnalyzeUPNsCall%2Frun&sv=1.0:
+        post: 
+            operationId: CisoGetUsersStatus
+            summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
+            parameters:
+                - in: body
+                  name: users_upn 
+                  schema:
+                    type: string
+                  required: true
+                  description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed 
+            responses:
+                200:
+                    description: Successful. 
+                401:
+                    description: Unsuccessful authentication.
