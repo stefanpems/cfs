@@ -26,3 +26,6 @@ paths:
                   default: 1.0
                   schema:
                     type: string
+            responses:
+                "200":
+                  description: Status of the users
