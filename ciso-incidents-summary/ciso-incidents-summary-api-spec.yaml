@@ -7,18 +7,27 @@ info:
 
 paths:
     /:
-        post: 
+        post:
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
-            parameters:
-                - in: body
-                  name: users_upn 
-                  schema:
-                    type: string
-                  required: true
-                  description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed 
+            requestBody:
+                required: true
+                content:
+                application/json:
+                    schema:
+                    type: object
+                    properties:
+                        inputParameter:
+                        type: string
+                        description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed.
             responses:
-                200:
-                    description: Successful. 
-                401:
-                    description: Unsuccessful authentication.
+                '200':
+                description: Call response
+                content:
+                    application/json:
+                    schema:
+                        type: object
+                        properties:
+                        message:
+                            type: string
+                        description: Response message
