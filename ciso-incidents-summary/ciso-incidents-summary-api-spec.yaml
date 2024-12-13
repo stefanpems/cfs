@@ -6,28 +6,36 @@ info:
     version: "0.0.1"
 
 paths:
-    /:
-        post:
-            operationId: CisoGetUsersStatus
-            summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
-            requestBody:
-                required: true
-                content:
+/workflows/449ca749a10e454c842aac22dd203ac0/triggers/AnalyzeUPNsCall/paths/invoke:    
+    post:
+        operationId: CisoGetUsersStatus
+        description: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
+        summary: Get the status of a list of users in terms of enablement, risk level in Entra and insider risk level in Purview 
+        parameters:
+            - name: api-version
+                in: query
+                default: 2016-10-01
+                schema:
+                    type: string
+            - name: sp
+                in: query
+                default: /triggers/AnalyzeUPNsCall/run
+                schema:
+                    type: string
+            - name: sv
+                in: query  
+                default: 1.0
+                schema:
+                    type: string
+        requestBody:
+            description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed
+            required: true
+            content:
                 application/json:
-                    schema:
-                    type: object
-                    properties:
-                        inputParameter:
-                        type: string
-                        description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed.
-            responses:
-                '200':
-                description: Call response
-                content:
-                    application/json:
                     schema:
                         type: object
                         properties:
-                        message:
                             type: string
-                        description: Response message
+        responses:
+            "200":
+            description: Status of the users
