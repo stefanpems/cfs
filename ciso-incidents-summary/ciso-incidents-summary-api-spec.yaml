@@ -33,6 +33,16 @@ paths:
                   in: query  
                   schema:
                     type: string
+            requestBody:
+              description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed
+              required: true
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      users_upn:
+                        type: string
             responses:
                 "200":
                   description: Status of the users
