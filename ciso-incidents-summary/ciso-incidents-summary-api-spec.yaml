@@ -13,6 +13,9 @@ paths:
         post:
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement and risk level in Entra.
+              If the value of the api-version parameteris not specified in the request, use the value 2016-10-01 . 
+              If the value of the sp parameter is not specified in the request, use the value /triggers/AnalyzeUPNsCall/run . 
+              If the value of the sv parameter is not specified in the request, use the value 1.0 . 
             parameters:
                 - name: api-version
                   in: query
