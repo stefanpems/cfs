@@ -29,10 +29,6 @@ paths:
                   default: 1.0
                   schema:
                     type: string
-                - name: sig
-                  in: query  
-                  schema:
-                    type: string
             requestBody:
               description: Comma separated list of the User Principal Names (UPNs) of the user to be analyzed
               required: true
