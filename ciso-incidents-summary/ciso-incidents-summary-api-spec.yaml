@@ -6,7 +6,7 @@ info:
     version: "0.0.1"
 
 servers:
-  - url: https://prod-26.northeurope.logic.azure.com:443
+  - url: {{LogicAppBaseUrl}}
 
 paths:
     /workflows/{workflowid}/triggers/AnalyzeUPNsCall/paths/invoke:    
