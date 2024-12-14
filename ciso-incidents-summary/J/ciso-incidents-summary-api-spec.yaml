@@ -6,10 +6,10 @@ info:
     version: "0.0.1"
 
 servers:
-  - url: https://prod-112.westeurope.logic.azure.com:443
+  - url: https://prod-33.westeurope.logic.azure.com:443
 
 paths:
-    /workflows/e5ad6f6059734aaa8c1f579fb19c4180/triggers/AnalyzeUPNsCall/paths/invoke:    
+    /workflows/944863222b704efb9057a2eefd3ec5c4/triggers/AnalyzeUPNsCall/paths/invoke:    
         post:
             operationId: CisoGetUsersStatus
             summary: Get the status of a list of users in terms of enablement and risk level in Entra.
