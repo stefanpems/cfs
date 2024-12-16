@@ -7,7 +7,8 @@ Which threats should I focus on based on their exposure scores? For each returne
 
 PROMPT 2
 ```
-/GetSentinelSOCOptimizationRecommendations Is my Sentinel environment configured appropriatelt with reference to threat coverage and data utilization? Summarize the results in 3 paragraphs: Threat Coverage Recommendations (for each threat, show a bulleted list of: Threat Name, Recommended Action, Number of Active Detections, Number of Recommended Detections), Data Utilization Recommendations (for each table, show a bulleted list of: Table Name, Recommendations, Number of Suggested Rules) and Detection Tuning Recommendations (for each detection, show a bulleted list of: Detection ID, Recommended Action, Recommended Entities). For Data Utilization, show only the recommendations with 1 or more Suggested Rules```
+/GetSentinelSOCOptimizationRecommendations Is my Sentinel environment configured appropriatelt with reference to threat coverage and data utilization? Summarize the results in 3 paragraphs: Threat Coverage Recommendations (for each threat, show a bulleted list of: Threat Name, Recommended Action, Number of Active Detections, Number of Recommended Detections), Data Utilization Recommendations (for each table, show a bulleted list of: Table Name, Recommendations, Number of Suggested Rules) and Detection Tuning Recommendations (for each detection, show a bulleted list of: Detection ID, Recommended Action, Recommended Entities). For Data Utilization, show only the recommendations with 1 or more Suggested Rules
+```
 
 PROMPT 3
 ```
