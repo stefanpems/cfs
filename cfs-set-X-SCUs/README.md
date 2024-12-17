@@ -15,7 +15,7 @@ This Logic App sets the specified number of Security Compute Units (SCUs) for Se
 3. Set the Logic App paramters (list of national and local holidays, SCUs number, capacity name and resource group, etc...)
 5. Enable the Logic App
 
-## Deployment button
+### Deployment button
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2Fcfs-set-X-SCUs%2Ftemplate.json)
 
 ### Additional Instructions: 
@@ -29,6 +29,6 @@ For example, you can have:
 NOTE: you can create additional instances of this Logic App by redeploying the template published in this page. However, we recommend "cloning" already deployed Logic Apps to minimize the setup steps. The cloned Logic App already has most of the parameters correctly set; you only need to authorize its Managed Identity on the Resource Group where the capacity has to be created / modified / deleted, set the recurrence, and specify the desired number of SCUs.
 When cloning a Logic App, it is always advisable to set it initially to disabled.
 
-## Additional resources
+### Additional resources
 The following article contains a detailed description of how the Logic App works. It also contains setup instructions that are no longer accurate because most of the actions described are now automated during the template deployment:
 [Scheduling the Provisioning of Capacity (SCUs) for Copilot for Security - Logic App Template](https://www.linkedin.com/pulse/scheduling-provisioning-capacity-scus-copilot-logic-pescosolido-ku8ef/?trackingId=vhZAZBr9Snqoj%2FkSaFdqJQ%3D%3D)
