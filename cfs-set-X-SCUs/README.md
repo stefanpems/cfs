@@ -11,9 +11,9 @@ This Logic App sets the specified number of Security Compute Units (SCUs) for Se
 ### Instructions: 
 1. Deploy the template with the deployment button below
 1. Assign to the Managed Identity of the Logic App the Contributor role on the Resource Group where the Capacity has to be created or modified or deleted.
-2. et the desired time for the execution recurrence in the Logic App trigger (tipically every day at specified hours)
-3. Set the Logic App paramters (SCUs number, capacity name, etc...)
-4. Enable the Logic App
+2. Set the desired time for the execution recurrence in the Logic App trigger (tipically every day at specified hours)
+3. Set the Logic App paramters (list of national and local holidays, SCUs number, capacity name and resource group, etc...)
+5. Enable the Logic App
 
 ## Deployment button
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2Fcfs-set-X-SCUs%2Ftemplate.json)
