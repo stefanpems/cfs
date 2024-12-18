@@ -33,7 +33,7 @@ For example - just an extremely complex scenario, to better explain the concepts
 NOTE: you can create additional instances of this Logic App also by redeploying the template published in this page. However, we recommend "cloning" already deployed Logic Apps to minimize the setup steps and to reduce the possibilities of errors (e.g. using different names for the capacity to be created or modified or deleted). The cloned Logic App already has most of the parameters correctly set; you only need to authorize its Managed Identity on the Resource Group where the capacity has to be created / modified / deleted, set the recurrence, and specify the desired number of SCUs.
 When cloning a Logic App, it is always advisable to set it initially to disabled to avoid the very first run which, anyway, will fail before assigning the permissions to the new Managed Identity.
 
-In some small companies with very limited resources dedicated to security, where staff operate only during working hours and are not yet ready to implement automations with Security Copilot (especially those useful automations that could run at any time, even when staff are not working), I observed the activation of capacity with only two instances of the Logic App, as shown in the following image:  
+In some small companies with very limited resources dedicated to security, where staff operate only during working hours and are not yet ready to implement automations with Security Copilot (especially those useful automations that could run at any time, even when staff are not working), we observed the activation of capacity with only two instances of the Logic App, as shown in the following image:  
 
 ![Img2](./timing_sample2.png)
 
