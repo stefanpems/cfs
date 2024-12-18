@@ -4,6 +4,8 @@ The file template.json is an ARM template for creating an Azure Logic App that i
 
 ### Prerequisites:
 * Credit in Azure for consuming SCUs
+* Credentials with the rights to deploy this Logic App
+* Credentials that, at the time when this Logic App is configured to run, have the right to deploy or delete resources (the capacity) in the specified Resource Group
 
 ### Description 
 This Logic App sets the specified number of Security Compute Units (SCUs) for Security Copilot, but only if the current day is a working day. The number of desired SCUs is specified in the Logic App parameters. If the capacity already exists, the Logic App modifies its capacity - again, only during working days - according to the number of SCUs specified as a parameter. If the specified number of SCUs is zero, the Logic App deletes the capacity regardless of the day. Working days are defined by excluding non-working weekdays and listing national and local holidays.
