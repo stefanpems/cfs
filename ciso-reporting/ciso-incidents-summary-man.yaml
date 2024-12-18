@@ -95,8 +95,7 @@ SkillGroups:
             let end_time = datetime({{end_date}}); 
             let severities = dynamic([{{csv_of_severities}}]);
             SecurityIncident
-            | where TimeGenerated between (start_time .. end_time)
-            | where Severity in (severities)
+            | where Severity in (severities) and CreatedTime between (start_time .. end_time)
             | where Classification == "TruePositive"
             | extend SecInc = strcat("[",Severity,"] ",Title)
             | extend AdditionalDataParsed = parse_json(AdditionalData)
