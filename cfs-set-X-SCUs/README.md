@@ -20,14 +20,16 @@ This Logic App sets the specified number of Security Compute Units (SCUs) for Se
 
 ### Additional Instructions: 
 Once correctly configured, clone the Logic App (use the 'Clone' button on the Overview page of the Logic App) to create additional instances, scheduled at different times of the day, that set a different number of SCUs. 
-For example, you can have:
-* One instance at 8 am that set 6 SCUs
-* One instance at 2 pm that set 3 SCUs
-* One instance at 7 pm that set 1 SCU
-* One instance at 1 am that set 0 SCUs
+For example - just an extremely complex scenario, to better explain the concepts! -, in a working day your company may want to have these instances of this Logic App:
+* One instance, named "Baseline", firing at 7 am and 6 pm that set 2 SCUs
+* A second instance (a clone of the baseline), nanmed "Level 1", firing at 6 am and 12 pm, that set 4 SCUs
+* A third instance (another clone of the baseline), named "Level 2", firing at 8 am, that set 5 SCUs
+* A fourth instance (another clone of the baseline), named "Level 3", firing at 5 am and 5 pm, that set 6 SCUs
 
-NOTE: you can create additional instances of this Logic App by redeploying the template published in this page. However, we recommend "cloning" already deployed Logic Apps to minimize the setup steps. The cloned Logic App already has most of the parameters correctly set; you only need to authorize its Managed Identity on the Resource Group where the capacity has to be created / modified / deleted, set the recurrence, and specify the desired number of SCUs.
-When cloning a Logic App, it is always advisable to set it initially to disabled.
+![Img1](./timing_sample.png)
+
+NOTE: you can create additional instances of this Logic App also by redeploying the template published in this page. However, we recommend "cloning" already deployed Logic Apps to minimize the setup steps and to reduce the possibilities of errors (e.g. using different names for the capacity to be created or modified or deleted). The cloned Logic App already has most of the parameters correctly set; you only need to authorize its Managed Identity on the Resource Group where the capacity has to be created / modified / deleted, set the recurrence, and specify the desired number of SCUs.
+When cloning a Logic App, it is always advisable to set it initially to disabled to avoid the very first run which, anyway, will fail before assigning the permissions to the new Managed Identity.
 
 ### Additional resources
 The following article contains a detailed description of how the Logic App works. It also contains setup instructions that are no longer accurate because most of the actions described are now automated during the template deployment:
