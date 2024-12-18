@@ -40,3 +40,5 @@ In some small companies with very limited resources dedicated to security, where
 ### Additional resources
 The following article contains a detailed description of how the Logic App works. It also contains setup instructions that are no longer accurate because most of the actions described are now automated during the template deployment:
 [Scheduling the Provisioning of Capacity (SCUs) for Copilot for Security - Logic App Template](https://www.linkedin.com/pulse/scheduling-provisioning-capacity-scus-copilot-logic-pescosolido-ku8ef/?trackingId=vhZAZBr9Snqoj%2FkSaFdqJQ%3D%3D)
+
+**For lab environments where you simply need to provision a few SCUs for a limited number of minutes, I recommend using that further simplified Logic App: [cfs-set-X-SCUs-for-Y-minutes](https://github.com/stefanpems/cfs/tree/main/cfs-set-X-SCUs-for-Y-minutes)**
