@@ -9,7 +9,8 @@
             "1. Assign to the Managed Identity of the Logic App the Contributor role on the Resource Group where the Capacity has to be created or modified.",
             "2. Set the desired recurrence (tipically every day at specified hours)",
             "3. Set the Logic App paramters (SCU number, capacity name, etc...)",
-            "4. Enable the Logic App"
+            "4. In the initial action titled 'Initialize National Holidays,' change the content of the array to include the list of national and local holidays for your specific country",
+            "5. Enable the Logic App"
         ],
         "prerequisitesDeployTemplateFile":  "",
         "lastUpdateTime":  "",
