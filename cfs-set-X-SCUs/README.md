@@ -15,7 +15,7 @@ This Logic App sets the specified number of Security Compute Units (SCUs) for Se
 1. Assign to the Managed Identity of the Logic App the Contributor role on the Resource Group where the Capacity has to be created or modified or deleted.
 2. Set the desired time for the execution recurrence in the Logic App trigger (tipically every day at specified hours)
 3. Set the Logic App paramters (list of national and local holidays, SCUs number, capacity name and resource group, etc...)
-4. In the activity "Initialize National Holidays", change the content of the array with the list of national and local holidays 
+4. In the initial action titled 'Initialize National Holidays,' change the content of the array to include the list of national and local holidays for your specific country 
 5. Enable the Logic App
 
 ### Deployment button
