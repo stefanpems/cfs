@@ -4,7 +4,7 @@ PROMPT 1
 ```
 /CisoIncidentsStatusSummary Consider the top <TOP_INCIDENTS_NUMBER> most occurring incidents with severity <SEVERITIES> in the period of <TIME_FRAME>. 
 Respond by applying ALL these 4 indications to this specific response only:
-1. Start the response with the following first sentence: "This is the list of Incidents with severity <SEVERITIES> created <TIME_FRAME>". 
+1. Start the response with the following first sentence: "This is the list of Incidents with severity <SEVERITIES> created in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoIncidentsStatusSummary skill; use the long date format.
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write as bulleted list the numbers by status. Do not write classifications where the number is zero. Write in bold underlined the incident classified as true positive.
 3. Format the ENTIRE response in HTML including the very first sentence; do not include the doctype tag and the header: write only the content of the HTML body, without the opening and closing "body" tag and DO NOT write any character before and after that HTML content. 
 4. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word, but the titles of the incidents.
@@ -14,7 +14,7 @@ PROMPT 2
 ```
 /CisoTruePositiveIncidentsTTAnalysis Consider only the incidents occurred <TIME_FRAME> with severity <SEVERITIES>.
 Respond by applying BOTH these 2 indications to this specific response only:
-1. Start the response with the following first sentence: "These are the MITRE Tactics and Techniques for the Incidents closed <TIME_FRAME> as 'True Positives'". 
+1. Start the response with the following first sentence: "These are the MITRE Tactics and Techniques for the Incidents closed as 'True Positives' in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoIncidentsStatusSummary skill; use the long date format. 
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write in a bullet the the number of occurrences, in a second bullet the list of tactics and in a third bullet the list of techniques.
 ```
 
