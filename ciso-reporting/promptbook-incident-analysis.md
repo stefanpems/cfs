@@ -14,7 +14,7 @@ PROMPT 2
 ```
 /CisoTruePositiveIncidentsTTAnalysis Consider only the incidents occurred <TIME_FRAME> with severity <SEVERITIES>.
 Respond by applying BOTH these 2 indications to this specific response only:
-1. Start the response with the following first sentence: "These are the MITRE Tactics and Techniques for the Incidents closed as 'True Positives' in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoIncidentsStatusSummary skill; use the long date format. 
+1. Start the response with the following first sentence: "These are the MITRE Tactics and Techniques for the Incidents closed as 'True Positives' in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoTruePositiveIncidentsTTAnalysis skill; use the long date format. 
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write in a bullet the the number of occurrences, in a second bullet the list of tactics and in a third bullet the list of techniques.
 ```
 
