@@ -49,15 +49,18 @@ SkillGroups:
             let top_incs_number = int({{top_results_number}});
             let severities = dynamic([{{csv_of_severities}}]);
             let top_incidents = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where Severity in (severities) and CreatedTime between (start_time .. end_time)
             | extend SecInc = strcat("[",Severity,"] ",Title)
             | summarize TotalCount = count() by SecInc
             | top top_incs_number by TotalCount;
             let closed_incidents = SecurityIncident
-            | where Severity in (severities) and CreatedTime between (start_time .. end_time) and not(isnull(ClosedTime))
+            | summarize arg_max(TimeGenerated, *) by IncidentName
+            | where Severity in (severities) and not(isnull(ClosedTime)) and CreatedTime between (start_time .. end_time) 
             | extend SecInc = strcat("[",Severity,"] ",Title)
             | summarize ClosedCount = count() by SecInc;
             let classified_incidents = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where Severity in (severities) and CreatedTime between (start_time .. end_time)
             | extend SecInc = strcat("[",Severity,"] ",Title)
             | summarize BenignPositiveCount = countif(Classification == "BenignPositive"),
@@ -68,7 +71,7 @@ SkillGroups:
             | join kind=leftouter (closed_incidents) on SecInc
             | join kind=leftouter (classified_incidents) on SecInc
             | project SecInc, TotalCount, ClosedCount, BenignPositiveCount, FalsePositiveCount, TruePositiveCount, UndeterminedCount
-            | order by TotalCount desc, ClosedCount desc, TruePositiveCount desc
+            | order by TotalCount desc, ClosedCount desc, TruePositiveCount desc        
 
 
       - Name: CisoTruePositiveIncidentsTTAnalysis
@@ -95,6 +98,7 @@ SkillGroups:
             let end_time = datetime({{end_date}}); 
             let severities = dynamic([{{csv_of_severities}}]);
             SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where Severity in (severities) and CreatedTime between (start_time .. end_time)
             | where Classification == "TruePositive"
             | extend SecInc = strcat("[",Severity,"] ",Title)
@@ -127,12 +131,14 @@ SkillGroups:
             let lastMonthStart = startofmonth(datetime_add('month', -1, now()));
             let lastMonthEnd = endofmonth(datetime_add('month', -1, now()));
             let timeWindowMTTR = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where ClosedTime between (start_time .. end_time)
             | extend ResolveTime = datetime_diff('minute', ClosedTime, CreatedTime)
             | summarize MTTR = round(avg(ResolveTime),0)
             | extend j = "forcedjoin"
             | project timeWindowMTTR = MTTR, j;
             let lastMonthMTTR = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where CreatedTime between (lastMonthStart .. lastMonthEnd)
             | extend ResolveTime = datetime_diff('minute', ClosedTime, CreatedTime)
             | summarize MTTR = round(avg(ResolveTime),0)
@@ -169,6 +175,7 @@ SkillGroups:
             let lastMonthStart = startofmonth(datetime_add('month', -1, now()));
             let lastMonthEnd = endofmonth(datetime_add('month', -1, now()));
             let timeWindowMTTA = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where CreatedTime between (start_time .. end_time)
             | extend AcknowledgmentTime = datetime_diff('minute', FirstModifiedTime, CreatedTime)
             | where isnotnull(AcknowledgmentTime)
@@ -176,6 +183,7 @@ SkillGroups:
             | extend j = "forcedjoin"
             | project timeWindowMTTA = MTTA, j;
             let lastMonthMTTA = SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where CreatedTime between (lastMonthStart .. lastMonthEnd)
             | extend AcknowledgmentTime = datetime_diff('minute', FirstModifiedTime, CreatedTime)
             | where isnotnull(AcknowledgmentTime)
@@ -213,6 +221,7 @@ SkillGroups:
             let end_time = datetime({{end_date}}); 
             let top_owners_number = int({{top_owners_number}});
             SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where CreatedTime between (start_time .. end_time)
             | where isnotempty(Owner)
             | extend OwnerUPN = tostring(parse_json(Owner).userPrincipalName)
@@ -248,6 +257,7 @@ SkillGroups:
             let end_time = datetime({{end_date}}); 
             let top_owners_number = int({{top_impacted_users_number}});
             SecurityIncident
+            | summarize arg_max(TimeGenerated, *) by IncidentName
             | where CreatedTime between (start_time .. end_time) and Classification <> "FalsePositive"
             | mv-expand AlertIds
             | extend aid = tostring(AlertIds)
@@ -260,6 +270,3 @@ SkillGroups:
             | summarize AlertNumber = count() by UserPrincipalName
             | order by AlertNumber desc, UserPrincipalName
             | top {{top_impacted_users_number}} by AlertNumber
-
-
-    
