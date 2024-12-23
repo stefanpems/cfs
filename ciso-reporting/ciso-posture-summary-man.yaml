@@ -12,6 +12,7 @@ SkillGroups:
         DisplayName: CISO - Recommendations by Severity
         Description: Get the list of the active recommendations by Severity (work in progress)
         DescriptionForModel : Get the list of the active recommendations by Severity
+          If severities are specified in the prompt (e.g. High and Medium), concatenate them as a comma separated list of double-quoted strings with the first letter in uppercase (like "High","Medium").
         Inputs:
           - Name: days_back
             Description: The number of days to be considered in the past, starting from today
