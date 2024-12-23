@@ -1,4 +1,4 @@
-# Prompts in the promptbook
+# Prompts in the Incident Analysis promptbook
 
 This is the sample series of prompts for creating the promptbook dedicated to automating the Security Incident Management status analysis:
 
@@ -93,8 +93,10 @@ PROMPT 12
 ```
 
 ---
-# Parameters for the Logic App that invoke the promptbook and sends the results by email
+
+# Parameters for the Logic App that invoke the Incident Analysis promptbook and sends the results by email
 (Logic App: https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail)
+
 
 # Paramter related to the responses of the promptbook
 
