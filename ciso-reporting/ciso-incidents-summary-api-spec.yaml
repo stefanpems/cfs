@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-    title: CISO Incidents Summary API Helper
+    title: CISO Incidents Summary 
     description: Helper skills used to get specific summary info on the incidents in Defender
     version: "0.0.1"
 
