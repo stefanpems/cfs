@@ -2,7 +2,7 @@
 
 This is the sample series of prompts for creating the promptbook dedicated to automating the Security Incident Management status analysis:
 
-## PROMPT 1
+## Prompt 1
 ```
 /CisoIncidentsStatusSummary Consider the top <TOP_INCIDENTS_NUMBER> most occurring incidents with severity <SEVERITIES> in the period of <TIME_FRAME>. 
 Respond by applying ALL these 4 indications to this specific response only:
@@ -12,7 +12,7 @@ Respond by applying ALL these 4 indications to this specific response only:
 4. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word, but the titles of the incidents.
 ```
 
-## PROMPT 2
+## Prompt 2
 ```
 /CisoTruePositiveIncidentsTTAnalysis Consider only the incidents occurred <TIME_FRAME> with severity <SEVERITIES>.
 Respond by applying BOTH these 2 indications to this specific response only:
@@ -20,7 +20,7 @@ Respond by applying BOTH these 2 indications to this specific response only:
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write in a bullet the the number of occurrences, in a second bullet the list of tactics and in a third bullet the list of techniques.
 ```
 
-## PROMPT 3
+## Prompt 3
 ```
 /askGPT Respond by applying ALL these 3 indications to this specific response only: 
 1. Create a copy of the list returned by the previous prompt and, in that copy, replace the value of each listed Tactic with its link to the MITRE Att&ck Framework web site describing that specific tactic. Also replace the value of each listed Techniques with its link to the MITRE Att&ck Framework web site describing that specific technique; concatenate the technique code with its title. Ensure that the links are correct. 
@@ -28,12 +28,12 @@ Respond by applying BOTH these 2 indications to this specific response only:
 3. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word. Keep in English only the titles of the incidents and the names of the Tactics and Techniques.
 ```
 
-## PROMPT 4
+## Prompt 4
 ```
 /CisoMTTR Set the start_date and end_date input parameters to the first and last day of <TIME_FRAME>. In the response, include all the content returned by the KQL call.
 ```
 
-## PROMPT 5
+## Prompt 5
 ```
 /askGPT Respond by applying ALL these 6 indications to this specific response only: 
 1. Start the response with the following sentence: "This is the MTTR, Mean Time To Resolve, for the incidents closed <TIME_FRAME>.". 
@@ -44,12 +44,12 @@ Respond by applying BOTH these 2 indications to this specific response only:
 6. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word. Keep in English only the acronym MTTR and the name "Mean Time To Resolve" but add its translation after that name in round brackets.
 ```
 
-## PROMPT 6
+## Prompt 6
 ```
 /CisoMTTA Set the start_date and end_date input parameters to the first and last day of <TIME_FRAME>. In the response, include all the content returned by the KQL call. 
 ```
 
-## PROMPT 7
+## Prompt 7
 ```
 /askGPT Respond by applying ALL these 6 indications to this specific response only: 
 1. Start the response with the following sentence: "This is the MTTA, Mean Time To Acknowledge, for the incidents created <TIME_FRAME>.". 
@@ -60,7 +60,7 @@ Respond by applying BOTH these 2 indications to this specific response only:
 6. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word. Keep in English only the acronym MTTA and the name "Mean Time To Acknowledge" but add its translation after that name in round brackets.
 ```
 
-## PROMPT 8
+## Prompt 8
 ```
 /CisoIncidentsOwners Set the start_date and end_date input parameters to the first and last day of <TIME_FRAME>. Set the top_owners_number input parameter to <TOP_OWNERS_NUMBER>. 
 Respond by applying ALL these 4 indications to this specific response only: 
@@ -70,23 +70,23 @@ Respond by applying ALL these 4 indications to this specific response only:
 4. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word. 
 ```
 
-## PROMPT 9
+## Prompt 9
 ```
 /CisoMostImpactedUsers Set the start_date and end_date input parameters to the first and last day of <TIME_FRAME>. Set the top_impacted_users_number input parameter to <TOP_IMPACTED_USERS_NUMBER> impacted users. 
 Respond by returning the list of "user principal names" of the identified impacted users, with the related number of associated alerts
 ```
 
-## PROMPT 10
+## Prompt 10
 ```
 /askGPT extract in a single string the comma separated list of User Principal Names included in the previous response. Replace "contoso.com" with "giustizia.it"
 ```
 
-## PROMPT 11
+## Prompt 11
 ```
 Call the CisoGetUsersStatus skill of the CisoIncidentsSummaryApiHelper plugin. Pass these values to the input parameters: api-version=2016-10-01 , sp=/triggers/AnalyzeUPNsCall/run , sv=1.0. Pass to the users_upn input parameter the comma separated list of UPNs that you returned in the previous response. Read in the body of the response of this call and return the values of EntraStatus and RiskStatus for these users.
 ```
 
-## PROMPT 12
+## Prompt 12
 ```
 /askGPT Consolidate in a single table the number of incidents, the EntraStatus and the RiskStatus for ALL the impacted users identified in the previous responses. Respond by applying ALL these 4 indications to this specific response only: 1. Start the response with the following sentence: "This is the list of the users most impacted by incidents created <TIME_FRAME> and not already closed as 'false positive'. The list includes the number of their incidents and their status and risk level in Entra.". 2. Return the list as table. 3. Format the ENTIRE response in HTML including the very first sentence; for the HTML table, use a border 1px with color light gray, spacing 1px and width 100%; do not include the doctype tag and the header: write only the content of the HTML body, without the opening and closing "body" tag and DO NOT write any character before and after that HTML content. 
 4. Translate this ENTIRE response in <RESPONSE_LANGUAGE> from its very first to its very last word.
@@ -111,20 +111,20 @@ Value for the Logic App Paramter 'ReplacePromptsInOutput'
 ```
 
 
-## Paramters related to the HTML formatting of the delivered email (shades of **blue**) 
+## Paramters related to the HTML formatting of the delivered email
 
-Value for the Logic App Paramter 'HtmlBodyHeader'
+Value for the Logic App Paramter 'HtmlBodyHeader' (shades of **blue** - Same as in the Logic App template)
 ```
 <!DOCTYPE html><html><style>.notification-table-header {padding: 10px;width: auto;border-top: none;background: #0078D4;font-size: 11.0pt;color: white;font-weight: bold;margin-left: 10px;text-align: left;border: none;border-bottom: solid white 1.5pt;} .notification-table-text {padding: 10px;margin-left: 5px;width: 70%;text-align: left;border: none;border-bottom: solid white 1.5pt;background: #FAFAFA;font-size: 12.0pt;height: 20.05pt;} .notification-card-footer span {font-size: 12.0pt;color: #000000;} .notification-card-footer p {vertical-align: baseline;} .notification-body {margin: 0 auto;text-align: center;width: 650px;border: 1px black;border-collapse: collapse;background-color: #CCE4F6;} </style> <body style="background-color: #dfdfdf;"><table style="width:100%;"><tr><td style="padding:0;"><div align="center"><table class="notification-body"><tr style="border: 1px grey; border-top:none;"><td><p style='font-size:5.0pt;'><span>&nbsp;</span></p><table style='width:590px;margin:0 auto;border-collapse:collapse;'><tr class="notification-card-footer"><td><p style='text-align:left; font-size:12.0pt;'><b>***EMAILTITLE***</b></p></td></tr>
 ```
 
-Value for the Logic App Paramter 'HtmlBodyRow'
+Value for the Logic App Paramter 'HtmlBodyRow' (same as in the Logic App template)
 ```
 <tr><td class="notification-table-header"><span>***CONTENT1***</span></td></tr><tr><td class="notification-table-text"><span>***CONTENT2***</span></td></tr><tr class="notification-card-footer"><td><p style='text-indent:36.0pt;'><span style='font-size:10.0pt;'>&nbsp;</span></p></td></tr>
 ```
 
 
-Value for the Logic App Paramter 'HtmlBodyRow'
+Value for the Logic App Paramter 'HtmlBodyRow' (same as in the Logic App template)
 ```
 <tr class="notification-card-footer"><td><p style='text-align:center;'><span style='font-size:12.0pt; color:yellow;'>The content of this email was generated by Artificial Intelligence and may not be accurate. Please verify its accuracy..</span><br/><span style='font-size:12.0pt;'>To access Security Copilot, click <a href="https://security.microsoft.com/">HERE</a>.</span><br></p></td></tr></table></td></tr></table></div></td></tr></table></body></html>
 ```
