@@ -109,7 +109,7 @@ Indexes of the prompts whose responses should not be included in the delivered e
 
 ### Value for the Logic App Paramter 'ReplacePromptsInOutput' 
 Text to be used for replacing the prompts in the delivered email. 
-NOTE: It may include words and numbers that should be consistent with the values specified for the input parameter of the promptbook.  
+NOTE: It may include words and numbers that should be consistent with the values specified for the input parameters of the promptbook.  
 ```
 ["List the names of incidents opened last week with high or medium severity. Consider only the 10 most frequent incidents. Report the number of occurrences and their status.","","For incidents closed last week as 'true positives', report the related tactics and techniques defined in the MITRE ATT&CK Framework.","","Report the Mean Time To Resolution (MTTR) of incidents closed last week. Compare it with the value recorded last month.","","Report the Mean Time To Acknowledgment (MTTA) of incidents created last week. Compare it with the value recorded last month.","List the 10 operators with the most incidents assigned among the incidents created last week.","","","","List the 5 users impacted by the highest number of alerts related to incidents created last week and not closed as false positives. Report their status in Entra."]
 ```
