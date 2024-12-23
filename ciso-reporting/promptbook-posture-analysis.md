@@ -21,18 +21,17 @@ Which threats should I focus on based on their exposure scores? For each returne
 ---
 
 # Parameters for the Logic App that invoke the Posture Analysis promptbook and sends the results by email
-(Logic App: https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail)
+(Logic App template: https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail)
 
 
 ## Paramters related to the responses of the promptbook
 
-Value for the Logic App Paramter 'SkipPromptsInOutput'
+Value for the Logic App Paramter 'SkipPromptsInOutput' (empty)
 ```
 []
 ```
-![Uploading image.png…]()
 
-Value for the Logic App Paramter 'ReplacePromptsInOutput'
+Value for the Logic App Paramter 'ReplacePromptsInOutput' (empty)
 ```
 []
 ```
