@@ -78,7 +78,7 @@ Respond by returning the list of "user principal names" of the identified impact
 
 ## Prompt 10
 ```
-/askGPT extract in a single string the comma separated list of User Principal Names included in the previous response. Replace "contoso.com" with "giustizia.it"
+/askGPT extract in a single string the comma separated list of User Principal Names included in the previous response. 
 ```
 
 ## Prompt 11
