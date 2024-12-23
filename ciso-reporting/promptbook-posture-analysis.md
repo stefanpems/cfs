@@ -1,6 +1,8 @@
 # Prompts in the Incident Analysis promptbook
 
-This is the sample series of prompts for creating the promptbook dedicated to automating the Security Posture status analysis:
+This promptbook, containing a (sample) series of prompts for reporting the high-level status of the security Posture for the current organization, has been designed to be invoked from the [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) Logic App and requires the [CISO Posture Summary](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-posture-summary-man.yaml) Custom Plugin as a prerequisite.
+
+NOTE: This promptbook is in a very preliminary draft state. Not only are these prompts not optimized in terms of compute capacity consumption, but it is also very incomplete. Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/) for further details on how this promptbook should be improved.
 
 ## Prompt 1
 ```
