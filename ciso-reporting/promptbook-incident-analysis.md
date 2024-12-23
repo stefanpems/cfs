@@ -1,6 +1,6 @@
 # Prompts in the Incident Analysis promptbook
 
-This promptbook, containing a (sample) series of prompts for reporting the high-level status of the Security Incident Management capability, has been designed to be invoked from the [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) Logic App and requires the [CISO Incidents Summary](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml) Custom Plugin as a prerequisite.
+This promptbook, containing a (sample) series of prompts for reporting the high-level status of the Security Incident Management process for the current organization, has been designed to be invoked from the [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) Logic App and requires the [CISO Incidents Summary](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml) Custom Plugin as a prerequisite.
 
 ## Prompt 1
 ```
