@@ -4,7 +4,7 @@ This promptbook, containing a (sample) series of prompts for reporting the high-
 
 ## Prompt 1
 ```
-/CisoIncidentsStatusSummary Consider the top <TOP_INCIDENTS_NUMBER> most occurring incidents with severity <SEVERITIES> in the period of <TIME_FRAME>. 
+/CisoIncidentsStatusSummary Consider the top <TOP_INCIDENTS_NUMBER> most occurring incidents in the period of <TIME_FRAME>. For the input parameter named "csv_of_severities" specify the following word or words, each surrounded by double quotes, with only the first letter in uppercase and, if more than one, separated by commas: <SEVERITIES> .
 Respond by applying ALL these 4 indications to this specific response only:
 1. Start the response with the following first sentence: "This is the list of Incidents with severity <SEVERITIES> created in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoIncidentsStatusSummary skill; use the long date format.
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write as bulleted list the numbers by status. Do not write classifications where the number is zero. Write in bold underlined the incident classified as true positive.
@@ -14,7 +14,7 @@ Respond by applying ALL these 4 indications to this specific response only:
 
 ## Prompt 2
 ```
-/CisoTruePositiveIncidentsTTAnalysis Consider only the incidents occurred <TIME_FRAME> with severity <SEVERITIES>.
+/CisoTruePositiveIncidentsTTAnalysis Consider only the incidents occurred <TIME_FRAME>. For the input parameter named "csv_of_severities" specify the following word or words, each surrounded by double quotes, with only the first letter in uppercase and, if more than one, separated by commas: <SEVERITIES> .
 Respond by applying BOTH these 2 indications to this specific response only:
 1. Start the response with the following first sentence: "These are the MITRE Tactics and Techniques for the Incidents closed as 'True Positives' in the requested period ". Then add, within round brackets, exactly the first day and the last day considered for <TIME_FRAME>, as used for invoking the CisoTruePositiveIncidentsTTAnalysis skill; use the long date format. 
 2. Do not return a table: return the results in paragraphs instead; highlight the incident title and write in a bullet the the number of occurrences, in a second bullet the list of tactics and in a third bullet the list of techniques.
