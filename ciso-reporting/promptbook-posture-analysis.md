@@ -16,7 +16,7 @@ Which threats should I focus on based on their exposure scores? For each returne
 
 ## Prompt 3
 ```
-/CisoRecommendationsBySeverity List the top recurring 10 Recommendations created in the last <NUMBER_OF_DAYS> days with severity <SEVERITIES>
+/CisoRecommendationsBySeverity List the top <NUMBER_OF_RECOMMENDATIONS> active Recommendations created in the last <NUMBER_OF_DAYS> days. For the input parameter named "csv_of_severities" specify the following word or words, each surrounded by double quotes, with only the first letter in uppercase and, if more than one, separated by commas: <SEVERITIES>
 ```
 
 
