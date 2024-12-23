@@ -36,7 +36,7 @@ Indexes of the prompts whose responses should not be included in the delivered e
 
 ### Value for the Logic App Paramter 'ReplacePromptsInOutput' 
 Text to be used for replacing the prompts in the delivered email. 
-NOTE: It may include words and numbers that should be consistent with the values specified for the input parameter of the promptbook.  
+NOTE: It may include words and numbers that should be consistent with the values specified for the input parameters of the promptbook.  
 (Leave empty)
 ```
 []
