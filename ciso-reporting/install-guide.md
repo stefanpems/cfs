@@ -105,7 +105,7 @@ Create the promptbooks:
 
 ## On the Security Copilot portal, accessed with credentials with the Owner role:
 
-- Increment the number of SCUs
+- Increment temporarly the number of SCUs to ensure the first "test" executions can be completed successfully.
 
   
 ## On the Azure portal, accessed with credentials with an administrative role:
