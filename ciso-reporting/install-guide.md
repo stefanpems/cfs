@@ -155,14 +155,17 @@
 
 - [**STEP 6.3**] Enable the "**CISO Incident Analysis**" automation nd wait its first automatic execution
   
-- Enable the "**CISO Posture Analysis**" automation nd wait its first automatic execution
+- [**STEP 7**] Enable the "**CISO Posture Analysis**" automation and wait its first automatic execution
 
-- For the "**CISO Incident Analysis**" automation, set the recurrence
-
-- For the "**CISO Posture Analysis**" automation, set the recurrence
-
-- Deploy N instances of the [cfs-set-X-SCUs](https://github.com/stefanpems/cfs/tree/main/cfs-set-X-SCUs) to ensure that there is enough
-  capacity everytime that the CISO Incident Analysis and CISO Posture Analysis are started
+- [**STEP 7**] Schedule the execution:
+  - Set the recurrence on the "**CISO Incident Analysis**" Logic App
+  - Set the recurrence on the "**CISO Posture Analysis**" Logic App
+  - Schedule the automatic deployment of the compute units (SCUs) dedicated to the execution of these automations
+    to ensure that there is enough capacity (on top of your "baseline" capacity used by your users and other automations) everytime that the are executed.
+    For example, deploy 2 instances of the [cfs-set-X-SCUs](https://github.com/stefanpems/cfs/tree/main/cfs-set-X-SCUs) Logic App:
+    - One to increase the capacity by N SCUs over the baseline
+    - One to decrease the capacity by N SCUs when the execution of these automations is completed 
+    
 
 
 
