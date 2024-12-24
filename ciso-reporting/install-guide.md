@@ -18,11 +18,11 @@
    (note that 'eligible' permissions in PIM are not adequate for use in automation):
    - Security Reader at tenant level (for reading data in Defender and Entra)
    - Microsoft Sentinel Reader at the level of the Sentinel's resource group (for reading data in the Sentinel workspace)
-   - Contributor on Microsoft Security Copilot (for accessing and interacting with Security Copilot) \
+   - Contributor on Microsoft Security Copilot (for accessing and interacting with Security Copilot)  
    
    These credentials also need to have an Microsoft 365 Exchange Online license assigned because they will be used to send the scheduled report email. 
    It is recommended to create and use a dedicated user with a clear name (such as 'Security Copilot Automation Account') and to monitor its usage to ensure that
-   any anomalous logon attempts with these credentials generate an alert. \
+   any anomalous logon attempts with these credentials generate an alert.  
    Before starting this setup procedure, it is highly recommended to prepare a browser session authenticated with the credentials of the new Security Copilot Automation Account,
    where you have already successfully accessed:
    - The user's mailbox in Exchange Online with Outlook web access
@@ -44,15 +44,16 @@
 [**STEP 1**] Create the promptbooks:
 - [promptbook-incident-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-incident-analysis.md)
 - [OPTIONAL][promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)\
-  NOTE: this promptbook for posture analysis and the related automation are in a very preliminary draft state.
-  Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
-  Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
-  for further details. \
-  NOTE: If you have not enabled the Continuous Export feature in Defender for Cloud, you should not include the third prompt in this sample promptbook.
+  NOTES:
+  - This promptbook for posture analysis and the related automation are in a very preliminary draft state.
+    Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
+    Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
+    for further details.  
+  - If you have not enabled the Continuous Export feature in Defender for Cloud, you should not include the third prompt in this sample promptbook.
 
 ## On the Azure portal, accessed with credentials with an administrative role:
 
-- [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json) \
+- [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json)  
   - NOTE: Currently, it has no "Deploy in Azure" button; it is necessary to perform a manual deployment.
   - Edit its connection to Security Copilot and authenticate with the credentials of the Security Copilot Automation Account
 
@@ -78,7 +79,7 @@
  
 
 - [**STEP 4**] [OPTIONAL] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail)
-  to create the "**CISO Posture Analysis**" automation. \
+  to create the "**CISO Posture Analysis**" automation.  
   NOTE: this automation and the related promptbook are in a very preliminary draft state.
   Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
   Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
@@ -100,7 +101,7 @@
 
 - [**STEP 5**] Deploy the Custom Plugins:
   - Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
-    custom plugin (used by the "**CISO Incident Analysis**" automation) \
+    custom plugin (used by the "**CISO Incident Analysis**" automation)  
     NOTES:
     - This custom plugin loops through the users specified in the input and queries Entra for their enablement status and risk status.
       Due to the existance of the loop, it may consume a high level of compute units. You should decide if this evidence adds value to your report.
@@ -125,7 +126,7 @@
     file from the template in GitHub and upload it in your Security Copilot.
   - [OPTIONAL] Deploy the [Sentinel-SOC-Optimization-CustomPlugin] https://github.com/stefanpems/cfs/tree/main/Sentinel-SOC-Optimization-CustomPlugin
     custom plugin (used by the "**CISO Posture Analysis**" automation). This deployment deployment does not require any specific customization: just download the
-    file from the template in GitHub and upload it in your Security Copilot. \
+    file from the template in GitHub and upload it in your Security Copilot.  
     NOTES:
     - While adding this custom plugin, you need to provide the Identification parameters for your Sentinel (Subscroption ID, Resource Group Name, Sentinel Workspace Name)
     - If you do not want to install this custom plugin, you need to remove the second prompt from the
