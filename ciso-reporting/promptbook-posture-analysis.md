@@ -39,9 +39,8 @@ Indexes of the prompts whose responses should not be included in the delivered e
 ### Value for the Logic App Paramter 'ReplacePromptsInOutput' 
 Text to be used for replacing the prompts in the delivered email. 
 NOTE: It may include words and numbers that should be consistent with the values specified for the input parameters of the promptbook.  
-(Leave empty)
 ```
-[]
+["List the global threats that should be prioritized based on their exposure score and the vulnerabilities present in my environment.","List the recommendations for better coverage in our SIEM (Microsoft Sentinel) against the most impactful threats. Also, show the recommendations for better utilization of our collected logs.","List the top 10 high and medium severity recommendations based on the number of impacted resources in my cloud PaaS environments in Azure, AWS, and GCP."]
 ```
 
 
