@@ -43,7 +43,7 @@
 
 [**STEP 1**] Create the promptbooks:
 - [promptbook-incident-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-incident-analysis.md)
-- [OPTIONAL][promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)\
+- [OPTIONAL] [promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)\
   NOTES:
   - This promptbook for posture analysis and the related automation are in a very preliminary draft state.
     Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
