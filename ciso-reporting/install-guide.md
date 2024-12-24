@@ -41,7 +41,10 @@
 
 Create the promptbooks:
 - [promptbook-incident-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-incident-analysis.md)
-- [promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)
+- [OPTIONAL][promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)
+  NOTE: this promptbook for posture analysis and related automation are in a very preliminary draft state.
+  Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
+  Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
 
 ## On the Azure portal, accessed with credentials with an administrative role:
 
