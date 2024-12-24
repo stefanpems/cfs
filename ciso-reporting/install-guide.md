@@ -90,6 +90,7 @@
   - Chose the promptbook "promptbook-posture-analysis" and specify its parameters. Typically you may want to specify:
     - WORDS_NUMBER = 50
     - NUMBER_OF_DAYS = 30
+    - NUMBER_OF_RECOMMENDATIONS = 10
     - SEVERITIES = High and Medium 
   - Set all the Logic App parameters. Specifically, ensure that you have set:
     - The HtmlBodyHeader to change the color shade of the email
