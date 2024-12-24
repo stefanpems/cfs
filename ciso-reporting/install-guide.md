@@ -1,5 +1,7 @@
 
-
+--- 
+> WORK IN PROGRESS: mini-videos for each deployment step have already been recorded and will be published soon!
+---  
 # Prerequisites
 
 1. The approach and logic used in this solution can be applied with Security Copilot connected to any data source.
@@ -170,4 +172,5 @@
 
 
 --- 
-WORK IN PROGRESS... TO BE CONTINUED...
+> WORK IN PROGRESS: mini-videos for each deployment step have already been recorded and will be published soon!
+---
