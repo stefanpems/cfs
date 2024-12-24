@@ -18,7 +18,7 @@
    (note that 'eligible' permissions in PIM are not adequate for use in automation):
    - Security Reader at tenant level (for reading data in Defender and Entra)
    - Microsoft Sentinel Reader at the level of the Sentinel's resource group (for reading data in the Sentinel workspace)
-   - Contributor on Microsoft Security Copilot (for accessing and interacting with Security Copilot)
+   - Contributor on Microsoft Security Copilot (for accessing and interacting with Security Copilot) \
    These credentials also need to have an Microsoft 365 Exchange Online license assigned because they will be used to send the scheduled report email. 
    It is recommended to create and use a dedicated user with a clear name (such as 'Security Copilot Automation Account') and to monitor its usage to ensure that
    any anomalous logon attempts with these credentials generate an alert.
