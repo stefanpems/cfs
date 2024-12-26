@@ -40,7 +40,7 @@
 
 # Setup Procedure
 
-## [**STEP 1**] Create the promptbooks:
+## [**STEP 1**] Create the promptbooks
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/JflMLaEJEQ0" target="_blank">Mini-video showing the promptbooks creation (3m): [CISO Reporting with Security Copilot - Prototype setup - **#1** Create promptbooks]</a>
 
@@ -86,7 +86,7 @@ On the Azure portal, accessed with credentials with an administrative role:
   - For the time being, keep the Logic App disabled (we will enable it when all the required configurations are in place) 
  
 
-## [**STEP 4**] [OPTIONAL] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) to create the "**CISO Posture Analysis**" automation.  
+## [**STEP 4**] [OPTIONAL] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) to create the "**CISO Posture Analysis**" automation  
   NOTE: this automation and the related promptbook are in a very preliminary draft state.
   Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
   Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
@@ -110,7 +110,7 @@ On the Azure portal, accessed with credentials with an administrative role:
   - Set the recurrence. Typically it has to be set to be run once per week, like on Monday morning at 6 am.
   - For the time being, keep the Logic App disabled (we will enable it when all the required configurations are in place)
 
-## [**STEP 5**] Deploy the Custom Plugins:
+## [**STEP 5**] Deploy the Custom Plugins
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/SKWVNzeDx6g" target="_blank">Mini-video showing the creation of the Custom Plugins (8m): [CISO Reporting with Security Copilot - Prototype setup - **#5** Custom plugins]</a>
   
@@ -176,7 +176,7 @@ On the Azure portal, accessed with credentials with an administrative role:
    On the Azure portal, accessed with credentials with an administrative role:   
    - Enable the "**CISO Posture Analysis**" automation and wait its first automatic execution
 
-## [**STEP 8**] Schedule the execution:
+## [**STEP 8**] Schedule the execution of the reporting together with the required periodic increment of SCUs
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/Z6UKUyInMGY" target="_blank">Mini-video showing the setup of the periodic assignment of SCUs and of the recurrence for the reporting automations (>8m): [CISO Reporting with Security Copilot - Prototype setup - **#8** Scheduling SCUs and reporting]</a>
    
