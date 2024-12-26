@@ -54,7 +54,7 @@ On the Security Copilot portal, accessed with credentials with the Owner role:
     for further details.  
   - If you have not enabled the Continuous Export feature in Defender for Cloud, you should not include the third prompt in this sample promptbook.
 
-## [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json)
+## [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json) used by one of the skills in the custom plugin for Incidents Analysis
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/ETpt88CddQU" target="_blank">Mini-video showing the creation of the Logic App **ciso-get-users-status** (>2m): [CISO Reporting with Security Copilot - Prototype setup - **#2** Install GetUsersStatus]</a>
 
