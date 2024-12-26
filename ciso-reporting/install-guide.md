@@ -93,7 +93,7 @@
   Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
   for further details on how this promptbook should be improved.
 
-   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/F3PMAPl7ptc" target="_blank">Mini-video showing the creation of the Logic App **CISO Posture Analysis** (~4m): [CISO Reporting with Security Copilot - Prototype setup - **#4** Install Posture Analysis Automation]</a>
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/yBmJhBJohMg" target="_blank">Mini-video showing the creation of the Logic App **CISO Posture Analysis** (~4m): [CISO Reporting with Security Copilot - Prototype setup - **#4** Install Posture Analysis Automation]</a>
   
   - Use the "Deploy in Azure" button
   - Edit its connection to Security Copilot and authenticate with the credentials of the Security Copilot Automation Account
