@@ -115,7 +115,7 @@ On the Azure portal, accessed with credentials with an administrative role:
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/SKWVNzeDx6g" target="_blank">Mini-video showing the creation of the Custom Plugins (8m): [CISO Reporting with Security Copilot - Prototype setup - **#5** Custom plugins]</a>
   
   - Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
-    custom plugin (used by the "**CISO Incident Analysis**" automation)  
+    custom plugin (used by the "**CISO Incidents Analysis**" automation)  
     NOTES:
     - This custom plugin loops through the users specified in the input and queries Entra for their enablement status and risk status.
       Due to the existance of the loop, it may consume a high level of compute units. You should decide if this evidence adds value to your report.
@@ -167,17 +167,20 @@ On the Azure portal, accessed with credentials with an administrative role:
 
   
    On the Azure portal, accessed with credentials with an administrative role:   
-   - [**STEP 6.3**] Enable the "**CISO Incident Analysis**" automation and wait its first automatic execution
+   - [**STEP 6.3**] Enable the "**CISO Incidents Analysis**" automation and wait its first automatic execution
   
 ## [**STEP 7**] Enable the "**CISO Posture Analysis**" automation and wait for the completion of its first automatic execution
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/4wZ4vEebCEo" target="_blank">Mini-video showing the first execution of the Incidents Posture automation (~1m): [CISO Reporting with Security Copilot - Prototype setup - **#7** Run Posture Analysis]</a>
+  
+   On the Azure portal, accessed with credentials with an administrative role:   
+   - Enable the "**CISO Posture Analysis**" automation and wait its first automatic execution
 
 ## [**STEP 8**] Schedule the execution:
 
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/Z6UKUyInMGY" target="_blank">Mini-video showing the setup of the periodic assignment of SCUs and of the recurrence for the reporting automations (>8m): [CISO Reporting with Security Copilot - Prototype setup - **#8** Scheduling SCUs and reporting]</a>
    
-  - Set the recurrence on the "**CISO Incident Analysis**" Logic App
+  - Set the recurrence on the "**CISO Incidents Analysis**" Logic App
   - Set the recurrence on the "**CISO Posture Analysis**" Logic App
   - Schedule the automatic deployment of the compute units (SCUs) dedicated to the execution of these automations
     to ensure that there is enough capacity (on top of your "baseline" capacity used by your users and other automations) everytime that the are executed.
