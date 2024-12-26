@@ -1,10 +1,7 @@
 
---- 
-> WORK IN PROGRESS: mini-videos for each deployment step have already been recorded and will be published soon!
----  
 # Prerequisites
 
-> <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/O4gT5yRwIpI" target="_blank">Mini-video showing the prerequisites (2m): [CISO Reporting with Security Copilot - Prototype setup - #0 Prerequisites]</a>
+> <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/O4gT5yRwIpI" target="_blank">Mini-video showing the prerequisites (2m): [CISO Reporting with Security Copilot - Prototype setup - **#0** Prerequisites]</a>
 
 1. The approach and logic used in this solution can be applied with Security Copilot connected to any data source.
    However, the sample custom plugins and promptbooks provided are designed to work in an environment where security is managed in the Unified SOC portal (Defender + Sentinel).
@@ -46,6 +43,9 @@
 ## On the Security Copilot portal, accessed with credentials with the Owner role:
 
 [**STEP 1**] Create the promptbooks:
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/JflMLaEJEQ0" target="_blank">Mini-video showing the promptbooks creation (3m): [CISO Reporting with Security Copilot - Prototype setup - **#1** Create promptbooks]</a>
+
 - [promptbook-incident-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-incident-analysis.md)
 - [OPTIONAL] [promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md)\
   NOTES:
@@ -57,12 +57,17 @@
 
 ## On the Azure portal, accessed with credentials with an administrative role:
 
-- [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json)  
+- [**STEP 2**] Deploy the Logic App [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json)
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/ETpt88CddQU" target="_blank">Mini-video showing the creation of the Logic App **ciso-get-users-status** (>2m): [CISO Reporting with Security Copilot - Prototype setup - **#2** Install GetUsersStatus]</a>
+  
   - NOTE: Currently, it has no "Deploy in Azure" button; it is necessary to perform a manual deployment.
   - Edit its connection to Security Copilot and authenticate with the credentials of the Security Copilot Automation Account
 
-- [**STEP 3**] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) to create the
-  "**CISO Incident Analysis**" automation 
+- [**STEP 3**] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) to create the "**CISO Incidents Analysis**" automation
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/F3PMAPl7ptc" target="_blank">Mini-video showing the creation of the Logic App **CISO Incidents Analysis** (>5m): [CISO Reporting with Security Copilot - Prototype setup - **#3** Install Incidents Analysis Automation]</a>
+   
   - Use the "Deploy in Azure" button
   - Edit its connection to Security Copilot and authenticate with the credentials of the Security Copilot Automation Account
   - Edit its connection to Office 365 and authenticate with the credentials of the Security Copilot Automation Account
@@ -82,12 +87,14 @@
   - For the time being, keep the Logic App disabled (we will enable it when all the required configurations are in place) 
  
 
-- [**STEP 4**] [OPTIONAL] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail)
-  to create the "**CISO Posture Analysis**" automation.  
+- [**STEP 4**] [OPTIONAL] Deploy the Logic App [CfS-SendPromptbookResultsByEmail](https://github.com/stefanpems/cfs/tree/main/CfS-SendPromptbookResultsByEmail) to create the "**CISO Posture Analysis**" automation.  
   NOTE: this automation and the related promptbook are in a very preliminary draft state.
   Not only are these prompts not optimized in terms of compute capacity consumption, but the overall promptbook is also very incomplete.
   Please refer to [this article](https://www.linkedin.com/pulse/periodic-reporting-security-managers-cisos-using-stefano-pescosolido-fm80f/)
   for further details on how this promptbook should be improved.
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/F3PMAPl7ptc" target="_blank">Mini-video showing the creation of the Logic App **CISO Posture Analysis** (~4m): [CISO Reporting with Security Copilot - Prototype setup - **#4** Install Posture Analysis Automation]</a>
+  
   - Use the "Deploy in Azure" button
   - Edit its connection to Security Copilot and authenticate with the credentials of the Security Copilot Automation Account
   - Edit its connection to Office 365 and authenticate with the credentials of the Security Copilot Automation Account
@@ -105,6 +112,9 @@
   - For the time being, keep the Logic App disabled (we will enable it when all the required configurations are in place)
 
 - [**STEP 5**] Deploy the Custom Plugins:
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/SKWVNzeDx6g" target="_blank">Mini-video showing the creation of the Custom Plugins (8m): [CISO Reporting with Security Copilot - Prototype setup - **#5** Custom plugins]</a>
+  
   - Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
     custom plugin (used by the "**CISO Incident Analysis**" automation)  
     NOTES:
@@ -138,30 +148,39 @@
       [promptbook-posture-analysis](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/promptbook-posture-analysis.md) that you deployed in one of the previous steps.
 
 
-## On the Security Copilot portal, accessed with credentials with the Security Copilot Automation Account:
+- [**STEP 6**] Enable the "**CISO Incidents Analysis**" automation and wait its first automatic execution
 
-- [**STEP 6.1**] Ensure that all the custom plugins just installed are enabled.
-  Optionally, test the [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json) Logic App
-  by invoking the "CISO Get Users Staus" skill in the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml).
-  For this purpose, use the following inputs:
-  - api-version = 2016-10-01
-  - sp = /triggers/AnalyzeUPNsCall/run
-  - sv = 1.0
-  - users_upn = one or more comma separated UPNs of users in your tenant
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/eX5VCtuWTac" target="_blank">Mini-video showing the first execution of the Incidents Analysis automation (4m): [CISO Reporting with Security Copilot - Prototype setup - **#6** Run Incidents Analysis]</a>
+
+   ## On the Security Copilot portal, accessed with credentials with the Security Copilot Automation Account:
+
+   - [**STEP 6.1**] Ensure that all the custom plugins just installed are enabled.
+     Optionally, test the [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json) Logic App
+     by invoking the "CISO Get Users Staus" skill in the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml).
+     For this purpose, use the following inputs:
+     - api-version = 2016-10-01
+     - sp = /triggers/AnalyzeUPNsCall/run
+     - sv = 1.0
+     - users_upn = one or more comma separated UPNs of users in your tenant
 
 
-## On the Security Copilot portal, accessed with credentials with the Owner role:
-
-- [**STEP 6.2**] Increment temporarly the number of SCUs to ensure the first "test" executions can be completed successfully.
+   ## On the Security Copilot portal, accessed with credentials with the Owner role:
+   
+   - [**STEP 6.2**] Increment temporarly the number of SCUs to ensure the first "test" executions can be completed successfully.
 
   
-## On the Azure portal, accessed with credentials with an administrative role:
-
-- [**STEP 6.3**] Enable the "**CISO Incident Analysis**" automation nd wait its first automatic execution
+   ## On the Azure portal, accessed with credentials with an administrative role:
+   
+   - [**STEP 6.3**] Enable the "**CISO Incident Analysis**" automation and wait its first automatic execution
   
 - [**STEP 7**] Enable the "**CISO Posture Analysis**" automation and wait its first automatic execution
 
-- [**STEP 7**] Schedule the execution:
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/4wZ4vEebCEo" target="_blank">Mini-video showing the first execution of the Incidents Posture automation (~1m): [CISO Reporting with Security Copilot - Prototype setup - **#7** Run Posture Analysis]</a>
+
+- [**STEP 8**] Schedule the execution:
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/Z6UKUyInMGY" target="_blank">Mini-video showing the setup of the recurrence for the automation and for the periodic assignment of SCUs (>8m): [CISO Reporting with Security Copilot - Prototype setup - **#8** Run Posture Analysis]</a>
+   
   - Set the recurrence on the "**CISO Incident Analysis**" Logic App
   - Set the recurrence on the "**CISO Posture Analysis**" Logic App
   - Schedule the automatic deployment of the compute units (SCUs) dedicated to the execution of these automations
@@ -172,7 +191,3 @@
     
 
 
-
---- 
-> WORK IN PROGRESS: mini-videos for each deployment step have already been recorded and will be published soon!
----
