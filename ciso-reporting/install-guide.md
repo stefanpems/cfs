@@ -4,6 +4,8 @@
 ---  
 # Prerequisites
 
+> <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/O4gT5yRwIpI" target="_blank">Mini-video showing the prerequisites (2m): [CISO Reporting with Security Copilot - Prototype setup - #0 Prerequisites]</a>
+
 1. The approach and logic used in this solution can be applied with Security Copilot connected to any data source.
    However, the sample custom plugins and promptbooks provided are designed to work in an environment where security is managed in the Unified SOC portal (Defender + Sentinel).
 
