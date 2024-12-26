@@ -179,7 +179,7 @@
 
 - [**STEP 8**] Schedule the execution:
 
-   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/Z6UKUyInMGY" target="_blank">Mini-video showing the setup of the recurrence for the automation and for the periodic assignment of SCUs (>8m): [CISO Reporting with Security Copilot - Prototype setup - **#8** Run Posture Analysis]</a>
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/Z6UKUyInMGY" target="_blank">Mini-video showing the setup of the periodic assignment of SCUs and of the recurrence for the reporting automations (>8m): [CISO Reporting with Security Copilot - Prototype setup - **#8** Scheduling SCUs and reporting]</a>
    
   - Set the recurrence on the "**CISO Incident Analysis**" Logic App
   - Set the recurrence on the "**CISO Posture Analysis**" Logic App
