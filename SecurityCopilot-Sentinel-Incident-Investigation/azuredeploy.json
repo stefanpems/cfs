@@ -29,92 +29,107 @@
         "CallScpForIPsWithAbuseIPDB":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForIPsWithAbuseIPDB"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the IP addresses on AbuseIPDB. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForIPsWithMDTI":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForIPsWithMDTI"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the IP addresses on MDTI. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForAccounts":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForAccounts"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the accounts on MS Entra. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForHosts":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForHosts"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the devices on Intune. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForCommandLines":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForCommandLines"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the command lines by using its script analysis capability. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForFilehashesWithMDTI":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForFilehashesWithMDTI"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the file hashes on MDTI. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForUrlsWithMDTI":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForUrlsWithMDTI"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the Urls on MDTI. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "CallScpForDomainsWithMDTI":  {
             "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for CallScpForDomainsWithMDTI"
-            }
+                "description":  "Leave 'true' if you want Security Copilot to investigate the domains on MDTI. Set 'false' otherwise."
+            },
+            "defaultValue": true
         },
         "SkipIPs":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipIPs"
-            }
+                "description":  "Enter, as an array of strings, the IPs that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         },
         "SkipAccounts":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipAccounts"
-            }
+                "description":  "Enter, as an array of strings, the accounts that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         },
         "SkipHosts":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipHosts"
-            }
+                "description":  "Enter, as an array of strings, the devices that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         },
         "SkipCommandLines":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipCommandLines"
-            }
+                "description":  "Enter, as an array of strings, the command lines that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": ["cmd.exe","explorer.exe"]
         },
         "SkipFilehashes":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipFilehashes"
-            }
+                "description":  "Enter, as an array of strings, the file hashes that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         },
         "SkipUrls":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipUrls"
-            }
+                "description":  "Enter, as an array of strings, the urls that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         },
         "SkipDomains":  {
             "type":  "Array",
             "metadata":  {
-                "description":  "Enter value for SkipDomains"
-            }
+                "description":  "Enter, as an array of strings, the domains that you do not want Security Copilot to investigate"
+            },
+            "defaultValue": []
         }
     },
     "variables":  {
