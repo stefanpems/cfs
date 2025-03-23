@@ -1,5 +1,5 @@
 # SecurityCopilot-Sentinel-Incident-Investigation
-**Author: Pratik Lal, Innocent Wafula**
+**Author: Pratik Lal, Innocent Wafula, Stefano Pescosolido**
 
 ## Overview
 
