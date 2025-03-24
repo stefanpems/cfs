@@ -27,4 +27,4 @@ The following image shows:
 3. The customization of 3 parameters: HtmlBodyHeader (for changing the colors), SkipPromptsInOutput (for hiding the second prompt and response in the email) and ReplacePromptsInOutput (for replacing, in the email, the text of the first and third prompt. Note: the second prompt in the array is left as empty string "", meaning that there should be no replacement; the last prompt is not even included, which also means no replacement)  
 4. The email delivered using that customization
    
-![Example of email customirzation](./Example%20of%20email%20customirzation.png)
+![Example of email customization](./Example%20of%20email%20customization.png)
