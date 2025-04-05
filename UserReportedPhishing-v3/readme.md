@@ -24,7 +24,7 @@ Wait for the Function App to fully deploy before moving on to step 2.
 
 ### 2. Deploy Logic App (modified version)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A//github.com/stefanpems/cfs/raw/refs/heads/main/UserReportedPhishing-v3/azuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A//github.com/stefanpems/cfs/raw/refs/heads/main/UserReportedPhishing-v3/azuredeploy.json)
 
 ### 3. Configure API Connections
 
