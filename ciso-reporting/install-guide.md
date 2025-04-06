@@ -117,6 +117,7 @@ On the Azure portal, accessed with credentials with an administrative role:
   - Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
     custom plugin (used by the "**CISO Incidents Analysis**" automation)  
     NOTES:
+    - This manifest assumes that you have a Defender environment connected to Sentinel. If your environment contains only a Sentinel workspace without Defender, use this manifest instead: [ciso-incidents-summary-SENTINEL-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-SENTINEL-man.yaml)
     - This custom plugin loops through the users specified in the input and queries Entra for their enablement status and risk status.
       Due to the existance of the loop, it may consume a high level of compute units. You should decide if this evidence adds value to your report.
       If you want to include this evidence in the output report, it is recommended to limit the number of users included in the loop
