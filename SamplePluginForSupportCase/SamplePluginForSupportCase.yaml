@@ -22,9 +22,9 @@ SkillGroups:
         Settings:
           Target: Defender
           Template: |-
-            let userUpns = split(tolower('{{userUpns}}'), ',');
-            let startDateTime = iff(isnull('{{startDateTime}}') or '{{startDateTime}}' == '', now(-1d), datetime('{{startDateTime}}'));
-            let endDateTime = iff(isnull('{{endDateTime}}') or '{{endDateTime}}' == '', now(), datetime('{{endDateTime}}'));
+            let userUpns = split(tolower({{userUpns}}), ',');
+            let startDateTime = iff(isnull({{startDateTime}}) or {{startDateTime}} == '', now(-1d), datetime({{startDateTime}}));
+            let endDateTime = iff(isnull({{endDateTime}}) or {{endDateTime}} == '', now(), datetime({{endDateTime}}));
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
