@@ -1,0 +1,32 @@
+Descriptor:
+  Name: Sample plugin for support case
+  DisplayName: Sample plugin for support case
+  Description: Skills in sample plugin for support case 
+SkillGroups:
+  - Format: KQL
+    Skills:
+      - Name: GetSigninLocationsSummary
+        DisplayName: Get the number of signins events by location for the specified users 
+        Description: Get the number of signins events by location for the specified users 
+        DescriptionForModel : Get the number of signins events by location for the specified users 
+        Inputs:
+          - Name: userUpns
+            Description: Comma separated list of UserPrincipalName of the users of interest
+            Required: true
+          - Name: startDateTime
+            Description: The first date and time of the considered time frame. 
+            Required: false
+          - Name: endDateTime
+            Description: The end date and time of the considered time frame. 
+            Required: false
+        Settings:
+          Target: Defender
+          Template: |-
+            let userUpns = split(tolower('{{userUpns}}'),',');
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            SigninLogs
+            | where tolower(UserPrincipalName) in (userUpns)
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
+            | order by SigninEventCount desc     
