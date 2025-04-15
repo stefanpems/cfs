@@ -1,13 +1,10 @@
 Descriptor:
   Name: Sample plugin for support case
   DisplayName: Sample plugin for support case
-  Description: Skills in sample plugin for support case
- 
+  Description: Skills in sample plugin for support case 
 SkillGroups:
-
   - Format: KQL
     Skills:
-
       - Name: GetSigninLocationsSummary
         DisplayName: Get the number of signins events by location for the specified users 
         Description: Get the number of signins events by location for the specified users 
