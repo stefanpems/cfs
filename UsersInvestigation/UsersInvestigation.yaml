@@ -1,0 +1,116 @@
+Descriptor:
+  Name: Users Investigations
+  DisplayName: Users Investigations
+  Description: Skills to investigate users and monitor suspicious events related to identities
+ 
+SkillGroups:
+
+  - Format: KQL
+    Skills:
+
+      - Name: GetSigninEventLocationsSummary
+        DisplayName: Get the number of signins events by location for all users
+        Description: Get the number of signins events by location for all users
+        DescriptionForModel : Get the number of signins by location  for all users in the specifiedTimeframe.
+        Inputs:
+          - Name: startDateTime
+            Description: The first date and time of the considered time frame. 
+            Required: true
+          - Name: endDateTime
+            Description: The end date and time of the considered time frame. 
+            Required: true
+          - Name: ignoreLocations
+            Description: (Optional) Comma separated list of Locations to be ignored. 
+            Required: false
+          - Name: ignoreResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+        Settings:
+          Target: Defender
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
+            let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            SigninLogs
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tolower(Location) !in (ignoreLocations)
+            | where ResultType !in (ignoreResultTypes)
+            | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
+            | order by SigninEventCount desc     
+
+      - Name: GetSigninEventLocationsSummaryByUsers
+        DisplayName: Get the number of signins events by location for the specified users with minimal info in output
+        Description: Get the number of signins events by location for the specified users with minimal info in output
+        DescriptionForModel : Get the number of signins by location in the specifiedTimeframe for the specified users with minimal info in output.
+        Inputs:
+          - Name: userUpns
+            Description: Comma separated list of UserPrincipalName of the users of interest
+            Required: true
+          - Name: startDateTime
+            Description: The first date and time of the considered time frame. 
+            Required: true
+          - Name: endDateTime
+            Description: The end date and time of the considered time frame. 
+            Required: true
+          - Name: ignoreLocations
+            Description: (Optional) Comma separated list of Locations to be ignored. 
+            Required: false
+          - Name: ignoreResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+        Settings:
+          Target: Defender
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let userUpns = split(tolower('{{userUpns}}'), ',');
+            let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
+            let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            SigninLogs
+            | where tolower(UserPrincipalName) in (userUpns)
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tolower(Location) !in (ignoreLocations)
+            | where ResultType !in (ignoreResultTypes)
+            | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature
+            | order by SigninEventCount desc 
+
+      - Name: GetSigninEventDetailsSummaryByUsers
+        DisplayName: Get the number of signins events summarized by different details for the specified users 
+        Description: Get the number of signins events summarized by different details for the specified users
+        DescriptionForModel : Get the number of signins summarized by different details in the specifiedTimeframe for the specified users.
+        Inputs:
+          - Name: userUpns
+            Description: Comma separated list of UserPrincipalName of the users of interest
+            Required: true
+          - Name: startDateTime
+            Description: The first date and time of the considered time frame. 
+            Required: true
+          - Name: endDateTime
+            Description: The end date and time of the considered time frame. 
+            Required: true
+          - Name: ignoreLocations
+            Description: (Optional) Comma separated list of Locations to be ignored. 
+            Required: false
+          - Name: ignoreResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+        Settings:
+          Target: Defender
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let userUpns = split(tolower('{{userUpns}}'), ',');
+            let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
+            let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            SigninLogs
+            | where tolower(UserPrincipalName) in (userUpns)
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tolower(Location) !in (ignoreLocations)
+            | where ResultType !in (ignoreResultTypes)
+            | extend City = tostring(parse_json(LocationDetails).city)       
+            | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed, AppDisplayName
+            | order by SigninEventCount desc 
