@@ -14,19 +14,19 @@ SkillGroups:
             Description: Comma separated list of UserPrincipalName of the users of interest
             Required: true
           - Name: startDateTime
-            Description: (Optional) The first date and time of the considered time frame. If startDateTime and endDateTime are not both specified, the query is done on the last 24 hours.
+            Description: The first date and time of the considered time frame. 
             Required: false
           - Name: endDateTime
-            Description: (Optional) The end date and time of the considered time frame. If startDateTime and endDateTime are not both specified, the query is done on the last 24 hours.
+            Description: The end date and time of the considered time frame. 
             Required: false
         Settings:
           Target: Defender
           Template: |-
-            let userUpns = split(tolower({{userUpns}}), ',');
-            let startDateTime = iff(isnull({{startDateTime}}) or {{startDateTime}} == '', now(-1d), datetime({{startDateTime}}));
-            let endDateTime = iff(isnull({{endDateTime}}) or {{endDateTime}} == '', now(), datetime({{endDateTime}}));
+            let userUpns = split(tolower('{{userUpns}}'),',');
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
-            | summarize SigninEventCount = count() by Location, ResultType, ResultSignature, ResultDescription
+            | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
             | order by SigninEventCount desc     
