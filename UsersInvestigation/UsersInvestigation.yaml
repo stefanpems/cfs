@@ -26,6 +26,10 @@ SkillGroups:
             Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
+          - Name: considerOnlyResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
         Settings:
           Target: Defender
           Template: |-
@@ -33,11 +37,13 @@ SkillGroups:
             let endDateTime = datetime('{{endDateTime}}');
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
             SigninLogs
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where UserPrincipalName contains "@"
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
+            | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
             | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
             | order by SigninEventCount desc     
 
