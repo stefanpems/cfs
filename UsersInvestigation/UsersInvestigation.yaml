@@ -35,6 +35,7 @@ SkillGroups:
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
             SigninLogs
             | where TimeGenerated between (startDateTime .. endDateTime)
+            | where UserPrincipalName contains "@"
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
             | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
@@ -59,6 +60,10 @@ SkillGroups:
             Required: false
           - Name: ignoreResultTypes
             Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix).
+            Required: false
+          - Name: considerOnlyResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
         Settings:
@@ -69,11 +74,13 @@ SkillGroups:
             let userUpns = split(tolower('{{userUpns}}'), ',');
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
+            | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
             | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature
             | order by SigninEventCount desc 
 
@@ -98,6 +105,10 @@ SkillGroups:
             Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
+          - Name: considerOnlyResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
         Settings:
           Target: Defender
           Template: |-
@@ -106,11 +117,13 @@ SkillGroups:
             let userUpns = split(tolower('{{userUpns}}'), ',');
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
+            | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
             | extend City = tostring(parse_json(LocationDetails).city)       
             | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed, AppDisplayName
             | order by SigninEventCount desc 
