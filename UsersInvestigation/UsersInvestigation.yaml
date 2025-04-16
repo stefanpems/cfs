@@ -14,7 +14,8 @@ SkillGroups:
         DescriptionForModel : Get the number of signins events by location  for all users in the specified timeframe with the related result.
           This function returns a list of locations, result types (codes) and result signatures (success or failure) with the number of events for each of these combinations.
           It is possible to specify as input which locations and result types should be ignored (so should not be counted) or what result types shoud be considered.
-          Result type 0 and success are equivalent. 
+          It is also possible to specify if the results should exclude events with success or failure (in ignoreResultSignature). When it is requested to consider only
+          successful signins, exclude result signature "failure"; viceversa, when it is requested to consider only failed signins, exclude result signature "success". 
           Select this skill whenever the prompt requests for a list of signin locations.
         ExaamplePrompt:
           - "/GetSigninEventLocationsSummary List me the signin locations of yesterday. Ignore the signins from the locations IT and NL"
@@ -67,7 +68,8 @@ SkillGroups:
           For each of the users specified in input, this function returns a list of locations, result types (codes) and result signatures (success or failure) 
           with the number of events for each of these combinations.
           It is possible to specify as input which locations and result types should be ignored (so should not be counted) or what result types shoud be considered.
-          Result type 0 and success are equivalent. 
+          It is also possible to specify if the results should exclude events with success or failure (in ignoreResultSignature). When it is requested to consider only
+          successful signins, exclude result signature "failure"; viceversa, when it is requested to consider only failed signins, exclude result signature "success". 
           Select this skill whenever the prompt requests for a list of signin locations for a set of users.
         ExaamplePrompt:
           - "/GetSigninEventLocationsSummaryByUsers List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com"
@@ -125,7 +127,8 @@ SkillGroups:
           For each of the users specified in input, this function returns a list of locations, result types (codes) and result signatures (success or failure),
           result description (explaination of the result type), city of signin, client app used and cloud app requested, with the number of events for each of these combinations.
           It is possible to specify as input which locations and result types should be ignored (so should not be counted) or what result types shoud be considered.
-          Result type 0 and success are equivalent. 
+          It is also possible to specify if the results should exclude events with success or failure (in ignoreResultSignature). When it is requested to consider only
+          successful signins, exclude result signature "failure"; viceversa, when it is requested to consider only failed signins, exclude result signature "success". 
           Select this skill whenever the prompt requests for a list of signin locations and additional details (like client app, target app) for a set of users.
         ExaamplePrompt:
           - "/GetSigninEventDetailsSummaryByUsers List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com. Explain the results"
