@@ -17,9 +17,9 @@ SkillGroups:
           Result type 0 and success are equivalent. 
           Select this skill whenever the prompt requests for a list of signin locations.
         ExaamplePrompt:
-          - "List me the signin locations of yesterday"
-          - "Get the locations with successful signins during the last hour"
-          - "Fetch the locations with result type 50074 and 50076 occurred today"
+          - "/GetSigninEventLocationsSummary List me the signin locations of yesterday. Ignore the signins from the locations IT and NL"
+          - "/GetSigninEventLocationsSummary Get the locations with successful signins during the last hour. Include the results"
+          - "/GetSigninEventLocationsSummary Fetch the locations with result type 50074 and 50076 occurred today"
         Inputs:
           - Name: startDateTime
             Description: The first date and time of the considered time frame. 
@@ -38,6 +38,9 @@ SkillGroups:
             Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
+          - Name: ignoreResultSignature
+            Description: (Optional) "SUCCESS" or "FAILURE"
+            Required: false
         Settings:
           Target: Defender
           Template: |-
@@ -46,12 +49,14 @@ SkillGroups:
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
             let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
+            let ignoreResultSignature = split(tolower('{{ignoreResultSignature}}'), ',');
             SigninLogs
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where UserPrincipalName contains "@"
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
             | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
+            | where tolower(ResultSignature) !in (ignoreResultSignature)
             | summarize SigninEventCount = count() by Location, ResultType, ResultSignature
             | order by SigninEventCount desc     
 
@@ -65,9 +70,9 @@ SkillGroups:
           Result type 0 and success are equivalent. 
           Select this skill whenever the prompt requests for a list of signin locations for a set of users.
         ExaamplePrompt:
-          - "List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com"
-          - "Get the locations with successful signins during the last hour for the users john@contoso.com and rick@contoso.com"
-          - "Fetch the locations with result type 50074 and 50076 occurred today for the users john@contoso.com and rick@contoso.com"        
+          - "/GetSigninEventLocationsSummaryByUsers List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com"
+          - "/GetSigninEventLocationsSummaryByUsers Get the locations with successful signins during the last hour for the users john@contoso.com and rick@contoso.com"
+          - "/GetSigninEventLocationsSummaryByUsers Fetch the locations with result type 50074 and 50076 occurred today for the users john@contoso.com and rick@contoso.com"        
         Inputs:
           - Name: userUpns
             Description: Comma separated list of UserPrincipalName of the users of interest
@@ -89,6 +94,9 @@ SkillGroups:
             Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
+          - Name: ignoreResultSignature
+            Description: (Optional) "SUCCESS" or "FAILURE"
+            Required: false
         Settings:
           Target: Defender
           Template: |-
@@ -98,12 +106,14 @@ SkillGroups:
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
             let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
+            let ignoreResultSignature = split(tolower('{{ignoreResultSignature}}'), ',');
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
             | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
+            | where tolower(ResultSignature) !in (ignoreResultSignature)
             | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature
             | order by SigninEventCount desc 
 
@@ -118,9 +128,9 @@ SkillGroups:
           Result type 0 and success are equivalent. 
           Select this skill whenever the prompt requests for a list of signin locations and additional details (like client app, target app) for a set of users.
         ExaamplePrompt:
-          - "List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com. Explain the results"
-          - "Get the locations with successful signins during the last hour for the users john@contoso.com and rick@contoso.com. Include the target apps."
-          - "Fetch the locations with result type 50074 and 50076 occurred today for the users john@contoso.com and rick@contoso.com. Specify the client apps and the target apps."              
+          - "/GetSigninEventDetailsSummaryByUsers List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com. Explain the results"
+          - "/GetSigninEventDetailsSummaryByUsers Get the locations with successful signins during the last hour for the users john@contoso.com and rick@contoso.com. Include the target apps."
+          - "/GetSigninEventDetailsSummaryByUsers Fetch the locations with result type 50074 and 50076 occurred today for the users john@contoso.com and rick@contoso.com. Specify the client apps and the target apps."              
         Inputs:
           - Name: userUpns
             Description: Comma separated list of UserPrincipalName of the users of interest
@@ -142,6 +152,9 @@ SkillGroups:
             Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
                          please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
             Required: false
+          - Name: ignoreResultSignature
+            Description: (Optional) "SUCCESS" or "FAILURE"
+            Required: false
         Settings:
           Target: Defender
           Template: |-
@@ -151,12 +164,14 @@ SkillGroups:
             let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
             let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
             let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
+            let ignoreResultSignature = split(tolower('{{ignoreResultSignature}}'), ',');
             SigninLogs
             | where tolower(UserPrincipalName) in (userUpns)
             | where TimeGenerated between (startDateTime .. endDateTime)
             | where tolower(Location) !in (ignoreLocations)
             | where ResultType !in (ignoreResultTypes)
             | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
+            | where tolower(ResultSignature) !in (ignoreResultSignature)
             | extend City = tostring(parse_json(LocationDetails).city)       
             | summarize SigninEventCount = count() by UserPrincipalName, Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed, AppDisplayName
             | order by SigninEventCount desc 
