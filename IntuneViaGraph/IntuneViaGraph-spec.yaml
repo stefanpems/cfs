@@ -4,9 +4,9 @@ info:
     title: Microsoft Intune via Graph API Plugin
     description: Skills for retrieving data from Microsoft Intune via Graph API calls
     version: "v1"
+
 servers:
     - url: https://graph.microsoft.com/beta/deviceManagement
-
 
 paths:
 
@@ -21,6 +21,56 @@ paths:
               - 'Give me the number of devices that failed to deploy on the update ring XYZ'
               - 'Give me the number of devices on which the deployment on the update ring XYZ returned an error'
             parameters:
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+
+    #UserExperienceAnalyticsWorkFromAnywhereMetrics
+    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select={select}&dtFilter=all&$filter={filter}&$orderBy={orderBy}&$top={top}:
+        get:
+            operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
+            description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
+              The response includes the list of the managed devices filtered according to the specified inputs.
+              For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
+              osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
+              processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
+              The upgradeEligibility column specifies the capability of the device to be upgraded to the next major version of the OS (now from W10 to W11) 
+            ExamplePrompt:
+              - ''
+            parameters:
+                - in: path 
+                  name: scope
+                  schema:
+                      type: string
+                  required: true  
+                  example: "allDevices"
+                - in: path 
+                  name: select
+                  schema:
+                      type: string
+                  required: true   
+                  example: "id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed"         
+                - in: path 
+                  name: filter
+                  schema:
+                      type: string
+                  required: true 
+                  defaultValue: ""
+                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27%20and%20managedBy%20eq%20%27ConfigMgr%27%20or%20managedBy%20eq%20%27configMgrAgent%27%20or%20managedBy%20eq%20%27Mdm%27%20or%20managedBy%20eq%20%27mdm%27"
+                - in: path 
+                  name: orderBy
+                  schema:
+                      type: string
+                  required: true 
+                  example: "osVersion%20asc"
+                - in: path 
+                  name: top
+                  schema:
+                      type: int
+                  required: true 
+                  defaultValue: 10
             responses:
                 "200":
                     description: OK
@@ -270,52 +320,3 @@ paths:
                     description: Forbidden - Insufficient permissions to access the resource
                 '500':
                     description: Internal Server Error - An error occurred on the server
-
-    #UserExperienceAnalyticsWorkFromAnywhereMetrics
-    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select={select}&dtFilter={filter}&$orderBy={orderBy}&$top={top}:
-        get:
-            operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
-            description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
-              The response includes the list of the managed devices filtered according to the specified inputs.
-              For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
-              osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
-              processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
-              The upgradeEligibility column specifies the capability of the device to be upgraded to the next major version of the OS (now from W10 to W11) 
-            ExamplePrompt:
-              - ''
-            parameters:
-                - in: path 
-                  name: scope
-                  schema:
-                      type: string
-                  required: true  
-                  defaultValue: "allDevices"
-                - in: path 
-                  name: select
-                  schema:
-                      type: string
-                  required: true   
-                  defaultValue: "id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed"         
-                - in: path 
-                  name: filter
-                  schema:
-                      type: string
-                  required: true 
-                  defaultValue: "all"
-                - in: path 
-                  name: orderBy
-                  schema:
-                      type: string
-                  required: true 
-                  defaultValue: "osVersion%20asc"
-                - in: path 
-                  name: top
-                  schema:
-                      type: int
-                  required: true 
-                  defaultValue: 10
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
