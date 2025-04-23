@@ -51,7 +51,6 @@ paths:
                   schema:
                       type: string
                   required: false 
-                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27%20and%20managedBy%20eq%20%27ConfigMgr%27%20or%20managedBy%20eq%20%27configMgrAgent%27%20or%20managedBy%20eq%20%27Mdm%27%20or%20managedBy%20eq%20%27mdm%27"                
                   example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27"
             responses:
                 "200":
