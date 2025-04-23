@@ -31,14 +31,6 @@ paths:
             summary: Get Apps Install Status Report
             description: Retrieves the status report of apps installed on devices managed by Intune.
                 The report lists the application deployment status for each app, including the install failure percentage, 
-                along with the counts of install success, failures for deployments targeting on devices and user.
-                It is possible to ask for any of these fields to be included in the report and / or to be used for filtering the results.
-                "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
-                "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
-                "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform". 
-            ExamplePrompt:
-              - 'List me the apps that have a install status failure rate on my managed devices between 75% and 100%'
-
             requestBody:
                 required: true
                 content:
