@@ -25,7 +25,7 @@ paths:
                     content:
                         application/json:
 
-    /deviceManagement/reports/getAppsInstallSummaryReport:
+    /reports/getAppsInstallSummaryReport:
         post:
             operationId: GetAppsInstallSummaryReport
             summary: Get Apps Install Summary Report
@@ -39,10 +39,8 @@ paths:
                             type: object
                             properties:
                                 select:
-                                    type: array
-                                    items:
-                                        type: string
-                                    example: ["DisplayName","Publisher","Platform","AppVersion","FailedDevicePercentage","FailedDeviceCount","FailedUserCount","InstalledDeviceCount","InstalledUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount","NotInstalledDeviceCount","NotInstalledUserCount","ApplicationId"]
+                                    type: string
+                                    example: ""
                                 filter:
                                     type: string
                                     example: ""
@@ -53,10 +51,8 @@ paths:
                                     type: string
                                     example: ""
                                 orderBy:
-                                    type: array
-                                    items:
-                                        type: string
-                                    example: ["DisplayName"]
+                                    type: string
+                                    example: ""
                                 top:
                                     type: integer
                                     example: 50
