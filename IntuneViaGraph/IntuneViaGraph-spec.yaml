@@ -33,8 +33,12 @@ paths:
                 The report lists the application deployment status for each app, including the install failure percentage, 
                 along with the counts of install success, failures for deployments targeting on devices and user.
                 It is possible to ask for a set of specific fields to be included in the report and / or to be used for filtering the results. 
+                When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
+                and pass it to the 'filter' input parameter. For example, the request to retrieve the list of apps with install failure rate
+                grater than 75% should be converted in filter = (FailedDevicePercentage gt '75') for the API call 
             ExamplePrompt:
               - 'List the apps that have a install status failure rate on my managed devices between 75% and 100%'
+              - '/GetAppsInstallStatusReport Filter the apps with filter = (FailedDevicePercentage gt ''75'')'
             requestBody:
                 required: true
                 content:
