@@ -32,13 +32,35 @@ paths:
             description: Retrieves the status report of apps installed on devices managed by Intune.
                 The report lists the application deployment status for each app, including the install failure percentage, 
                 along with the counts of install success, failures for deployments targeting on devices and user.
-                It is possible to ask for a set of specific fields to be included in the report and / or to be used for filtering the results. 
+
+                When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
+                and pass it to the 'select' input parameter. 
+                For example, the request to retrieve the status of the installations for the apps and to return only the display name and publisher 
+                of these apps implies the need to set the input parameter select equal to ["DisplayName","Publisher"].
+                
                 When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
-                and pass it to the 'filter' input parameter. For example, the request to retrieve the list of apps with install failure rate
-                grater than 75% should be converted in filter = (FailedDevicePercentage gt '75') for the API call 
+                with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
+                For example, the request to retrieve the list of apps with install failure rate grater than 75% implies the need to set the input parameter 
+                filter equal to (FailedDevicePercentage gt '75') for the API call. 
+                
+                When it is requested to return the status report only for a specific app, pass its name as string to the search parameter. 
+                For example, the reuqets to retrieve the install status report for the app XYZ implies the need to set the input parameter search to "XYZ".   
+                
+                When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
+                columns requested for sorting and pass it to the 'orderBy' input parameter. 
+                For example, the reuqets to retrieve the install status report for the apps ordered by DisplayName implies the need to set the input parameter 
+                orderBy equal to ["DisplayName"].   
+
+                The internal name of the columns to be used in the select, filter and orderBy input parameters are 
+                "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
+                "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
+                "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform". 
+                When creating the values or the expressions for the select, filter and orderBy input parameters, select from the above list the internal name more 
+                assonant to the name specified by the user in the input prompt.
+
             ExamplePrompt:
               - 'List the apps that have a install status failure rate on my managed devices between 75% and 100%'
-              - '/GetAppsInstallStatusReport Filter the apps with filter = (FailedDevicePercentage gt ''75'')'
+              - '/GetAppsInstallStatusReport Filter the apps with install failure rate greater than 5%'
             requestBody:
                 required: true
                 content:
