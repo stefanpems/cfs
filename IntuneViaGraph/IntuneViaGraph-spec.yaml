@@ -44,20 +44,12 @@ paths:
                             properties:
                                 select:
                                     type: array
-                                    description: An array of strings with the name of the fields to be included in the response.  
-                                        It is possible to ask for any of the following fields to be included in the response.
-                                        "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
-                                        "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
-                                        "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform".                                     
+                                    description: An array of strings with the name of the fields to be included in the response.                                    
                                     items:
                                         type: string
                                     example: ["DisplayName","Publisher","Platform","AppVersion","FailedDevicePercentage","FailedDeviceCount","FailedUserCount","InstalledDeviceCount","InstalledUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount","NotInstalledDeviceCount","NotInstalledUserCount","ApplicationId"]
                                 filter:
                                     description: An OData filtering expression to be used for filtering the results in the response.
-                                        The OData filtering expression can include any of the following fields. 
-                                        "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
-                                        "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
-                                        "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform". 
                                     type: string
                                     example: "(FailedDevicePercentage gt '75' and FailedDevicePercentage le '100')"
                                 skip:
@@ -69,10 +61,6 @@ paths:
                                 orderBy:
                                     type: array
                                     description: An array of strings with the name of the fields to be used for ordering the response.
-                                        It is possible to ask for any of the following fields to be included in the response.
-                                        "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
-                                        "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
-                                        "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform". 
                                     items:
                                         type: string
                                     example: ["DisplayName"]
