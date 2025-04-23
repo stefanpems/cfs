@@ -154,11 +154,11 @@ paths:
                             properties:
                                 select:
                                     type: array
-                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["DisplayName"] if no other value is specified as input                                    
+                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["DeviceName"] if no other value is specified as input                                    
                                     items:
                                         type: string
-                                    defaultValue: ["DisplayName"] 
-                                    example: ["DisplayName","Publisher","Platform","AppVersion","FailedDevicePercentage","FailedDeviceCount","FailedUserCount","InstalledDeviceCount","InstalledUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount","NotInstalledDeviceCount","NotInstalledUserCount","ApplicationId"]
+                                    defaultValue: ["DeviceName"] 
+                                    example: ["DeviceName","UserPrincipalName","Platform","AppVersion","InstallState","InstallStateDetail","AssignmentFilterIdsExist","LastModifiedDateTime","DeviceId","ErrorCode","UserName","UserId","ApplicationId","AssignmentFilterIdsList","AppInstallState","AppInstallStateDetails","HexErrorCode"]
                                 filter:
                                     description: An OData filtering expression to be used for filtering the results in the response.
                                     type: string
