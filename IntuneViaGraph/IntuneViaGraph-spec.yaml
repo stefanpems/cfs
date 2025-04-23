@@ -56,20 +56,19 @@ paths:
                   name: filter
                   schema:
                       type: string
-                  required: true 
-                  defaultValue: ""
+                  required: false 
                   example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27%20and%20managedBy%20eq%20%27ConfigMgr%27%20or%20managedBy%20eq%20%27configMgrAgent%27%20or%20managedBy%20eq%20%27Mdm%27%20or%20managedBy%20eq%20%27mdm%27"
                 - in: path 
                   name: orderBy
                   schema:
                       type: string
-                  required: true 
+                  required: false 
                   example: "osVersion%20asc"
                 - in: path 
                   name: top
                   schema:
                       type: int
-                  required: true 
+                  required: false 
                   defaultValue: 10
             responses:
                 "200":
