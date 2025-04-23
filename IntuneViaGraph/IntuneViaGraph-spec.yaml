@@ -30,9 +30,6 @@ paths:
             operationId: GetAppsInstallSummaryReport
             summary: Get Apps Install Summary Report
             description: Retrieves the summary report of apps installed on devices managed by Intune.
-            headers:
-                content-type:
-                - application/json
 
             requestBody:
                 required: true
