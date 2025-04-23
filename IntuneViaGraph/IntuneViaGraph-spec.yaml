@@ -36,31 +36,115 @@ paths:
                 When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
                 and pass it to the 'select' input parameter. 
                 For example, the request to retrieve the status of the installations for the apps and to return only the display name and publisher 
-                of these apps implies the need to set the input parameter select equal to ["DisplayName","Publisher"].
+                of these apps implies the need to set the input parameter 'select' equal to ["DisplayName","Publisher"].
                 
                 When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
                 with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
                 For example, the request to retrieve the list of apps with install failure rate grater than 75% implies the need to set the input parameter 
-                filter equal to (FailedDevicePercentage gt '75') for the API call. 
+                'filter' equal to (FailedDevicePercentage gt '75') for the API call. 
                 
-                When it is requested to return the status report only for a specific app, pass its name as string to the search parameter. 
-                For example, the reuqets to retrieve the install status report for the app XYZ implies the need to set the input parameter search to "XYZ".   
+                When it is requested to return the status report only for a specific app, pass its name as string to the 'search' parameter. 
+                For example, the request to retrieve the install status report for the app XYZ implies the need to set the input parameter 'search' to "XYZ".   
                 
                 When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
                 columns requested for sorting and pass it to the 'orderBy' input parameter. 
-                For example, the reuqets to retrieve the install status report for the apps ordered by DisplayName implies the need to set the input parameter 
-                orderBy equal to ["DisplayName"].   
+                For example, the request to retrieve the install status report for the apps ordered by DisplayName implies the need to set the input parameter 
+                'orderBy' equal to ["DisplayName"].   
 
-                The internal name of the columns to be used in the select, filter and orderBy input parameters are 
+                The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
                 "ApplicationId,"DisplayName","Publisher","Platform","Platform_loc","AppVersion","InstalledDeviceCount","InstalledUserCount",
                 "FailedDeviceCount","FailedUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount",
                 "NotInstalledDeviceCount","NotInstalledUserCount","FailedDevicePercentage","AppPlatform". 
-                When creating the values or the expressions for the select, filter and orderBy input parameters, select from the above list the internal name more 
+                When creating the values or the expressions for the 'select', 'filter' and 'orderBy' input parameters, 'select' from the above list the internal name more 
                 assonant to the name specified by the user in the input prompt.
 
             ExamplePrompt:
               - 'List the apps that have a install status failure rate on my managed devices between 75% and 100%'
-              - '/GetAppsInstallStatusReport Filter the apps with install failure rate greater than 5%'
+              - 'Give me number of install failures for the app "XYZ"'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                select:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["DisplayName"] if no other value is specified as input                                    
+                                    items:
+                                        type: string
+                                    defaultValue: ["DisplayName"] 
+                                    example: ["DisplayName","Publisher","Platform","AppVersion","FailedDevicePercentage","FailedDeviceCount","FailedUserCount","InstalledDeviceCount","InstalledUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount","NotInstalledDeviceCount","NotInstalledUserCount","ApplicationId"]
+                                filter:
+                                    description: An OData filtering expression to be used for filtering the results in the response.
+                                    type: string
+                                    example: "(FailedDevicePercentage gt '75' and FailedDevicePercentage le '100')"
+                                skip:
+                                    type: integer
+                                    example: 0
+                                search:
+                                    type: string
+                                    example: ""
+                                orderBy:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be used for ordering the response.
+                                    items:
+                                        type: string
+                                    example: ["DisplayName"]
+                                top:
+                                    type: integer
+                                    example: 50
+            responses:
+                '200':
+                    description: Successful response with the apps install summary report
+                    content:
+                        application/json:
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden - Insufficient permissions to access the resource
+                '500':
+                    description: Internal Server Error - An error occurred on the server
+
+
+
+    /reports/retrieveDeviceAppInstallationStatusReport:
+        post:
+            operationId: RetrieveDeviceAppInstallationStatusReport
+            summary: Retrieve Device App Installation Status Report
+            description: Retrieves the device installation status report for an app on a device managed by Intune.
+                The report lists the devices where the installation of the app has been executed along with the result of this installation or uninstallation. 
+                The evidence of the result is in the status column, which represents the status of teh app, like Installed, Failed, Install Pending, Uninstall Failed, etc...
+                The application of interest is always specified in input as ApplicationId.
+
+                When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
+                and pass it to the 'select' input parameter. 
+                For example, the request to retrieve the status of the installations for the specific app and to return only the device name and related user name 
+                of the devices where the installation was launched implies the need to set the input parameter 'select' equal to ["DeviceName","UserPrincipalName"].
+                
+                When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
+                with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
+                The 'filter' input parameter should always contain in the 'ApplicationId' subparameter, the ID of the app of interest.
+                For example, the request to retrieve the list of devices where the app XYZ installed successfully implies the need to set the input parameter 
+                'filter' equal to (InstallState eq '1') and (ApplicationId eq '11111111-2222-3333-4444-555555555555') for the API call. 
+                
+                When it is requested to return the installation status report only for a specific device, pass the name of the device as string to the 'search' parameter. 
+                For example, the request to retrieve the install status report for the app XYZ on the device ABC implies the need to set the input parameter 'search' to "ABC".   
+                
+                When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
+                columns requested for sorting and pass it to the 'orderBy' input parameter. 
+                For example, the request to retrieve the install status report for the app XYZ on the devices ordered by the display name of the device implies the need to 
+                set the input parameter 'orderBy' equal to ["DisplayName"].   
+
+                The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
+                "DeviceName","UserPrincipalName","Platform","AppVersion","InstallState","InstallStateDetail","AssignmentFilterIdsExist","LastModifiedDateTime",
+                "DeviceId","ErrorCode","UserName","UserId","ApplicationId","AssignmentFilterIdsList","AppInstallState","AppInstallStateDetails","HexErrorCode".
+                When creating the values or the expressions for the 'select', 'filter' and 'orderBy' input parameters, 'select' from the above list the internal name more 
+                assonant to the name specified by the user in the input prompt.
+
+            ExamplePrompt:
+              - 'List the devices where the app 11111111-2222-3333-4444-555555555555 failed to install'
+              - 'List the devices where the app 11111111-2222-3333-4444-555555555555 returned the hex error code 0xC7D14FB5'
             requestBody:
                 required: true
                 content:
