@@ -44,7 +44,7 @@ paths:
                             properties:
                                 select:
                                     type: array
-                                    description: An array of strings with the name of the fields to be included in the response.                                    
+                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["DisplayName"] if no other value is specified as input                                    
                                     items:
                                         type: string
                                     defaultValue: ["DisplayName"] 
