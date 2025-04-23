@@ -28,7 +28,7 @@ paths:
                         application/json:
 
     #UserExperienceAnalyticsWorkFromAnywhereMetrics
-    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select={select}&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter=upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27:
+    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select=id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,upgradeEligibility,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter={filter}:
         get:
             operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
             description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
@@ -47,12 +47,12 @@ paths:
                   required: true  
                   example: "allDevices"
                 - in: path 
-                  name: select
+                  name: filter
                   schema:
                       type: string
-                  required: true   
-                  example: "id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,upgradeEligibility,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed"         
-                
+                  required: false 
+                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27%20and%20managedBy%20eq%20%27ConfigMgr%27%20or%20managedBy%20eq%20%27configMgrAgent%27%20or%20managedBy%20eq%20%27Mdm%27%20or%20managedBy%20eq%20%27mdm%27"                
+                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27"
             responses:
                 "200":
                     description: OK
