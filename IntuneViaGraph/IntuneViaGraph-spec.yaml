@@ -39,8 +39,10 @@ paths:
                             type: object
                             properties:
                                 select:
-                                    type: string
-                                    example: ""
+                                    type: array
+                                    items:
+                                        type: string
+                                    example: ["DisplayName","Publisher","Platform","AppVersion","FailedDevicePercentage","FailedDeviceCount","FailedUserCount","InstalledDeviceCount","InstalledUserCount","PendingInstallDeviceCount","PendingInstallUserCount","NotApplicableDeviceCount","NotApplicableUserCount","NotInstalledDeviceCount","NotInstalledUserCount","ApplicationId"]
                                 filter:
                                     type: string
                                     example: ""
@@ -51,8 +53,10 @@ paths:
                                     type: string
                                     example: ""
                                 orderBy:
-                                    type: string
-                                    example: ""
+                                    type: array
+                                    items:
+                                        type: string
+                                    example: ["DisplayName"]
                                 top:
                                     type: integer
                                     example: 50
