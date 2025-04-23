@@ -272,7 +272,7 @@ paths:
                     description: Internal Server Error - An error occurred on the server
 
     #UserExperienceAnalyticsWorkFromAnywhereMetrics
-    https://graph.microsoft.com/beta/deviceManagement/userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select={select}&dtFilter={filter}&$orderBy={orderBy}&$top={top}:
+    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select={select}&dtFilter={filter}&$orderBy={orderBy}&$top={top}:
             operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
             description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
               The response includes the list of the managed devices filtered according to the specified inputs.
