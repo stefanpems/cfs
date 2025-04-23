@@ -1,0 +1,25 @@
+openapi: 3.0.0
+
+info:
+    title: Microsoft Intune via Graph API Plugin
+    description: Skills for retrieving data from Microsoft Intune via Graph API calls
+    version: "v1"
+servers:
+    - url: https://graph.microsoft.com/beta/deviceManagement
+
+
+paths:
+    /deviceConfigurations?$select=id,displayName,lastModifiedDateTime,roleScopeTagIds,microsoft.graph.unsupportedDeviceConfiguration/originalEntityTypeName&$expand=deviceStatusOverview,assignments&$top=120&$filter=isof(%27microsoft.graph.windowsUpdateForBusinessConfiguration%27)&$count=true:
+        get:
+            operationId: GetDeviceDeploymentStatus
+            description: Get the Device Deployment Status in Intune per each Update Ring Profile by using a Microsoft Graph API call. 
+              The response includes the number of device according to the deployment status of pending, not applicable, success, error, failed, conflict.
+            ExamplePrompt:
+              - 'Show me the device deployment status per update ring from Intune by using Graph'
+              - 'Give me the number of device that failed to deploy on the update ring XYZ in Intune'
+            parameters:
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
