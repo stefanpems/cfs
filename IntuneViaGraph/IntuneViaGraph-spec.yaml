@@ -236,9 +236,11 @@ paths:
                 For example, the request to retrieve the encryption report with encryption readiness 'ready' and encryption status 'Not encrypted' implies the need to set 
                 the input parameter 'filter' equal to (EncryptionReadinessState eq '1' and EncryptionStatus eq '0') for the API call. 
                 
-                When it is requested to return the status report only for a specific device, pass its name as string to the 'search' parameter. 
-                For example, the request to retrieve the encryption status report for the device XYZ implies the need to set the input parameter 'search' to "XYZ".   
-                
+                When requested to filter on part of the device name or the entire device name, use the 'search' input parameter to specify the name or the part of the name 
+                of the device as desired. 
+                For example, the request to retrieve the encryption report for the devices with the name containing "XYZ" implies the need to set 
+                the input parameter 'search' equal to "XYZ"
+                                
                 When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
                 columns requested for sorting and pass it to the 'orderBy' input parameter. 
                 For example, the request to retrieve the encryptiuon status report for the devices ordered by Device Name implies the need to set the input parameter 
@@ -251,7 +253,7 @@ paths:
                 assonant to the name specified by the user in the input prompt.
 
             ExamplePrompt:
-              - ''
+              - 'List the devices that have Encryption Readiness equal to true and Encryption Status equal to false.'
             requestBody:
                 required: true
                 content:
