@@ -6,12 +6,12 @@ info:
     version: "v1"
 
 servers:
-    - url: https://graph.microsoft.com/beta/users
+    - url: https://graph.microsoft.com/beta
 
 paths:
 
     #GetUserGroups
-    /{userId}/memberOf/$/microsoft.graph.group?$select=id,displayName,mailEnabled,securityEnabled,groupTypes,onPremisesSyncEnabled,mail,isAssignableToRole&$top=20&$orderby=displayName%20asc&$count=true:
+    /users/{userId}/memberOf/$/microsoft.graph.group?$select=id,displayName,mailEnabled,securityEnabled,groupTypes,onPremisesSyncEnabled,mail,isAssignableToRole&$top=20&$orderby=displayName%20asc&$count=true:
         get:
             operationId: GetUserGroups
             description: Get the Entra Groups the specified user is a member of. 
@@ -29,6 +29,30 @@ paths:
                       type: string
                   required: true  
                   example: "11111111-2222-3333-4444-555555555555"            
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+
+    #GetEntraRoles
+    /roleManagement/directory/roleAssignments?$filter=principalId+eq+'{userId}':
+        get:
+            operationId: GetEntraRoles
+            description: Get the Entra Roles the specified user is assigned to. 
+              For each Entra Role returned by the call, the name of the Role is in the roleDefinition/displayName property.
+              The user ID is a mandatory parameter in input
+            ExamplePrompt:
+              - 'Give me the Entra roles that the user with ID 11111111-2222-3333-4444-555555555555 is assigned to.'
+              - 'Provide me with the Entra roles that include the user with ID 11111111-2222-3333-4444-555555555555.'
+              - 'List the Entra roles to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
+            parameters:
+                - in: query 
+                  name: userId
+                  schema:
+                      type: string
+                  required: true  
+                  example: "11111111-2222-3333-4444-555555555555"                    
             responses:
                 "200":
                     description: OK
