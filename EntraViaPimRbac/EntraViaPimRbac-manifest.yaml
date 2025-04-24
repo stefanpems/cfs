@@ -1,0 +1,16 @@
+Descriptor:
+  Name: EntraViaPimRbac
+  DisplayName: Microsoft Entra via PIM RBAC API Plugin
+  Description: The skills in this plugin allows retrieving data from Microsoft Entra via PIM RBAC API calls
+  DescriptionForModel: The skills in this plugin allows retrieving data from Microsoft Entra via PIM RBAC API calls
+
+  SupportedAuthTypes:
+    - AADDelegated
+  Authorization:
+    Type: AADDelegated
+    EntraScopes: https://graph.microsoft.com/.default
+
+SkillGroups:
+  - Format: API
+    Settings:
+      OpenApiSpecUrl: https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/EntraViaPimRbac/EntraViaPimRbac-spec.yaml
