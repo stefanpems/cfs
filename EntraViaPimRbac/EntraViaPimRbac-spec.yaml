@@ -18,12 +18,12 @@ paths:
               For each Entra role returned by the call, the name of the role is in the roleDefinition/displayName property.
               The user ID is a mandatory parameter in input
             ExamplePrompt:
-              - 'Give me the Entra groups that the user with ID 11111111-2222-3333-4444-555555555555 is a member of.'
-              - 'Provide me with the Entra groups that include the user with ID 11111111-2222-3333-4444-555555555555.'
-              - 'List the Entra groups to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
+              - 'Give me the Entra roles that the user with ID 11111111-2222-3333-4444-555555555555 is assigned to.'
+              - 'Provide me with the Entra roles that include the user with ID 11111111-2222-3333-4444-555555555555.'
+              - 'List the Entra roles to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
             parameters:
-                - in: userId 
-                  name: scope
+                - in: path 
+                  name: userId
                   schema:
                       type: string
                   required: true  
