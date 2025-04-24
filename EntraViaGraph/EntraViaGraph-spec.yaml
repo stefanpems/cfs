@@ -23,8 +23,8 @@ paths:
               - 'Provide me with the Entra groups that include the user with ID 11111111-2222-3333-4444-555555555555.'
               - 'List the Entra groups to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
             parameters:
-                - in: userId 
-                  name: scope
+                - in: path 
+                  name: userId
                   schema:
                       type: string
                   required: true  
