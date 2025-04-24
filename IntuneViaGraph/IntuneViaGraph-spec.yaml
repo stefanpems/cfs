@@ -27,30 +27,19 @@ paths:
                     content:
                         application/json:
 
-    #UserExperienceAnalyticsWorkFromAnywhereMetrics
-    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select=id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,upgradeEligibility,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter={filter}:
+    #GetNotCapableDeviceForUpgradeEligibility
+    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select=id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter=upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27:
         get:
-            operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
-            description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
-              The response includes the list of the managed devices filtered according to the specified inputs.
-
-              For each device, the internal name of the attributes retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
-              osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
+            operationId: GetNotCapableDeviceForUpgradeEligibility
+            description: Get the list of devices that are considered as 'not capable' for 'upgrade eligibility'.
+              These devices are those that cannot be upgraded from Windows 10 to Windows 11.
+              For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
+              osVersion,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
               processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
-
-              The upgradeEligibility column specifies the capability of the device to be upgraded to the next major version of the OS 
-              from Window 10 to Windows 11.              
-              
-              When it is requested to filter the results on specific attributes of the devices, create an OData filtering expression 
-              with the internal name of the columns to be used for filtering and pass it url-encoded to the 'filter' input parameter in query string. 
-              For example, the request to retrieve the devices that cannot be upgraded from Window 10 to Windows 11 implies the need to set the input parameter 
-              'filter' equal to upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27 for the API call.               
-               
-              When creating the values or the expressions for the 'filter' input parameters, select from the above list the internal name more 
-              assonant to the name specified by the user in the input prompt.
             ExamplePrompt:
               - 'Give me the list of devices that cannot be upgraded from Windows 10 to Windows 11.'
               - 'Which of our devices cannot be upgraded from Windows 10?'
+              - 'Which of our devices cannot be upgraded to Windows 11?'
             parameters:
                 - in: path 
                   name: scope
@@ -58,18 +47,11 @@ paths:
                       type: string
                   required: true  
                   example: "allDevices"
-                - in: query 
-                  name: filter
-                  schema:
-                      type: string
-                  required: false 
-                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27"
             responses:
                 "200":
                     description: OK
                     content:
-                        application/json:
-                     
+                        application/json:   
 
     #GetAppsInstallStatusReport
     /reports/getAppsInstallSummaryReport:
