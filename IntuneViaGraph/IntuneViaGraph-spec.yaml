@@ -27,10 +27,10 @@ paths:
                     content:
                         application/json:
 
-    #GetNotCapableDeviceForUpgradeEligibility
+    #GetNotCapableDevicesForUpgradeEligibility
     /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select=id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter=upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27:
         get:
-            operationId: GetNotCapableDeviceForUpgradeEligibility
+            operationId: GetNotCapableDevicesForUpgradeEligibility
             description: Get the list of devices that are considered as 'not capable' for 'upgrade eligibility'.
               These devices are those that cannot be upgraded from Windows 10 to Windows 11.
               For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
