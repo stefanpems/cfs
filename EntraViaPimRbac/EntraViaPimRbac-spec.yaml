@@ -22,7 +22,7 @@ paths:
               - 'Provide me with the Entra roles that include the user with ID 11111111-2222-3333-4444-555555555555.'
               - 'List the Entra roles to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
             parameters:
-                - in: path 
+                - in: query 
                   name: userId
                   schema:
                       type: string
