@@ -8,7 +8,7 @@ Descriptor:
     - AADDelegated
   Authorization:
     Type: AADDelegated
-    EntraScopes: https://graph.microsoft.com/.default
+    EntraScopes: https://management.azure.com/user_impersonation
 
 SkillGroups:
   - Format: API
