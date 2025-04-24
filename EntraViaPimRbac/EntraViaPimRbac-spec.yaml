@@ -1,0 +1,35 @@
+openapi: 3.0.0
+
+info:
+    title: Microsoft Entra via PIM RBAC API Plugin
+    description: Skills for retrieving data from Microsoft Entra via PIM RBAC API calls
+    version: "v1"
+
+servers:
+    - url: https://api.azrbac.mspim.azure.com/api/v2/privilegedAccess
+
+paths:
+
+    #GetEntraRoles
+    /aadroles/roleAssignments?$expand=linkedEligibleRoleAssignment,subject,scopedResource,roleDefinition($expand=resource)&$filter=(roleDefinition/resource/id%20eq%20%270527ecb7-06fb-4769-b324-fd4a3bb865eb%27)+and+(subject/id%20eq%20%27{userId}%27)+and+(assignmentState%20eq%20%27Active%27)&$top=15&$count=true:
+        get:
+            operationId: GetEntraRoles
+            description: Get the Entra Roles the specified user is assigned to. 
+              For each Entra role returned by the call, the name of the role is in the roleDefinition/displayName property.
+              The user ID is a mandatory parameter in input
+            ExamplePrompt:
+              - 'Give me the Entra groups that the user with ID 11111111-2222-3333-4444-555555555555 is a member of.'
+              - 'Provide me with the Entra groups that include the user with ID 11111111-2222-3333-4444-555555555555.'
+              - 'List the Entra groups to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
+            parameters:
+                - in: userId 
+                  name: scope
+                  schema:
+                      type: string
+                  required: true  
+                  example: "11111111-2222-3333-4444-555555555555"            
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
