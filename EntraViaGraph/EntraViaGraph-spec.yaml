@@ -1,0 +1,36 @@
+openapi: 3.0.0
+
+info:
+    title: Microsoft Entra via Graph API Plugin
+    description: Skills for retrieving data from Microsoft Entra via Graph API calls
+    version: "v1"
+
+servers:
+    - url: https://graph.microsoft.com/beta/users
+
+paths:
+
+    #GetUserGroups
+    /{userId}/memberOf/$/microsoft.graph.group?$select=id,displayName,mailEnabled,securityEnabled,groupTypes,onPremisesSyncEnabled,mail,isAssignableToRole&$top=20&$orderby=displayName%20asc&$count=true:
+        get:
+            operationId: GetUserGroups
+            description: Get the Entra Groups the specified user is a member of. 
+              For each group, the response includes id, displayName, mailEnabled, securityEnabled, groupTypes, 
+              onPremisesSyncEnabled, mail, isAssignableToRole.
+              The user ID is a mandatory parameter in input
+            ExamplePrompt:
+              - 'Give me the Entra groups that the user with ID 11111111-2222-3333-4444-555555555555 is a member of.'
+              - 'Provide me with the Entra groups that include the user with ID 11111111-2222-3333-4444-555555555555.'
+              - 'List the Entra groups to which the user with ID 11111111-2222-3333-4444-555555555555 belongs.'
+            parameters:
+                - in: userId 
+                  name: scope
+                  schema:
+                      type: string
+                  required: true  
+                  example: "allDevices"            
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
