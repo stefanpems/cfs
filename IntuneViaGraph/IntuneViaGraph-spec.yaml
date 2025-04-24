@@ -33,12 +33,24 @@ paths:
             operationId: UserExperienceAnalyticsWorkFromAnywhereMetrics
             description: Get the Endpoint Analytics report in the scope of "work from anywhere" for Windows devices
               The response includes the list of the managed devices filtered according to the specified inputs.
-              For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
+
+              For each device, the internal name of the attributes retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
               osVersion,upgradeEligibility,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
               processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
-              The upgradeEligibility column specifies the capability of the device to be upgraded to the next major version of the OS (now from W10 to W11) 
+
+              The upgradeEligibility column specifies the capability of the device to be upgraded to the next major version of the OS 
+              from Window 10 to Windows 11.              
+              
+              When it is requested to filter the results on specific attributes of the devices, create an OData filtering expression 
+              with the internal name of the columns to be used for filtering and pass it url-encoded to the 'filter' input parameter in query string. 
+              For example, the request to retrieve the devices that cannot be upgraded from Window 10 to Windows 11 implies the need to set the input parameter 
+              'filter' equal to upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27 for the API call.               
+               
+              When creating the values or the expressions for the 'filter' input parameters, select from the above list the internal name more 
+              assonant to the name specified by the user in the input prompt.
             ExamplePrompt:
-              - ''
+              - 'Give me the list of devices that cannot be upgraded from Windows 10 to Windows 11.'
+              - 'Which of our devices cannot be upgraded from Windows 10?'
             parameters:
                 - in: path 
                   name: scope
@@ -46,7 +58,7 @@ paths:
                       type: string
                   required: true  
                   example: "allDevices"
-                - in: path 
+                - in: query 
                   name: filter
                   schema:
                       type: string
@@ -57,6 +69,7 @@ paths:
                     description: OK
                     content:
                         application/json:
+                     
 
     #GetAppsInstallStatusReport
     /reports/getAppsInstallSummaryReport:
@@ -73,7 +86,7 @@ paths:
                 of these apps implies the need to set the input parameter 'select' equal to ["DisplayName","Publisher"].
                 
                 When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
-                with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
+                with the internal name of the columns to be used for filtering and pass it to the 'filter' input parameter. 
                 For example, the request to retrieve the list of apps with install failure rate grater than 75% implies the need to set the input parameter 
                 'filter' equal to (FailedDevicePercentage gt '75') for the API call. 
                 
@@ -156,7 +169,7 @@ paths:
                 of the devices where the installation was launched implies the need to set the input parameter 'select' equal to ["DeviceName","UserPrincipalName"].
                 
                 When it is requested to filter the results on the percentage or on the number of failures or success, create an OData filtering expression 
-                with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
+                with the internal name of the columns to be used for filtering and pass it to the 'filter' input parameter. 
                 The 'filter' input parameter should always contain in the 'ApplicationId' subparameter, the ID of the app of interest.
                 For example, the request to retrieve the list of devices where the app XYZ installed successfully implies the need to set the input parameter 
                 'filter' equal to (InstallState eq '1') and (ApplicationId eq '11111111-2222-3333-4444-555555555555') for the API call. 
@@ -237,7 +250,7 @@ paths:
                 of these devices implies the need to set the input parameter 'select' equal to ["DeviceName","TpmSpecificationVersion"].
                 
                 When it is requested to filter the results on the percentage or on the encryption readiness or encryption status, create an OData filtering expression 
-                with the internal name of the column to be used for filtering and pass it to the 'filter' input parameter. 
+                with the internal name of the columns to be used for filtering and pass it to the 'filter' input parameter. 
                 For example, the request to retrieve the encryption report with encryption readiness 'ready' and encryption status 'Not encrypted' implies the need to set 
                 the input parameter 'filter' equal to (EncryptionReadinessState eq '1' and EncryptionStatus eq '0') for the API call. 
                 
