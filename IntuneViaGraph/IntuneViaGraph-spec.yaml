@@ -225,6 +225,8 @@ paths:
             summary: Get Encryption Report for Devices
             description: Retrieves the encryption report for the devices managed by Intune.
                 The report lists the encryption status for each device, including information about the OS, the TPM and the encryption readiness.
+                Encryption Readiness equal to true means that the device is ready to be configured for encryption, so it can be encypted; false means that it cannot be encypted.
+                Encryption Status equal to true means that the device is already encrypted; false means that it is not encrypted.
 
                 When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
                 and pass it to the 'select' input parameter. 
@@ -254,6 +256,7 @@ paths:
 
             ExamplePrompt:
               - 'List the devices that have Encryption Readiness equal to true and Encryption Status equal to false.'
+              - 'List the devices that are not encrypted and can be encrypted. Filter only the device whose name starts with ABC'
             requestBody:
                 required: true
                 content:
