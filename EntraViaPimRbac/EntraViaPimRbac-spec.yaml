@@ -15,7 +15,7 @@ paths:
         get:
             operationId: GetEntraRoles
             description: Get the Entra Roles the specified user is assigned to. 
-              For each Entra role returned by the call, the name of the role is in the roleDefinition/displayName property.
+              For each Entra Role returned by the call, the name of the Role is in the roleDefinition/displayName property.
               The user ID is a mandatory parameter in input
             ExamplePrompt:
               - 'Give me the Entra roles that the user with ID 11111111-2222-3333-4444-555555555555 is assigned to.'
@@ -27,7 +27,7 @@ paths:
                   schema:
                       type: string
                   required: true  
-                  example: "11111111-2222-3333-4444-555555555555"            
+                  example: "11111111-2222-3333-4444-555555555555"                    
             responses:
                 "200":
                     description: OK
