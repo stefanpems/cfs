@@ -28,7 +28,7 @@ paths:
                   schema:
                       type: string
                   required: true  
-                  example: "allDevices"            
+                  example: "11111111-2222-3333-4444-555555555555"            
             responses:
                 "200":
                     description: OK
