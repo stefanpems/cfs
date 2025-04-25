@@ -63,6 +63,12 @@ paths:
               add the '$filter' parameter in query string with the value 
               'upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27capable%27%20and%20contains(deviceName,%20%27ABC%27)%20or%20contains(manufacturer,%20%27ABC%27)%20or%20contains(model,%20%27ABC%27)' . 
 
+              When adding also a condition on 'osVersion' in the '$filter' parameter in query string, take into consideration the fact that the values in the 'osVersion' fields 
+              are in the "Windows versioning format" which is composed by a major version, minor version, build number and revision number (UPB, update revision number). 
+              For example, Windows 10 22H2 build 19405 patch level CU revision 5371 has osVersion '10.0.19045.5371'. 
+              The osVersion field for Windows 10 always starts with "10.0.1". For example, "10.0.19043" is the initial part of the osVersion field for W10 21H1.  
+              The osVersion field for Windows 10 always starts with "10.0.2". For example, "10.0.22621" is the initial part of the osVersion field for W11 22H2.
+ 
               When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
 
