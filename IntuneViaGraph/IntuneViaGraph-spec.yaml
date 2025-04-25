@@ -71,6 +71,8 @@ paths:
               id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
               processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
 
+              If not specified differently, always pass 'allDevices' as value for the mandatory input field 'scope'. Always include that parameter in query string. 
+
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
               Do not url-encode the value of the '$select' query string parameter. 
 
