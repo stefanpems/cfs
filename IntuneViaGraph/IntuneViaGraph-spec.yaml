@@ -561,7 +561,7 @@ paths:
 
             ExamplePrompt:
               - 'List all the configuration policies assigned to managed devices in Intune that have assignment errors or conflicts'
-              - 'Give me the number of assignment errors or conflicts for the configuration policy named "RealPolicy_Cloud PKI VPN Client Cert"'
+              - 'Give me the number of assignment errors or conflicts for the configuration policy named "ABC"'
               - 'Are there assignment errors for the configuration policies of type "SCEP certificate"?'
               - 'Retrieve the number of assignment errors for the configuration policies of type "SCEP certificate" or "Custom". Filter only the policies with the word "Real" in their names.'
             requestBody:
@@ -666,10 +666,8 @@ paths:
                 assonant to the name specified by the user in the input prompt.
 
             ExamplePrompt:
-              - 'List all the configuration policies assigned to managed devices in Intune that have assignment errors or conflicts'
-              - 'Give me the number of assignment errors or conflicts for the configuration policy named "RealPolicy_Cloud PKI VPN Client Cert"'
-              - 'Are there assignment errors for the configuration policies of type "SCEP certificate"?'
-              - 'Retrieve the number of assignment errors for the configuration policies of type "SCEP certificate" or "Custom". Filter only the policies with the word "Real" in their names.'
+              - 'List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
+              - 'Give me the number of assignment errors and condition of non-compliance for the compliance policy assigned to Android devices'
             requestBody:
                 required: true
                 content:
