@@ -95,9 +95,12 @@ paths:
               because this would cause an error in the internal Graph API call.  
               If conditions on 'deviceName', 'manufacturer' or 'model' must be part of the url-encoded OData expression, simply do not add a condition on 'osVersion'.
               If the input request would suggest to filter on 'osVersion' and also on 'deviceName', 'manufacturer' or 'model', clarify in the response that the filter on OS version has 
-              not been included because it is not supported together with device name or manufacturer name or model name. 
-              You can mix conditions on 'upgradeEligibility' and 'osVersion' but only if 'deviceName', 'manufacturer' or 'model' do not need to be part of the url-encoded OData expression.
+              not been included because it is not supported together with device name or manufacturer name or model name.
+              For example, if the prompts asks for the devices upgraded to Windows 11 and whose name contains "ABC", add the '$filter' parameter in query string with the value 
+              upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27upgraded%27%20and%20contains(deviceName,%20%27CPC%27) .
+              (This OData expression does not contain conditions on osVersion together with the condition on deviceName, despite the fact that the user asked for Windows 11)
 
+              You can mix conditions on 'upgradeEligibility' and 'osVersion' but only if 'deviceName', 'manufacturer' or 'model' do not need to be part of the url-encoded OData expression.
                              
               When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
@@ -105,6 +108,8 @@ paths:
               - 'Give me the list of devices that cannot be upgraded from Windows 10 to Windows 11.'
               - 'Which of our devices cannot be upgraded from Windows 10?'
               - 'Which of our devices cannot be upgraded to W11?'
+              - 'Give me the list of devices that have been upgraded and whose name contains "ABC"'
+              - 'Give me the list of devices that have been upgraded with OS Windows 11 24H2.'
             parameters:
                 - in: path 
                   name: scope
