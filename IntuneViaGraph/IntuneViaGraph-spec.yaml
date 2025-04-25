@@ -609,4 +609,109 @@ paths:
                 '500':
                     description: Internal Server Error - An error occurred on the server
 
+    #GetDeviceNoncomplianceReport
+    /reports/getDeviceNoncomplianceReport:
+        post:
+            operationId: GetDeviceNoncomplianceReport
+            summary: Get Compliance Policy Non compliance Summary Report
+            description: Generate a report summarizing non-compliance and errors with compliance policies across managed devices in your Intune environment.
+                The report lists the Compliance Policies defined in Intune having errors or non-compliance in their assignment. 
+                For each policy, the report returns the numbers of devices with errors and devices with non-compliance regarding the assignment of that specific policy. 
+                
+                When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
+                and pass it to the 'select' input parameter. 
+                For example, the request to retrieve the status of non-compliance for the configuration policies and to return only the policy name and 
+                the number of non-compliant or error devices implies the need to set the input parameter 'select' equal to ["PolicyName","NumberOfNonCompliantOrErrorDevices"].
+
+                In the 'filter' input parameter ALWAYS include at least the OData expression needed to filter on policies of type "compliance". The minimal expression 
+                to be added in that OData filter is the following 
+                ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceCompliancePolicy') or (PolicyBaseTypeName eq 'DeviceManagementCompliancePolicy'))
+                
+                When it is requested to filter the results on platform type (= operating system), modify the OData filtering expression for the 'filter' input parameter
+                by setting also the 'PolicyPlatformType' field. These are the values for the 'PolicyPlatformType' field 
+                    Android -> PolicyPlatformType eq '0'
+                    Android for Work -> PolicyPlatformType eq '1'
+                    iOS -> PolicyPlatformType eq '2'
+                    macOS -> PolicyPlatformType eq '3'
+                    Windows Phone 8.1 -> PolicyPlatformType eq '4'
+                    Windows 8.1 and later -> PolicyPlatformType eq '5'
+                    Windows 10 and later -> PolicyPlatformType eq '6'
+                    Android Work Profile -> PolicyPlatformType eq '7'
+                    Windows 10X Profile -> PolicyPlatformType eq '8'
+                    Android AOSP -> PolicyPlatformType eq '9'
+                    Linux -> PolicyPlatformType eq '128'
+                    ALL -> PolicyPlatformType eq '100'
+                For example, the request to retrieve the non-compliant and error assignments report for the compliance policies on Windows 10 and later 
+                implies the need to set the input parameter 'filter' for the API call equal to 
+                ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceCompliancePolicy') or (PolicyBaseTypeName eq 'DeviceManagementCompliancePolicy')) and (PolicyPlatformType eq '6'). 
+                
+                Add (PolicyPlatformType eq '100') to the OData expression in the 'filter' input parameter when it is requested to consider only the compliance policies that are 
+                assigned to all kind of platforms. 
+
+                Add (PolicyId eq '22fc6a93-3336-4fc1-ab09-73abc2eb5092') to the OData expression in the 'filter' input parameter when it is requested to filter also by compliance policy ID. 
+
+                When requested to filter on part of the compliance policy name or the entire compliance policy name, use the 'search' input parameter to specify the name or the part of the name 
+                of the configuration policy as desired. 
+                For example, the request to retrieve the non-compliance and error report for the compliance policy with the name containing "XYZ" implies the need to set 
+                the input parameter 'search' equal to "XYZ"
+                                
+                When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
+                columns requested for sorting and pass it to the 'orderBy' input parameter. 
+                For example, the request to retrieve the configuration policy status report for the policies ordered by Policy Name implies the need to set the input parameter 
+                'orderBy' equal to ["PolicyName"].   
+
+                The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
+                "PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"
+                When creating the values or the expressions for the 'select', 'filter' and 'orderBy' input parameters, select from the above list the internal name more 
+                assonant to the name specified by the user in the input prompt.
+
+            ExamplePrompt:
+              - 'List all the configuration policies assigned to managed devices in Intune that have assignment errors or conflicts'
+              - 'Give me the number of assignment errors or conflicts for the configuration policy named "RealPolicy_Cloud PKI VPN Client Cert"'
+              - 'Are there assignment errors for the configuration policies of type "SCEP certificate"?'
+              - 'Retrieve the number of assignment errors for the configuration policies of type "SCEP certificate" or "Custom". Filter only the policies with the word "Real" in their names.'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                select:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["PolicyName"] if no other value is specified as input                                    
+                                    items:
+                                        type: string
+                                    defaultValue: ["PolicyName"] 
+                                    example: ["PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"]
+                                filter:
+                                    description: An OData filtering expression to be used for filtering the results in the response.
+                                    type: string
+                                    example: "((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceCompliancePolicy') or (PolicyBaseTypeName eq 'DeviceManagementCompliancePolicy'))"
+                                skip:
+                                    type: integer
+                                    example: 0
+                                search:
+                                    type: string
+                                    example: ""
+                                orderBy:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be used for ordering the response.
+                                    items:
+                                        type: string
+                                    example: ["PolicyName"]
+                                top:
+                                    type: integer
+                                    example: 50
+            responses:
+                '200':
+                    description: Successful response with the apps install summary report
+                    content:
+                        application/json:
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden - Insufficient permissions to access the resource
+                '500':
+                    description: Internal Server Error - An error occurred on the server
 
