@@ -622,6 +622,8 @@ paths:
                 and pass it to the 'select' input parameter. 
                 For example, the request to retrieve the status of non-compliance for the configuration policies and to return only the policy name and 
                 the number of non-compliant or error devices implies the need to set the input parameter 'select' equal to ["PolicyName","NumberOfNonCompliantOrErrorDevices"].
+                If not differently specified, set input parameter with the following value 
+                ["PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"]
 
                 In the 'filter' input parameter ALWAYS include at least the OData expression needed to filter on policies of type "compliance". The minimal expression 
                 to be added in that OData filter is the following 
@@ -657,8 +659,8 @@ paths:
                                 
                 When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
                 columns requested for sorting and pass it to the 'orderBy' input parameter. 
-                For example, the request to retrieve the configuration policy status report for the policies ordered by Policy Name implies the need to set the input parameter 
-                'orderBy' equal to ["PolicyName"].   
+                For example, the request to retrieve the configuration policy status report for the policies ordered by Policy Name ascending implies the need to set the input parameter 
+                'orderBy' equal to ["PolicyName asc"].   
 
                 The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
                 "PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"
@@ -697,7 +699,7 @@ paths:
                                     description: An array of strings with the name of the fields to be used for ordering the response.
                                     items:
                                         type: string
-                                    example: ["PolicyName"]
+                                    example: ["PolicyName asc"]
                                 top:
                                     type: integer
                                     example: 50
