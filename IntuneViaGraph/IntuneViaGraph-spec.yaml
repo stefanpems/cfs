@@ -611,7 +611,7 @@ paths:
                 '500':
                     description: Internal Server Error - An error occurred on the server
 
-    #GetPolicyNoncomplianceSummaryReport
+    #GetRegulationPolicyNoncomplianceSummaryReport
     /reports/getPolicyNoncomplianceSummaryReport:
         post:
             operationId: GetRegulationPolicyNoncomplianceSummaryReport
