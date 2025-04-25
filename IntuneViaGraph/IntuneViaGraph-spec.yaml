@@ -10,6 +10,40 @@ servers:
 
 paths:
 
+
+    #GetEnrollmentFailures
+    /troubleshootingEvents:
+        get:
+            operationId: GetEnrollmentFailures
+            description: Get the Device Management Troubleshooting Events in Intune related to Enrollment Failures. 
+
+              If not specified differently, assign to the input parameter '$orderBy' in query string the value 'eventDateTime%20desc', so that the results are ordered by eventDateTime in descending order. 
+              Always put that paramter in query string.      
+              
+              If not specified differently, assign to the input parameter '$top' in query string the value 20, so that only 20 results are returned. 
+              Always put that paramter in query string.           
+            
+            ExamplePrompt:
+              - 'Show me the latest enrollment failures in Intune'
+            parameters:
+                - in: query 
+                  name: $orderBy
+                  schema:
+                      type: string
+                  required: false  
+                  example: "eventDateTime%20desc"
+                - in: query 
+                  name: $top
+                  schema:
+                      type: int
+                  required: false  
+                  example: 20
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+
     #GetDeviceDeploymentStatus
     /deviceConfigurations?$select=id,displayName,lastModifiedDateTime,roleScopeTagIds,microsoft.graph.unsupportedDeviceConfiguration/originalEntityTypeName&$expand=deviceStatusOverview,assignments&$top=120&$filter=isof(%27microsoft.graph.windowsUpdateForBusinessConfiguration%27)&$count=true:
         get:
@@ -42,7 +76,7 @@ paths:
 
               Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
 
-              If not specified differently, to the input parameter '$orderBy' in query string the value 'osVersion%20asc', so that the results are ordered by osVersion in ascending order. 
+              If not specified differently, assign to the input parameter '$orderBy' in query string the value 'osVersion%20asc', so that the results are ordered by osVersion in ascending order. 
               Always put that paramter in query string. 
 
               It is possible to filter the results on the value for readiness status of the Windows devices, which is described in the 'upgradeEligibility' field. 
@@ -163,7 +197,7 @@ paths:
               
               Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
 
-              If not specified differently, to the input parameter '$orderBy' in query string the value 'deviceName%20asc', so that the results are ordered by deviceName in ascending order. 
+              If not specified differently, assign to the input parameter '$orderBy' in query string the value 'deviceName%20asc', so that the results are ordered by deviceName in ascending order. 
               Always put that paramter in query string. 
 
               It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'healthStatus' field. 
@@ -490,8 +524,8 @@ paths:
             operationId: GetConfigurationPolicyNoncomplianceSummaryReport
             summary: Get Configuration Policy Non compliance Summary Report
             description: Generate a report summarizing non-compliance with configuration policies across managed devices in your Intune environment.
-                The report lists the Configuration Policies defined in Intune. For each policy, the report returns the numbers of devices with error 
-                and devices with conflicts regarding the assignment of that specific policy. 
+                The report lists the Configuration Policies defined in Intune having errors or conflicts in their assignment. 
+                For each policy, the report returns the numbers of devices with errors and devices with conflicts regarding the assignment of that specific policy. 
                 
                 When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
                 and pass it to the 'select' input parameter. 
@@ -526,8 +560,10 @@ paths:
                 assonant to the name specified by the user in the input prompt.
 
             ExamplePrompt:
-              - 'List the configuration policies that have assignment errors or conflicts.'
-              - 'Tell me the number of assignment conflicts for the configuration policy having "ABC" in its name'
+              - 'List all the configuration policies assigned to managed devices in Intune that have assignment errors or conflicts'
+              - 'Give me the number of assignment errors or conflicts for the configuration policy named "RealPolicy_Cloud PKI VPN Client Cert"'
+              - 'Are there assignment errors for the configuration policies of type "SCEP certificate"?'
+              - 'Retrieve the number of assignment errors for the configuration policies of type "SCEP certificate" or "Custom". Filter only the policies with the word "Real" in their names.'
             requestBody:
                 required: true
                 content:
