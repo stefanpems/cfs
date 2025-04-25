@@ -55,7 +55,8 @@ paths:
               For example, if the request in input specifies to retrieve only the devices that are 'not ready to be upgraded', add the '$filter' parameter in query string with the value 
               'upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27' .
 
-              It is possible to filter the results also on the partial or entire name of the device, manufacturer, model and os version to be considered. 
+              It is possible to filter the results also on the partial or entire name of the device (field 'deviceName'), manufacturer (field 'manufacturer'), 
+              model (field 'model') and os version (field 'osVersion') to be considered. 
               If requested, add that condition in the url-encoded OData expression passed to the '$filter' parameter in query string.
               For example, if the request in input specifies to retrieve only the devices whose name contains "ABC", add the '$filter' parameter in query string with the value 
               'contains(deviceName,%20%27ABC%27)' .  
@@ -68,9 +69,14 @@ paths:
               For example, Windows 10 22H2 build 19405 patch level CU revision 5371 has osVersion '10.0.19045.5371'. 
               The osVersion field for Windows 10 always starts with "10.0.1". For example, "10.0.19043" is the initial part of the osVersion field for W10 21H1.  
               The osVersion field for Windows 10 always starts with "10.0.2". For example, "10.0.22621" is the initial part of the osVersion field for W11 22H2.
- 
-              When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
+              While building the '$filter' parameter in query string, never add a condition on the 'osVersion' field together with a condition on 'deviceName', 'manufacturer' or 'model'. 
+              If conditions on 'deviceName', 'manufacturer' or 'model' must be part of the url-encoded OData expression, simply do not add a condition on 'osVersion'.
+              If the input request would suggest to filter on 'osVersion' and also on 'deviceName', 'manufacturer' or 'model', clarify in the response that the filter on OS version has 
+              not been included because it is not supported together with device name or manufacturer name or model name. 
+              You can mix conditions on 'upgradeEligibility' and 'osVersion' but only if 'deviceName', 'manufacturer' or 'model' do not need to be part of the url-encoded OData expression.
+                             
+              When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
             ExamplePrompt:
               - 'Give me the list of devices that cannot be upgraded from Windows 10 to Windows 11.'
