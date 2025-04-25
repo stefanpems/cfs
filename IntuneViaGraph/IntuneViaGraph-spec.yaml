@@ -81,32 +81,31 @@ paths:
                   name: $select
                   schema:
                       type: string
-                  required: true  
+                  required: false  
                   example: "id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed"
                 - in: query 
                   name: dtFilter
                   schema:
                       type: string
-                  required: true  
+                  required: false  
                   example: "all"
                 - in: query 
                   name: $orderBy
                   schema:
                       type: string
-                  required: true  
+                  required: false  
                   example: "osVersion%20asc"
                 - in: query 
                   name: $top
                   schema:
                       type: int
-                  required: true  
+                  required: false  
                   example: 40
                 - in: query 
                   name: $filter
-                  description: A filtering expression in url-encoded OData format to be used for filtering the results in the response.
                   schema:
                       type: string
-                  required: true  
+                  required: false  
                   example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27"
             responses:
                 "200":
