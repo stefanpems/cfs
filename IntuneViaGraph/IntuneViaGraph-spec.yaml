@@ -682,8 +682,9 @@ paths:
                 IF NOT DIFFERENTLY REQUESTED IN INPUT, ASSIGN TO THESE INPUT PARAMETERS THE DEFAULT VALUES SPECIFIED ABOVE.
 
             ExamplePrompt:
-              - 'List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
-              - 'Give me the number of assignment errors and condition of non-compliance for the compliance policy assigned to Android devices'
+              - '[NOT YET WORKING] List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
+              - '[NOT YET WORKING] Give me the number of assignment errors and condition of non-compliance for the compliance policy assigned to Android devices'
+              - '[UNDER INVESTIGATION] AT THIS TIME THE ONLY WAY TO CALL THIS SKILL IS BY DIRECT SKILL INVOKATION, PASSING ALL THE PARAMETERS select, filter, skip and top.'
             requestBody:
                 required: true
                 content:
