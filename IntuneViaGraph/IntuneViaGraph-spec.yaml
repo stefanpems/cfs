@@ -653,7 +653,7 @@ paths:
                 Add (PolicyPlatformType eq '100') to the OData expression in the 'filter' input parameter when it is requested to consider only the compliance policies that are 
                 assigned to all kind of platforms. 
 
-                Add (PolicyId eq '22fc6a93-3336-4fc1-ab09-73abc2eb5092') to the OData expression in the 'filter' input parameter when it is requested to filter also by compliance policy ID. 
+                Add (PolicyId eq '<policy-id>') to the OData expression in the 'filter' input parameter when it is requested to filter also by compliance policy ID. 
 
                 When requested to filter on part of the compliance policy name or the entire compliance policy name, use the 'search' input parameter to specify the name or the part of the name 
                 of the configuration policy as desired. 
@@ -676,6 +676,10 @@ paths:
                 If not differently specified, set 'top' input parameter with the value 50.  
 
                 If not differently specified, set 'skip' input parameter with the value 0. 
+
+                ENSURE THAT YOU ALWAYS INCLUDE THE FOLLOWING INPUT PARAMTERS IN THE BODY OF ALL CALLS TO THE REMOTE API
+                'select','filter','skip','orderBy','top' 
+                IF NOT DIFFERENTLY REQUESTED IN INPUT, ASSIGN TO THESE INPUT PARAMETERS THE DEFAULT VALUES SPECIFIED ABOVE.
 
             ExamplePrompt:
               - 'List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
