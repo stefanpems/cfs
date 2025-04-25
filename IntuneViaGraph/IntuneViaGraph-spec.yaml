@@ -483,3 +483,94 @@ paths:
                     description: Forbidden - Insufficient permissions to access the resource
                 '500':
                     description: Internal Server Error - An error occurred on the server
+
+    #GetConfigurationPolicyNoncomplianceSummaryReport
+    /reports/getConfigurationPolicyNoncomplianceSummaryReport:
+        post:
+            operationId: GetConfigurationPolicyNoncomplianceSummaryReport
+            summary: Get Configuration Policy Non compliance Summary Report
+            description: Generate a report summarizing non-compliance with configuration policies across managed devices in your Intune environment.
+                The report lists the Configuration Policies defined in Intune. For each policy, the report returns the numbers of devices with error 
+                and devices with conflicts regarding the assignment of that specific policy. 
+                
+                When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
+                and pass it to the 'select' input parameter. 
+                For example, the request to retrieve the status of non-compliance for the configuration policies and to return only the policy name and 
+                the number of non-compliant or error devices implies the need to set the input parameter 'select' equal to ["PolicyName","NumberOfNonCompliantOrErrorDevices"].
+                
+                When it is requested to filter the results on policy type, policy source or platform, create an OData filtering expression 
+                with the internal name of the columns to be used for filtering and pass it to the 'filter' input parameter. 
+                For example, the request to retrieve the non-compliance report for 
+                1) policy type equal to endpoint protection, exploit protection, identity protection, defender antivirus, antivirus exclusions 
+                2) policy platform equal to Window 10 and above
+                3) policy source equal to endpoint security 
+                implies the need to set the input parameter 'filter' for the API call equal to 
+                ((UnifiedPolicyType eq 'EndpointProtection') or (UnifiedPolicyType eq 'IdentityProtection') or (UnifiedPolicyType eq 'ExploitProtection') or (UnifiedPolicyType eq 'MicrosoftDefenderAntivirus') or (UnifiedPolicyType eq 'MicrosoftDefenderAntivirusexclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions')) and ((UnifiedPolicyPlatformType eq 'Windows10')) and ((ProfileSource eq 'Endpoint Security')) and ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceConfiguration') or (PolicyBaseTypeName eq 'DeviceManagementConfigurationPolicy') or (PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceManagementIntent'))". 
+                
+                The following is the correct setup of the 'filter' parameter with *all* the allowed options specified. Use it to understand how to set the 'filter' parameter according to the input request.  
+                ((UnifiedPolicyType eq 'Custom') or (UnifiedPolicyType eq 'Delivery optimization') or (UnifiedPolicyType eq 'Derived credentials') or (UnifiedPolicyType eq 'Device firmware configuration interface') or (UnifiedPolicyType eq 'DeviceRestrictions') or (UnifiedPolicyType eq 'DeviceRestrictionsWindows10Team') or (UnifiedPolicyType eq 'Domain join') or (UnifiedPolicyType eq 'EditionUpgradeAndModeSwitch') or (UnifiedPolicyType eq 'Email') or (UnifiedPolicyType eq 'EmailSamsungKnoxOnly') or (UnifiedPolicyType eq 'EndpointProtection') or (UnifiedPolicyType eq 'ExploitProtection') or (UnifiedPolicyType eq 'IdentityProtection') or (UnifiedPolicyType eq 'MicrosoftDefenderAntivirus') or (UnifiedPolicyType eq 'MicrosoftDefenderAntivirusexclusions') or (UnifiedPolicyType eq 'Microsoft Defender for Endpoint (Desktop devices running Windows 10 or later)') or (UnifiedPolicyType eq 'NetworkBoundary') or (UnifiedPolicyType eq 'OverrideGroupPolicy') or (UnifiedPolicyType eq 'PkcsCertificate') or (UnifiedPolicyType eq 'PkcsImportedCertificate') or (UnifiedPolicyType eq 'ScepCertificate') or (UnifiedPolicyType eq 'MDMSecurityBaseline2101') or (UnifiedPolicyType eq 'Office365Baseline') or (UnifiedPolicyType eq 'Office365BaselinePreview') or (UnifiedPolicyType eq 'MicrosoftDefenderBaseline') or (UnifiedPolicyType eq 'EdgeSecurityBaseline') or (UnifiedPolicyType eq 'EdgeSecurityBaselinePreview') or (UnifiedPolicyType eq 'SharedMultiUserDevice') or (UnifiedPolicyType eq 'Software updates') or (UnifiedPolicyType eq 'TrustedCertificate') or (UnifiedPolicyType eq 'Unknown') or (UnifiedPolicyType eq 'WiFi') or (UnifiedPolicyType eq 'WindowsHealthMonitoring') or (UnifiedPolicyType eq 'WiredNetwork') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions') or (UnifiedPolicyType eq 'ASRExploitProtection') or (UnifiedPolicyType eq 'Antivirus') or (UnifiedPolicyType eq 'AVExclusions')) and ((UnifiedPolicyPlatformType eq 'Android') or (UnifiedPolicyPlatformType eq 'AndroidAOSP') or (UnifiedPolicyPlatformType eq 'AndroidForWork') or (UnifiedPolicyPlatformType eq 'AndroidWorkProfile') or (UnifiedPolicyPlatformType eq 'IOS') or (UnifiedPolicyPlatformType eq 'MacOS') or (UnifiedPolicyPlatformType eq 'WindowsPhone81') or (UnifiedPolicyPlatformType eq 'Windows81AndLater') or (UnifiedPolicyPlatformType eq 'Windows10')) and ((ProfileSource eq 'Device Configuration') or (ProfileSource eq 'Endpoint Security') or (ProfileSource eq 'Security Baseline') or (ProfileSource eq 'Unknown')) and ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceConfiguration') or (PolicyBaseTypeName eq 'DeviceManagementConfigurationPolicy') or (PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceManagementIntent'))
+
+                When requested to filter on part of the configuration policy name or the entire configuration policy name, use the 'search' input parameter to specify the name or the part of the name 
+                of the configuration policy as desired. 
+                For example, the request to retrieve the non-compliance report for the configuration policy with the name containing "XYZ" implies the need to set 
+                the input parameter 'search' equal to "XYZ"
+                                
+                When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
+                columns requested for sorting and pass it to the 'orderBy' input parameter. 
+                For example, the request to retrieve the configuration policy status report for the policies ordered by Policy Name implies the need to set the input parameter 
+                'orderBy' equal to ["PolicyName"].   
+
+                The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
+                "PolicyName","PolicyId","UnifiedPolicyType","PolicyBaseTypeName","ProfileSource","UnifiedPolicyPlatformType","NumberOfNonCompliantOrErrorDevices","NumberOfConflictDevices" 
+                When creating the values or the expressions for the 'select', 'filter' and 'orderBy' input parameters, select from the above list the internal name more 
+                assonant to the name specified by the user in the input prompt.
+
+            ExamplePrompt:
+              - 'List the configuration policies that have assignment errors or conflicts.'
+              - 'Tell me the number of assignment conflicts for the configuration policy having "ABC" in its name'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                select:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be included in the response. Always specify a value for this parameter. Use ["PolicyName"] if no other value is specified as input                                    
+                                    items:
+                                        type: string
+                                    defaultValue: ["PolicyName"] 
+                                    example: ["PolicyName","PolicyId","UnifiedPolicyType","PolicyBaseTypeName","ProfileSource","UnifiedPolicyPlatformType","NumberOfNonCompliantOrErrorDevices","NumberOfConflictDevices"]
+                                filter:
+                                    description: An OData filtering expression to be used for filtering the results in the response.
+                                    type: string
+                                    example: "((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceConfiguration') or (PolicyBaseTypeName eq 'DeviceManagementConfigurationPolicy') or (PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceManagementIntent'))"
+                                skip:
+                                    type: integer
+                                    example: 0
+                                search:
+                                    type: string
+                                    example: ""
+                                orderBy:
+                                    type: array
+                                    description: An array of strings with the name of the fields to be used for ordering the response.
+                                    items:
+                                        type: string
+                                    example: ["PolicyName"]
+                                top:
+                                    type: integer
+                                    example: 50
+            responses:
+                '200':
+                    description: Successful response with the apps install summary report
+                    content:
+                        application/json:
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden - Insufficient permissions to access the resource
+                '500':
+                    description: Internal Server Error - An error occurred on the server
+
+
