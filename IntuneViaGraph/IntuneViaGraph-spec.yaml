@@ -153,10 +153,10 @@ paths:
                     content:
                         application/json:   
 
-    #GetDeviceBtteryPerformance
+    #GetDeviceBatteryPerformance
     /userExperienceAnalyticsBatteryHealthDevicePerformance:
         get:
-            operationId: GetDeviceBtteryPerformance
+            operationId: GetDeviceBatteryPerformance
             description: Get the battery health and performances for the devices managed in Intune.  
 
               For each device in the list of results, the function call can return the following fields 
@@ -194,12 +194,42 @@ paths:
               - 'Which of our devices with model ABC have battery health issues?'
               - 'Do the devices from manufacturer ABC and model XYZ have battery health issues?'
             parameters:
+
+                - in: query 
+                  name: $select
+                  schema:
+                      type: string
+                  required: false  
+                  example: "id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus"
+                - in: query 
+                  name: dtFilter
+                  schema:
+                      type: string
+                  required: false  
+                  example: "all"
+                - in: query 
+                  name: $orderBy
+                  schema:
+                      type: string
+                  required: false  
+                  example: "deviceName%20asc"
+                - in: query 
+                  name: $top
+                  schema:
+                      type: int
+                  required: false  
+                  example: 40
+                - in: query 
+                  name: $filter
+                  schema:
+                      type: string
+                  required: false  
+                  example: "healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
-
 
     #GetAppsInstallStatusReport
     /reports/getAppsInstallSummaryReport:
