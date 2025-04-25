@@ -609,10 +609,10 @@ paths:
                 '500':
                     description: Internal Server Error - An error occurred on the server
 
-    #GetDeviceNoncomplianceReport
-    /reports/getDeviceNoncomplianceReport:
+    #GetPolicyNoncomplianceSummaryReport
+    /reports/getPolicyNoncomplianceSummaryReport:
         post:
-            operationId: GetDeviceNoncomplianceReport
+            operationId: GetPolicyNoncomplianceSummaryReport
             summary: Get Compliance Policy Non compliance Summary Report
             description: Generate a report summarizing non-compliance and errors with compliance policies across managed devices in your Intune environment.
                 The report lists the Compliance Policies defined in Intune having errors or non-compliance in their assignment. 
