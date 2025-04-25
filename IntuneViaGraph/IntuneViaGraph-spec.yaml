@@ -69,12 +69,35 @@ paths:
               For example, Windows 10 22H2 build 19405 patch level CU revision 5371 has osVersion '10.0.19045.5371'. 
               The osVersion field for Windows 10 always starts with "10.0.1". For example, "10.0.19043" is the initial part of the osVersion field for W10 21H1.  
               The osVersion field for Windows 10 always starts with "10.0.2". For example, "10.0.22621" is the initial part of the osVersion field for W11 22H2.
+              Consider these version of Windows 
+                Windows 10 1507 -> 10.0.10240
+                Windows 10 1511 -> 10.0.10586
+                Windows 10 1607 -> 10.0.14393
+                Windows 10 1703 -> 10.0.15063
+                Windows 10 1709 -> 10.0.16299
+                Windows 10 1803 -> 10.0.17134
+                Windows 10 1809 -> 10.0.17763
+                Windows 10 1903 -> 10.0.18362
+                Windows 10 1909 -> 10.0.18363
+                Windows 10 2004 -> 10.0.19041
+                Windows 10 20H2 -> 10.0.19042
+                Windows 10 21H1 -> 10.0.19043
+                Windows 10 21H2 -> 10.0.19044
+                Windows 10 22H2 -> 10.0.19045 
+                Windows 11 21H2 -> 10.0.22000
+                Windows 11 22H2 -> 10.0.22621
+                Windows 11 23H2 -> 10.0.22631
+                Windows 11 24H2 -> 10.0.26100                
+              If the input refers to a different version of Windows, do not include a condition on the 'osVersion' field in the '$filter' parameter in query string and specify in 
+              the response that the filter on OS version has not been included because the build number of that version it is not known. Invite the user to specify the build number directly. 
 
-              While building the '$filter' parameter in query string, never add a condition on the 'osVersion' field together with a condition on 'deviceName', 'manufacturer' or 'model'. 
+              While building the '$filter' parameter in query string, NEVER add a condition on the 'osVersion' field together with a condition on 'deviceName', 'manufacturer' or 'model' 
+              because this would cause an error in the internal Graph API call.  
               If conditions on 'deviceName', 'manufacturer' or 'model' must be part of the url-encoded OData expression, simply do not add a condition on 'osVersion'.
               If the input request would suggest to filter on 'osVersion' and also on 'deviceName', 'manufacturer' or 'model', clarify in the response that the filter on OS version has 
               not been included because it is not supported together with device name or manufacturer name or model name. 
               You can mix conditions on 'upgradeEligibility' and 'osVersion' but only if 'deviceName', 'manufacturer' or 'model' do not need to be part of the url-encoded OData expression.
+
                              
               When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
