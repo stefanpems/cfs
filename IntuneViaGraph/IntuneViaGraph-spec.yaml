@@ -160,30 +160,29 @@ paths:
               id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus.
 
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
-              Do not url-encode the value of the '$select' query string parameter. 
-
+              
               Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
 
               If not specified differently, to the input parameter '$orderBy' in query string the value 'deviceName%20asc', so that the results are ordered by deviceName in ascending order. 
               Always put that paramter in query string. 
 
               It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'healthStatus' field. 
-              To filter the results on the value of that field, create a url-encoded OData filtering expression and set as value for the '$filter' parameter in query string. 
+              To filter the results on the value of that field, create a OData filtering expression and set as value for the '$filter' parameter in query string. 
               The possible values for 'healthStatus' field are 
               "microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention'", 
               "microsoft.graph.UserExperienceAnalyticsHealthState'meetingGoals'".
               When creating the OData filtering expression for the 'healthStatus' field, choose one of the above 2 values according to the request received in input.
               For example, if the request in input specifies to retrieve only the devices that 'have battery health issue', add the '$filter' parameter in query string with the value 
-              'healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27' .
+              "healthStatus eq microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention'" .
 
               It is possible to filter the results also on the partial or entire name of the device (field 'deviceName'), manufacturer (field 'manufacturer')  
               and model (field 'model') to be considered. 
-              If requested, add that condition in the url-encoded OData expression passed to the '$filter' parameter in query string.
+              If requested, add that condition in the OData expression passed to the '$filter' parameter in query string.
               For example, if the request in input specifies to retrieve only the devices whose name contains "ABC", add the '$filter' parameter in query string with the value 
-              'contains(deviceName,%20%27ABC%27)' .  
+              'contains(deviceName,'ABC')' .  
               If the request in input specifies to retrieve only the devices that have battery health issue and whose device name or manufacturer name or model name contains "ABC", 
               add the '$filter' parameter in query string with the value 
-              healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27%20and%20contains(deviceName,%20%27ABCP%27)%20or%20contains(model,%20%27ABCP%27)%20or%20contains(manufacturer,%20%27ABCP%27)' . 
+              "healthStatus eq microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention' and contains(deviceName,'ABCP') or contains(model,'ABCP') or contains(manufacturer,'ABCP')" . 
 
               While building the '$filter' parameter in query string, it is not possible to combine in logical AND different conditions on 'deviceName', 'manufacturer' or 'model'. 
               If the input request would suggest to filter on more of these conditions in logical AND, choose one and clarify in the response that the filtering requested is not supported. 
@@ -229,7 +228,7 @@ paths:
                   schema:
                       type: string
                   required: false  
-                  example: "healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
+                  example: "healthStatus eq microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention'"            
             responses:
                 "200":
                     description: OK
