@@ -27,19 +27,49 @@ paths:
                     content:
                         application/json:
 
-    #GetNotCapableDevicesForUpgradeEligibility
-    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices?$select=id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed&dtFilter=all&$orderBy=osVersion%20asc&$top=40&$filter=upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27:
+    #GetWindowsUpgradeReadinessStatus
+    /userExperienceAnalyticsWorkFromAnywhereMetrics('{scope}')/metricDevices:
         get:
-            operationId: GetNotCapableDevicesForUpgradeEligibility
-            description: Get the list of devices that are considered as 'not capable' for 'upgrade eligibility'.
-              These devices are those that cannot be upgraded from Windows 10 to Windows 11.
-              For each device, the information retrieved are id,deviceName,managedBy,manufacturer,model,osDescription,
-              osVersion,azureAdJoinType,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
+            operationId: GetWindowsUpgradeReadinessStatus
+            description: Get the readiness status of the Windows devices managed in Microsoft Intune for the possibility to upgrade them from Windows 10 to Windows 11.
+
+              For each device in the list of results, the function call can return the following fields 
+              id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,
               processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
+
+              If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
+
+              Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
+
+              If not specified differently, to the input parameter '$orderBy' in query string the value 'osVersion%20asc', so that the results are ordered by osVersion in ascending order. 
+              Always put that paramter in query string. 
+
+              It is possible to filter the results on the value for readiness status of the Windows devices, which is described in the 'upgradeEligibility' field. 
+              To filter the results on the value of that field, create a url-encoded OData filtering expression and set as value for the '$filter' parameter in query string. 
+              The possible values for 'upgradeEligibility' field are 
+              "microsoft.graph.OperatingSystemUpgradeEligibility'notCapable'", 
+              "microsoft.graph.OperatingSystemUpgradeEligibility'capable'", 
+              "microsoft.graph.OperatingSystemUpgradeEligibility'upgraded'", 
+              "microsoft.graph.OperatingSystemUpgradeEligibility'unknown'", 
+              When creating the OData filtering expression for the 'upgradeEligibility' field, chose one of the above 4 values according to the request received in input.
+              For example, if the request in input specifies to retrieve only the devices that are 'not ready to be upgraded', add the '$filter' parameter in query string with the value 
+              'upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27' .
+
+              It is possible to filter the results also on the partial or entire name of the device, manufacturer, model and os version to be considered. 
+              If requested, add that condition in the url-encoded OData expression passed to the '$filter' parameter in query string.
+              For example, if the request in input specifies to retrieve only the devices whose name contains "ABC", add the '$filter' parameter in query string with the value 
+              'contains(deviceName,%20%27ABC%27)' .  
+              If the request in input specifies to retrieve only the devices that are ready to be upgraded to W11 and whose device name or manufacturer name or model name contains "ABC", 
+              add the '$filter' parameter in query string with the value 
+              'upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27capable%27%20and%20contains(deviceName,%20%27ABC%27)%20or%20contains(manufacturer,%20%27ABC%27)%20or%20contains(model,%20%27ABC%27)' . 
+
+              When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
+
+
             ExamplePrompt:
               - 'Give me the list of devices that cannot be upgraded from Windows 10 to Windows 11.'
               - 'Which of our devices cannot be upgraded from Windows 10?'
-              - 'Which of our devices cannot be upgraded to Windows 11?'
+              - 'Which of our devices cannot be upgraded to W11?'
             parameters:
                 - in: path 
                   name: scope
@@ -47,6 +77,37 @@ paths:
                       type: string
                   required: true  
                   example: "allDevices"
+                - in: query 
+                  name: $select
+                  schema:
+                      type: string
+                  required: true  
+                  example: "id,deviceName,managedBy,manufacturer,model,osDescription,osVersion,azureAdJoinType,upgradeEligibility,ramCheckFailed,storageCheckFailed,processorCoreCountCheckFailed,processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed"
+                - in: query 
+                  name: dtFilter
+                  schema:
+                      type: string
+                  required: true  
+                  example: "all"
+                - in: query 
+                  name: $orderBy
+                  schema:
+                      type: string
+                  required: true  
+                  example: "osVersion%20asc"
+                - in: query 
+                  name: $top
+                  schema:
+                      type: int
+                  required: true  
+                  example: 40
+                - in: query 
+                  name: $filter
+                  description: A filtering expression in url-encoded OData format to be used for filtering the results in the response.
+                  schema:
+                      type: string
+                  required: true  
+                  example: "upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27notCapable%27"
             responses:
                 "200":
                     description: OK
