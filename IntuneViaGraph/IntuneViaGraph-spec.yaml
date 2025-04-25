@@ -474,7 +474,7 @@ paths:
 
             ExamplePrompt:
               - 'List the devices that have Encryption Readiness equal to true and Encryption Status equal to false.'
-              - 'List the devices that are not encrypted and can be encrypted. Filter only the device whose name starts with ABC'
+              - 'List the devices that are not encrypted and can be encrypted. Search only for the device with name starting with ABC'
             requestBody:
                 required: true
                 content:
@@ -614,10 +614,10 @@ paths:
     #GetPolicyNoncomplianceSummaryReport
     /reports/getPolicyNoncomplianceSummaryReport:
         post:
-            operationId: GetPolicyNoncomplianceSummaryReport
-            summary: Get Compliance Policy Non compliance Summary Report
-            description: Generate a report summarizing non-compliance and errors with compliance policies across managed devices in your Intune environment.
-                The report lists the Compliance Policies defined in Intune having errors or non-compliance in their assignment. 
+            operationId: GetRegulationPolicyNoncomplianceSummaryReport
+            summary: Get Regulation Policy Non compliance Summary Report
+            description: Generate a report summarizing non-compliance and errors with Regulation Policies across managed devices in your Intune environment.
+                The report lists the Regulation Policies defined in Intune having errors or non-compliance in their assignment. 
                 For each policy, the report returns the numbers of devices with errors and devices with non-compliance regarding the assignment of that specific policy. 
                 
                 When it is requested to return specific columns, create an array of strings with the internal name of the requested columns 
@@ -648,18 +648,18 @@ paths:
                     Android AOSP -> PolicyPlatformType eq '9'
                     Linux -> PolicyPlatformType eq '128'
                     ALL -> PolicyPlatformType eq '100'
-                For example, the request to retrieve the non-compliant and error assignments report for the compliance policies on Windows 10 and later 
+                For example, the request to retrieve the non-compliant and error assignments report for the Regulation Policies on Windows 10 and later 
                 implies the need to set the input parameter 'filter' for the API call equal to 
                 ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceCompliancePolicy') or (PolicyBaseTypeName eq 'DeviceManagementCompliancePolicy')) and (PolicyPlatformType eq '6'). 
                 
-                Add (PolicyPlatformType eq '100') to the OData expression in the 'filter' input parameter when it is requested to consider only the compliance policies that are 
+                Add (PolicyPlatformType eq '100') to the OData expression in the 'filter' input parameter when it is requested to consider only the Regulation Policies that are 
                 assigned to all kind of platforms. 
 
-                Add (PolicyId eq '<policy-id>') to the OData expression in the 'filter' input parameter when it is requested to filter also by compliance policy ID. 
+                Add (PolicyId eq '<policy-id>') to the OData expression in the 'filter' input parameter when it is requested to filter also by Regulation Policy ID. 
 
-                When requested to filter on part of the compliance policy name or the entire compliance policy name, use the 'search' input parameter to specify the name or the part of the name 
+                When requested to filter on part of the Regulation Policy name or the entire Regulation Policy name, use the 'search' input parameter to specify the name or the part of the name 
                 of the configuration policy as desired. 
-                For example, the request to retrieve the non-compliance and error report for the compliance policy with the name containing "XYZ" implies the need to set 
+                For example, the request to retrieve the non-compliance and error report for the Regulation Policy with the name containing "XYZ" implies the need to set 
                 the input parameter 'search' equal to "XYZ"
                                 
                 When it is requested to return the status report ordered by a specific set of columns, create an array of strings with the internal name of the 
@@ -684,8 +684,8 @@ paths:
                 IF NOT DIFFERENTLY REQUESTED IN INPUT, ASSIGN TO THESE INPUT PARAMETERS THE DEFAULT VALUES SPECIFIED ABOVE.
 
             ExamplePrompt:
-              - '[NOT YET WORKING] List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
-              - '[NOT YET WORKING] Give me the number of assignment errors and condition of non-compliance for the compliance policy assigned to Android devices'
+              - '[NOT YET WORKING] List all the Regulation Policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
+              - '[NOT YET WORKING] Give me the number of assignment errors and condition of non-compliance for the Regulation Policy assigned to Android devices'
               - '[UNDER INVESTIGATION] AT THIS TIME THE ONLY WAY TO CALL THIS SKILL IS BY DIRECT SKILL INVOKATION, PASSING ALL THE PARAMETERS select, filter, skip and top.'
             requestBody:
                 required: true
