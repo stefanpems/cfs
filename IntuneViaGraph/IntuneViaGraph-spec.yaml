@@ -92,16 +92,12 @@ paths:
               If the input refers to a different version of Windows, do not include a condition on the 'osVersion' field in the '$filter' parameter in query string and specify in 
               the response that the filter on OS version has not been included because the build number of that version it is not known. Invite the user to specify the build number directly. 
 
-              While building the '$filter' parameter in query string, NEVER add a condition on the 'osVersion' field together with a condition on 'deviceName', 'manufacturer' or 'model' 
-              because this would cause an error in the internal Graph API call.  
-              If conditions on 'deviceName', 'manufacturer' or 'model' must be part of the url-encoded OData expression, simply do not add a condition on 'osVersion'.
-              If the input request would suggest to filter on 'osVersion' and also on 'deviceName', 'manufacturer' or 'model', clarify in the response that the filter on OS version has 
-              not been included because it is not supported together with device name or manufacturer name or model name.
-              For example, if the prompts asks for the devices upgraded to Windows 11 and whose name contains "ABC", add the '$filter' parameter in query string with the value 
-              upgradeEligibility%20eq%20microsoft.graph.OperatingSystemUpgradeEligibility%27upgraded%27%20and%20contains(deviceName,%20%27CPC%27) .
-              (This OData expression does not contain conditions on osVersion together with the condition on deviceName, despite the fact that the user asked for Windows 11)
-
-              You can mix conditions on 'upgradeEligibility' and 'osVersion' but only if 'deviceName', 'manufacturer' or 'model' do not need to be part of the url-encoded OData expression.
+              While building the '$filter' parameter in query string, it is not possible to combine in logical AND different conditions on 'osVersion', 'deviceName', 'manufacturer' or 'model'. 
+              If the input request would suggest to filter on more of these conditions in logical AND, choose one and clarify in the response that the filtering requested is not supported. 
+              It is possible, instead, to combine in logical AND a condition on the value of 'upgradeEligibility' and on the value of one and only one of the fields 
+              'osVersion', 'deviceName', 'manufacturer' or 'model'. 
+              It is also possible to combine in logical AND a condition on the value of 'upgradeEligibility' and on the the logical OR of the values of one or more of the fields 
+              'osVersion', 'deviceName', 'manufacturer' or 'model'.              
                              
               When the input request specifies to filter the result on the 'upgradeEligibility' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
@@ -161,7 +157,7 @@ paths:
             description: Get the battery health and performances for the devices managed in Intune.  
 
               For each device in the list of results, the function call can return the following fields 
-              model,manufacturer,activeDevices,medianMaxCapacityPercentage,medianEstimatedRuntimeInMinutes,medianFullBatteryDrainCount,modelBatteryHealthScore,modelHealthStatus.
+              id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus.
 
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
               Do not url-encode the value of the '$select' query string parameter. 
@@ -171,14 +167,14 @@ paths:
               If not specified differently, to the input parameter '$orderBy' in query string the value 'deviceName%20asc', so that the results are ordered by deviceName in ascending order. 
               Always put that paramter in query string. 
 
-              It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'modelHealthStatus' field. 
+              It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'healthStatus' field. 
               To filter the results on the value of that field, create a url-encoded OData filtering expression and set as value for the '$filter' parameter in query string. 
-              The possible values for 'modelHealthStatus' field are 
+              The possible values for 'healthStatus' field are 
               "microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention'", 
               "microsoft.graph.UserExperienceAnalyticsHealthState'meetingGoals'".
-              When creating the OData filtering expression for the 'modelHealthStatus' field, chose one of the above 2 values according to the request received in input.
+              When creating the OData filtering expression for the 'healthStatus' field, choose one of the above 2 values according to the request received in input.
               For example, if the request in input specifies to retrieve only the devices that 'have battery health issue', add the '$filter' parameter in query string with the value 
-              'modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27' .
+              'healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27' .
 
               It is possible to filter the results also on the partial or entire name of the device (field 'deviceName'), manufacturer (field 'manufacturer')  
               and model (field 'model') to be considered. 
@@ -187,9 +183,16 @@ paths:
               'contains(deviceName,%20%27ABC%27)' .  
               If the request in input specifies to retrieve only the devices that have battery health issue and whose device name or manufacturer name or model name contains "ABC", 
               add the '$filter' parameter in query string with the value 
-              modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27%20and%20contains(deviceName,%20%27ABCP%27)%20or%20contains(model,%20%27ABCP%27)%20or%20contains(manufacturer,%20%27ABCP%27)' . 
-                             
-              When the input request specifies to filter the result on the 'modelHealthStatus' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
+              healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27%20and%20contains(deviceName,%20%27ABCP%27)%20or%20contains(model,%20%27ABCP%27)%20or%20contains(manufacturer,%20%27ABCP%27)' . 
+
+              While building the '$filter' parameter in query string, it is not possible to combine in logical AND different conditions on 'deviceName', 'manufacturer' or 'model'. 
+              If the input request would suggest to filter on more of these conditions in logical AND, choose one and clarify in the response that the filtering requested is not supported. 
+              It is possible, instead, to combine in logical AND a condition on the value of 'healthStatus' and on the value of one and only one of the fields 
+              'osVersion', 'deviceName', 'manufacturer' or 'model'. 
+              It is also possible to combine in logical AND a condition on the value of 'healthStatus' and on the logical OR of the values of one or more of the fields 
+              'osVersion', 'deviceName', 'manufacturer' or 'model'.
+
+              When the input request specifies to filter the result on the 'healthStatus' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
             ExamplePrompt:
               - '/GetDeviceBatteryPerformance Give me the list of devices that have battery health issues.'
@@ -202,7 +205,7 @@ paths:
                   schema:
                       type: string
                   required: false  
-                  example: "model,manufacturer,activeDevices,medianMaxCapacityPercentage,medianEstimatedRuntimeInMinutes,medianFullBatteryDrainCount,modelBatteryHealthScore,modelHealthStatus"
+                  example: "id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus"
                 - in: query 
                   name: dtFilter
                   schema:
@@ -226,7 +229,7 @@ paths:
                   schema:
                       type: string
                   required: false  
-                  example: "modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
+                  example: "healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
             responses:
                 "200":
                     description: OK
