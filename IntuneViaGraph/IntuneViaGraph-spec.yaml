@@ -38,6 +38,7 @@ paths:
               processorSpeedCheckFailed,tpmCheckFailed,secureBootCheckFailed,processorFamilyCheckFailed,processor64BitCheckFailed,osCheckFailed.
 
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
+              Do not url-encode the value of the '$select' query string parameter. 
 
               Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
 
@@ -163,6 +164,7 @@ paths:
               id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus.
 
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
+              Do not url-encode the value of the '$select' query string parameter. 
 
               Always pass the exact value "all" to the input parameter 'dtFilter' in query string. Always put that paramter in query string. 
 
@@ -190,7 +192,7 @@ paths:
               When the input request specifies to filter the result on the 'healthStatus' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
             ExamplePrompt:
-              - 'Give me the list of devices that have battery health issues.'
+              - '/GetDeviceBatteryPerformance Give me the list of devices that have battery health issues.'
               - 'Which of our devices with model ABC have battery health issues?'
               - 'Do the devices from manufacturer ABC and model XYZ have battery health issues?'
             parameters:
