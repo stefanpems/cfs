@@ -161,7 +161,7 @@ paths:
             description: Get the battery health and performances for the devices managed in Intune.  
 
               For each device in the list of results, the function call can return the following fields 
-              id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus.
+              model,manufacturer,activeDevices,medianMaxCapacityPercentage,medianEstimatedRuntimeInMinutes,medianFullBatteryDrainCount,modelBatteryHealthScore,modelHealthStatus.
 
               If not specified differently, always pass that exatct complete list of fields to the input parameter '$select'. Always put that paramter in query string. 
               Do not url-encode the value of the '$select' query string parameter. 
@@ -171,14 +171,14 @@ paths:
               If not specified differently, to the input parameter '$orderBy' in query string the value 'deviceName%20asc', so that the results are ordered by deviceName in ascending order. 
               Always put that paramter in query string. 
 
-              It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'healthStatus' field. 
+              It is possible to filter the results on the value for batterey health status of the Windows devices, which is described in the 'modelHealthStatus' field. 
               To filter the results on the value of that field, create a url-encoded OData filtering expression and set as value for the '$filter' parameter in query string. 
-              The possible values for 'healthStatus' field are 
+              The possible values for 'modelHealthStatus' field are 
               "microsoft.graph.UserExperienceAnalyticsHealthState'needsAttention'", 
               "microsoft.graph.UserExperienceAnalyticsHealthState'meetingGoals'".
-              When creating the OData filtering expression for the 'healthStatus' field, chose one of the above 2 values according to the request received in input.
+              When creating the OData filtering expression for the 'modelHealthStatus' field, chose one of the above 2 values according to the request received in input.
               For example, if the request in input specifies to retrieve only the devices that 'have battery health issue', add the '$filter' parameter in query string with the value 
-              'healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27' .
+              'modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27' .
 
               It is possible to filter the results also on the partial or entire name of the device (field 'deviceName'), manufacturer (field 'manufacturer')  
               and model (field 'model') to be considered. 
@@ -187,9 +187,9 @@ paths:
               'contains(deviceName,%20%27ABC%27)' .  
               If the request in input specifies to retrieve only the devices that have battery health issue and whose device name or manufacturer name or model name contains "ABC", 
               add the '$filter' parameter in query string with the value 
-              healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27%20and%20contains(deviceName,%20%27ABCP%27)%20or%20contains(model,%20%27ABCP%27)%20or%20contains(manufacturer,%20%27ABCP%27)' . 
+              modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27%20and%20contains(deviceName,%20%27ABCP%27)%20or%20contains(model,%20%27ABCP%27)%20or%20contains(manufacturer,%20%27ABCP%27)' . 
                              
-              When the input request specifies to filter the result on the 'healthStatus' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
+              When the input request specifies to filter the result on the 'modelHealthStatus' field, always remove that field from the list of fields specified in the '$select' input parameter in query string. 
 
             ExamplePrompt:
               - '/GetDeviceBatteryPerformance Give me the list of devices that have battery health issues.'
@@ -202,7 +202,7 @@ paths:
                   schema:
                       type: string
                   required: false  
-                  example: "id,deviceId,deviceName,model,manufacturer,maxCapacityPercentage,estimatedRuntimeInMinutes,fullBatteryDrainCount,deviceBatteryCount,deviceBatteryHealthScore,healthStatus"
+                  example: "model,manufacturer,activeDevices,medianMaxCapacityPercentage,medianEstimatedRuntimeInMinutes,medianFullBatteryDrainCount,modelBatteryHealthScore,modelHealthStatus"
                 - in: query 
                   name: dtFilter
                   schema:
@@ -226,7 +226,7 @@ paths:
                   schema:
                       type: string
                   required: false  
-                  example: "healthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
+                  example: "modelHealthStatus%20eq%20microsoft.graph.UserExperienceAnalyticsHealthState%27needsAttention%27"            
             responses:
                 "200":
                     description: OK
