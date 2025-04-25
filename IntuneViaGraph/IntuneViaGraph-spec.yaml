@@ -622,12 +622,15 @@ paths:
                 and pass it to the 'select' input parameter. 
                 For example, the request to retrieve the status of non-compliance for the configuration policies and to return only the policy name and 
                 the number of non-compliant or error devices implies the need to set the input parameter 'select' equal to ["PolicyName","NumberOfNonCompliantOrErrorDevices"].
-                If not differently specified, set input parameter with the following value 
-                ["PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"]
+                If not differently specified, set 'select' input parameter with the following value 
+                ["PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"] 
+                Always include the 'select' input parameter in the post request. 
 
-                In the 'filter' input parameter ALWAYS include at least the OData expression needed to filter on policies of type "compliance". The minimal expression 
+                The OData query in the 'filter' input parameter for this method MUST ALWAYS include the condition to filter on policies of type "compliance"; so, the minimal expression 
                 to be added in that OData filter is the following 
                 ((PolicyBaseTypeName eq 'Microsoft.Management.Services.Api.DeviceCompliancePolicy') or (PolicyBaseTypeName eq 'DeviceManagementCompliancePolicy'))
+                If not differently specified, set 'filter' input parameter with the value just specified. 
+                Always include the 'filter' input parameter in the post request. 
                 
                 When it is requested to filter the results on platform type (= operating system), modify the OData filtering expression for the 'filter' input parameter
                 by setting also the 'PolicyPlatformType' field. These are the values for the 'PolicyPlatformType' field 
@@ -661,11 +664,18 @@ paths:
                 columns requested for sorting and pass it to the 'orderBy' input parameter. 
                 For example, the request to retrieve the configuration policy status report for the policies ordered by Policy Name ascending implies the need to set the input parameter 
                 'orderBy' equal to ["PolicyName asc"].   
+                If not differently specified, set 'orderBy' input parameter with the following value 
+                ["PolicyName asc"] 
+                Always include the 'orderBy' input parameter in the post request. 
 
                 The internal name of the columns to be used in the 'select', 'filter' and 'orderBy' input parameters are 
                 "PolicyName","UnifiedPolicyPlatformType","NumberOfNonCompliantDevices","NumberOfErrorDevices","PolicyBaseTypeName","PolicyId"
                 When creating the values or the expressions for the 'select', 'filter' and 'orderBy' input parameters, select from the above list the internal name more 
                 assonant to the name specified by the user in the input prompt.
+
+                If not differently specified, set 'top' input parameter with the value 50.  
+
+                If not differently specified, set 'skip' input parameter with the value 0. 
 
             ExamplePrompt:
               - 'List all the compliance policies assigned to managed devices in Intune that have assignment errors or condition of non-compliance.'
