@@ -2,75 +2,217 @@
     "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion":  "1.0.0.0",
     "metadata":  {
-        "title":  "",
-        "description":  "",
-        "prerequisites":  "",
+        "title":  "User Reported Phishing analysis with Security Copilot",
+        "description":  "This Logic App is designed to trigger on every email arriving in the shared mailbox configured to receive emails reported by users as potential phishing. The Logic App analyzes the intent of the email based on the text in its body and attachments, and determines whether it is likely to be phishing or not",
+        "prerequisites":  "This Logic App requires a set of Function Apps deployed in Azure as specified in the setup instructions",
         "postDeployment":  [
+            "Set the parameters",
+            "Set the credentials for the connections",
+            "Set the permission to write in Sentinel (if required)"
         ],
         "prerequisitesDeployTemplateFile":  "",
-        "lastUpdateTime":  "",
+        "lastUpdateTime":  "2025.04.22",
         "entities":  [
         ],
         "tags":  [
         ],
-        "support":  {
-            "tier":  "community",
-            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
-        },
         "author":  {
-            "name":  ""
+            "name":  "Original version by Craig Freyman. Modifications by Stefano Pescosolido"
         }
     },
     "parameters":  {
         "PlaybookName":  {
-            "defaultValue":  "UserReportedPhishing-v3",
+            "defaultValue":  "UserReportedPhishing-v2",
             "type":  "string"
         },
-        "SubscriptionId":  {
-            "type":  "String",
-            "metadata":  {
-                "description":  "Enter value for SubscriptionId"
+        "FunctionAppName": {
+            "type": "String",
+            "metadata": {
+                "description": "The name of the Azure Function App created during previous Function App deployment."
             }
         },
-        "SentinelRG":  {
-            "type":  "String",
-            "metadata":  {
-                "description":  "Enter value for SentinelRG"
+        "FunctionAppResourceGroup": {
+            "type": "String",
+            "metadata": {
+                "description": "The name of the resource group where the Function App is deployed."
             }
         },
-        "SentinelWorkspaceName":  {
-            "type":  "String",
+        "AnalyzeOnlyDefenderIncident":  {
+            "defaultValue":  true,
+            "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for SentinelWorkspaceName"
+                "description":  "Set to true if you want this Logic App to analyze emails arriving at the shared SecOps mailbox only if there is a corresponding incident in Sentinel. Set to false if you want any email arriving at the shared SecOps mailbox to be analyzed."
             }
         },
-        "SentinelWorkspaceId":  {
-            "type":  "String",
+        "GetUrlsReputationOnMDTI":  {
+            "defaultValue":  false,
+            "type":  "Bool",
             "metadata":  {
-                "description":  "Enter value for SentinelWorkspaceId"
+                "description":  "Set to true if you want this Logic App to request MDTI for the reputation of the links listed in the body of the email."
+            }
+        },
+        "WriteCommentInIncident":  {
+            "defaultValue":  true,
+            "type":  "Bool",
+            "metadata":  {
+                "description":  "Set to true if you want this Logic App to write the result of the analysis as comment in the Sentinel incident."
+            }
+        },
+        "SendReportByEmail":  {
+            "defaultValue":  true,
+            "type":  "Bool",
+            "metadata":  {
+                "description":  "Set to true if you want this Logic App to send the result of this analysis to the email here specified in the ReportRecipientsEmailAddresses parameter."
+            }
+        },
+        "SkipFirstDelay":  {
+            "defaultValue":  false,
+            "type":  "Bool",
+            "metadata":  {
+                "description":  "Set to true if you want this Logic App to skip the first delay before querying Log Analytics to search for the alert related to the analyzed email. Skipping this initial delay is not recommended unless the logic app is used for testing on an email with an already existing alert and incident in Sentinel."
             }
         },
         "SecOpsMailboxEmailAddress":  {
             "type":  "String",
             "metadata":  {
-                "description":  "Enter value for SecOpsMailboxEmailAddress"
+                "description":  "Enter the email address of the shared mailbox receiving the user reported phishing."
             }
         },
         "ReportRecipientsEmailAddresses":  {
             "type":  "String",
             "metadata":  {
-                "description":  "Enter value for ReportRecipientsEmailAddresses"
+                "description":  "Enter the email address of the shared mailbox where this Logic App should send the report of the analysis. Leave an empty space if the SendReportByEmail is set to false."
+            }
+        },
+        "SubscriptionId":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter the ID of the Azure Subscription hosting the Log Analytics workspace for Sentinel."
+            }
+        },
+        "SentinelRG":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter the name of the Resource Group hosting the Log Analytics workspace for Sentinel."
+            }
+        },
+        "SentinelWorkspaceName":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter the name of the Log Analytics workspace for Sentinel. "
+            }
+        },
+        "SentinelWorkspaceId":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter the ID of the Log Analytics workspace for Sentinel. "
+            }
+        },
+        "TagIntent":  {
+            "defaultValue":  "Intent:<INTENT>",
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the value for the tag that should be added to the incident with the result of the analysis. Use <INTENT> as a placeholder for the result. Leave blank or set a white space if you don't want' to have a tag added to the incident for this purpose."
+            }
+        },
+        "TagMdtiResult":  {
+            "defaultValue":  "MDTI-match",
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the value for the tag that should be added to the incident when a match is found in MDTI on any of the URLs included in the email. Leave blank or set a white space if you don't want' to have a tag added to the incident for this purpose."
             }
         }
     },
     "variables":  {
-        "Office365-1ConnectionName":  "[concat('Office365-1-', parameters('PlaybookName'))]",
-        "AzuremonitorlogsConnectionName":  "[concat('Azuremonitorlogs-', parameters('PlaybookName'))]",
-        "Securitycopilot-1ConnectionName":  "[concat('Securitycopilot-1-', parameters('PlaybookName'))]",
-        "Conversionservice-1ConnectionName":  "[concat('Conversionservice-1-', parameters('PlaybookName'))]",
-        "MicrosoftSentinelConnectionName":  "[concat('MicrosoftSentinel-', parameters('PlaybookName'))]"
+        "Office365-ConnectionName":  "[concat('Office365-1-', parameters('PlaybookName'))]",
+        "AzureMonitorLogs-ConnectionName":  "[concat('Azuremonitorlogs-', parameters('PlaybookName'))]",
+        "MicrosoftSentinel-ConnectionName":  "[concat('MicrosoftSentinel-', parameters('PlaybookName'))]",
+        "Securitycopilot-ConnectionName":  "[concat('Securitycopilot-1-', parameters('PlaybookName'))]",
+        "ConversionService-ConnectionName":  "[concat('Conversionservice-1-', parameters('PlaybookName'))]",
+        "FunctionName01": "parse_email",
+        "FunctionName02": "normalize_json",
+        "FunctionName03": "json_to_html",
+        "FunctionName04": "evaluate_regex"
     },
     "resources":  [
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[variables('AzureMonitorLogs-ConnectionName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "V1",
+            "properties": {
+                "displayName": "[variables('AzureMonitorLogs-ConnectionName')]",
+                "parameterValueSet": {
+                    "name": "managedIdentityAuth",
+                    "values": {}
+                },
+                "api": {
+                    "category": "Standard",
+                    "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azuremonitorlogs')]",
+                    "type": "Microsoft.Web/locations/managedApis"
+                },
+                "customParameterValues": {}
+
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[variables('MicrosoftSentinel-ConnectionName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "V1",
+            "properties": {
+                "displayName": "[variables('MicrosoftSentinel-ConnectionName')]",
+                "parameterValueType": "Alternative",
+                "customParameterValues": {},
+                "api": {
+
+                    "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azuresentinel')]"
+                }
+            }
+        },
+
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[variables('ConversionService-ConnectionName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "V1",
+            "properties": {
+                "displayName": "[variables('ConversionService-ConnectionName')]",
+                "api": {
+                    "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/conversionservice')]"
+                }
+            }
+        },
+        {
+
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[variables('Office365-ConnectionName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "V1",
+            "properties": {
+                "displayName": "[variables('Office365-ConnectionName')]",
+                "api": {
+                    "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/office365')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[variables('Securitycopilot-ConnectionName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "V1",
+            "properties": {
+                "displayName": "[variables('Securitycopilot-ConnectionName')]",
+                "api": {
+                    "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Securitycopilot')]"
+                }
+            }
+        },
         {
             "properties":  {
                 "provisioningState":  "Succeeded",
@@ -83,6 +225,34 @@
                             "defaultValue":  {
                             },
                             "type":  "Object"
+                        },
+                        "AnalyzeOnlyDefenderIncident":  {
+                            "defaultValue":  "[parameters('AnalyzeOnlyDefenderIncident')]",
+                            "type":  "Bool"
+                        },
+                        "GetUrlsReputationOnMDTI":  {
+                            "defaultValue":  "[parameters('GetUrlsReputationOnMDTI')]",
+                            "type":  "Bool"
+                        },
+                        "WriteCommentInIncident":  {
+                            "defaultValue":  "[parameters('WriteCommentInIncident')]",
+                            "type":  "Bool"
+                        },
+                        "SendReportByEmail":  {
+                            "defaultValue":  "[parameters('SendReportByEmail')]",
+                            "type":  "Bool"
+                        },
+                        "SkipFirstDelay":  {
+                            "defaultValue":  "[parameters('SkipFirstDelay')]",
+                            "type":  "Bool"
+                        },
+                        "SecOpsMailboxEmailAddress":  {
+                            "defaultValue":  "[parameters('SecOpsMailboxEmailAddress')]",
+                            "type":  "String"
+                        },
+                        "ReportRecipientsEmailAddresses":  {
+                            "defaultValue":  "[parameters('ReportRecipientsEmailAddresses')]",
+                            "type":  "String"
                         },
                         "SubscriptionId":  {
                             "defaultValue":  "[parameters('SubscriptionId')]",
@@ -100,12 +270,12 @@
                             "defaultValue":  "[parameters('SentinelWorkspaceId')]",
                             "type":  "String"
                         },
-                        "SecOpsMailboxEmailAddress":  {
-                            "defaultValue":  "[parameters('SecOpsMailboxEmailAddress')]",
+                        "TagIntent":  {
+                            "defaultValue":  "[parameters('TagIntent')]",
                             "type":  "String"
                         },
-                        "ReportRecipientsEmailAddresses":  {
-                            "defaultValue":  "[parameters('ReportRecipientsEmailAddresses')]",
+                        "TagMdtiResult":  {
+                            "defaultValue":  "[parameters('TagMdtiResult')]",
                             "type":  "String"
                         }
                     },
@@ -130,7 +300,7 @@
                                 "method":  "get",
                                 "path":  "/v2/SharedMailbox/Mail/OnNewEmail",
                                 "queries":  {
-                                    "mailboxAddress":  "@parameters('SecOpsMailboxEmailAddress')",
+                                    "mailboxAddress":  "[parameters('SecOpsMailboxEmailAddress')]",
                                     "importance":  "Any",
                                     "hasAttachments":  false,
                                     "includeAttachments":  true,
@@ -140,7 +310,7 @@
                         }
                     },
                     "actions":  {
-                        "Initialize_is_defender_incident":  {
+                        "Initialize_is_defender_incident_and_set_to_false":  {
                             "runAfter":  {
                             },
                             "type":  "InitializeVariable",
@@ -148,14 +318,15 @@
                                 "variables":  [
                                     {
                                         "name":  "is_defender_incident",
-                                        "type":  "boolean"
+                                        "type":  "boolean",
+                                        "value":  false
                                     }
                                 ]
                             }
                         },
-                        "Initialize_network_message_id":  {
+                        "Initialize_network_message_id_and_set_to_empty":  {
                             "runAfter":  {
-                                "Initialize_variable_AlertFound":  [
+                                "Initialize_variable_AlertFound_and_set_to_false":  [
                                     "Succeeded"
                                 ]
                             },
@@ -171,39 +342,6 @@
                         },
                         "If_email_subject_contains_phishing":  {
                             "actions":  {
-                                "Show_network_message_id_here":  {
-                                    "runAfter":  {
-                                        "Parse_JSON_NetworkMessageId":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "Compose",
-                                    "inputs":  "@body('Parse_JSON_NetworkMessageId')?['matched_value']"
-                                },
-                                "Set_variable_defender_incident_true":  {
-                                    "runAfter":  {
-                                        "Set_variable_network_message_id":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "SetVariable",
-                                    "inputs":  {
-                                        "name":  "is_defender_incident",
-                                        "value":  true
-                                    }
-                                },
-                                "Set_variable_network_message_id":  {
-                                    "runAfter":  {
-                                        "Show_network_message_id_here":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "SetVariable",
-                                    "inputs":  {
-                                        "name":  "network_message_id",
-                                        "value":  "@outputs('Show_network_message_id_here')"
-                                    }
-                                },
                                 "Find_NetworkMessageId":  {
                                     "type":  "Function",
                                     "inputs":  {
@@ -212,9 +350,297 @@
                                             "subject":  "@triggerBody()?['subject']"
                                         },
                                         "function":  {
-                                            "id":  "/subscriptions/d6116047-3fe1-46f0-aa50-14dd661af84e/resourceGroups/phish-rg/providers/Microsoft.Web/sites/phishb7bd22/functions/evaluate_regex"
+                                            "id":  "[concat('/subscriptions/', parameters('SubscriptionId'), '/resourceGroups/', parameters('FunctionAppResourceGroup'), '/providers/Microsoft.Web/sites/', parameters('FunctionAppName'), '/functions/', variables('FunctionName04'))]"
                                         }
                                     }
+                                },
+                                "Condition_NetworkMessageId_found":  {
+                                    "actions":  {
+                                        "Show_network_message_id_here":  {
+                                            "type":  "Compose",
+                                            "inputs":  "@body('Parse_JSON_NetworkMessageId')?['matched_value']"
+                                        },
+                                        "Set_variable_network_message_id":  {
+                                            "runAfter":  {
+                                                "Show_network_message_id_here":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "network_message_id",
+                                                "value":  "@outputs('Show_network_message_id_here')"
+                                            }
+                                        },
+                                        "Until_AlertFound_or_8_times_or_20_mins":  {
+                                            "actions":  {
+                                                "Query_to_get_systemalertid":  {
+                                                    "runAfter":  {
+                                                        "Set_variable_FirstLoopExec_to_false":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "ApiConnection",
+                                                    "inputs":  {
+                                                        "host":  {
+                                                            "connection":  {
+                                                                "name":  "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method":  "post",
+                                                        "body":  "SecurityAlert\n| where isnotempty(Entities)\n| extend MailEntities = parse_json(Entities)\n| mv-expand MailEntities\n| where MailEntities.Type == \"mailMessage\"\n| extend NetworkMessageId = tostring(MailEntities.NetworkMessageId)\n| where NetworkMessageId == \"@{variables('network_message_id')}\"\n| summarize arg_max(TimeGenerated, *) by SystemAlertId \n| top 1 by TimeGenerated desc \n| project SystemAlertId",
+                                                        "path":  "/queryData",
+                                                        "queries":  {
+                                                            "subscriptions":  "@parameters('SubscriptionId')",
+                                                            "resourcegroups":  "@parameters('SentinelRG')",
+                                                            "resourcetype":  "Log Analytics Workspace",
+                                                            "resourcename":  "@parameters('SentinelWorkspaceName')",
+                                                            "timerange":  "14d"
+                                                        }
+                                                    }
+                                                },
+                                                "Condition_Alert_Found":  {
+                                                    "actions":  {
+                                                        "Set_variable_systemalert_id_query_results":  {
+                                                            "type":  "SetVariable",
+                                                            "inputs":  {
+                                                                "name":  "systemalertid_query_results",
+                                                                "value":  "@body('Query_to_get_systemalertid')?['value']"
+                                                            }
+                                                        },
+                                                        "Alert_-_Get_incident_from_systemalertid":  {
+                                                            "runAfter":  {
+                                                                "Set_variable_systemalert_id_query_results":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type":  "ApiConnection",
+                                                            "inputs":  {
+                                                                "host":  {
+                                                                    "connection":  {
+                                                                        "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method":  "get",
+                                                                "path":  "/Incidents/subscriptions/@{encodeURIComponent(parameters('SubscriptionId'))}/resourceGroups/@{encodeURIComponent(parameters('SentinelRG'))}/workspaces/@{encodeURIComponent(parameters('SentinelWorkspaceId'))}/alerts/@{encodeURIComponent(variables('systemalertid_query_results')[0]['SystemAlertId'])}"
+                                                            }
+                                                        },
+                                                        "Condition_Incident_found":  {
+                                                            "actions":  {
+                                                                "Set_variable_is_defender_incident_to_true":  {
+                                                                    "type":  "SetVariable",
+                                                                    "inputs":  {
+                                                                        "name":  "is_defender_incident",
+                                                                        "value":  true
+                                                                    }
+                                                                }
+                                                            },
+                                                            "runAfter":  {
+                                                                "Alert_-_Get_incident_from_systemalertid":  [
+                                                                    "Succeeded",
+                                                                    "Failed",
+                                                                    "TimedOut"
+                                                                ]
+                                                            },
+                                                            "else":  {
+                                                                "actions":  {
+                                                                }
+                                                            },
+                                                            "expression":  {
+                                                                "and":  [
+                                                                    {
+                                                                        "greater":  [
+                                                                            "@length(body('Alert_-_Get_incident_from_systemalertid')?['id'])",
+                                                                            0
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type":  "If"
+                                                        },
+                                                        "Show_Incident_ARM_ID":  {
+                                                            "runAfter":  {
+                                                                "Condition_Incident_found":  [
+                                                                    "Succeeded",
+                                                                    "Failed",
+                                                                    "TimedOut"
+                                                                ]
+                                                            },
+                                                            "type":  "Compose",
+                                                            "inputs":  "@body('Alert_-_Get_incident_from_systemalertid')?['id']"
+                                                        }
+                                                    },
+                                                    "runAfter":  {
+                                                        "Set_variable_AlertFound":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "else":  {
+                                                        "actions":  {
+                                                        }
+                                                    },
+                                                    "expression":  {
+                                                        "and":  [
+                                                            {
+                                                                "equals":  [
+                                                                    "@variables('AlertFound')",
+                                                                    true
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type":  "If"
+                                                },
+                                                "Set_variable_AlertFound":  {
+                                                    "runAfter":  {
+                                                        "Query_to_get_systemalertid":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "AlertFound",
+                                                        "value":  "@greater(length(body('Query_to_get_systemalertid')?['value']),0)"
+                                                    }
+                                                },
+                                                "Increment_variable_LoopIndex":  {
+                                                    "type":  "IncrementVariable",
+                                                    "inputs":  {
+                                                        "name":  "LoopIndex",
+                                                        "value":  1
+                                                    }
+                                                },
+                                                "Condition_-_Do_not_wait":  {
+                                                    "actions":  {
+                                                    },
+                                                    "runAfter":  {
+                                                        "Increment_variable_LoopIndex":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "else":  {
+                                                        "actions":  {
+                                                            "Delay_2_minutes":  {
+                                                                "type":  "Wait",
+                                                                "inputs":  {
+                                                                    "interval":  {
+                                                                        "count":  2,
+                                                                        "unit":  "Minute"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression":  {
+                                                        "and":  [
+                                                            {
+                                                                "equals":  [
+                                                                    "@parameters('SkipFirstDelay')",
+                                                                    true
+                                                                ]
+                                                            },
+                                                            {
+                                                                "equals":  [
+                                                                    "@variables('FirstLoopExec')",
+                                                                    true
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type":  "If"
+                                                },
+                                                "Set_variable_FirstLoopExec_to_false":  {
+                                                    "runAfter":  {
+                                                        "Condition_-_Do_not_wait":  [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "FirstLoopExec",
+                                                        "value":  false
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Set_variable_network_message_id":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression":  "@equals(variables('is_defender_incident'),true)",
+                                            "limit":  {
+                                                "count":  8,
+                                                "timeout":  "PT20M"
+                                            },
+                                            "type":  "Until"
+                                        },
+                                        "Compose_-_Show_LoopIndex":  {
+                                            "runAfter":  {
+                                                "Until_AlertFound_or_8_times_or_20_mins":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "Compose",
+                                            "inputs":  "@variables('LoopIndex')"
+                                        },
+                                        "Condition_-_MessageId_found_but_incident_not_found":  {
+                                            "actions":  {
+                                                "Terminate_-_Probably_MDO_AST_simulation":  {
+                                                    "type":  "Terminate",
+                                                    "inputs":  {
+                                                        "runStatus":  "Cancelled"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Compose_-_Show_LoopIndex":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else":  {
+                                                "actions":  {
+                                                }
+                                            },
+                                            "expression":  {
+                                                "and":  [
+                                                    {
+                                                        "equals":  [
+                                                            "@variables('is_defender_incident')",
+                                                            false
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
+                                        }
+                                    },
+                                    "runAfter":  {
+                                        "Parse_JSON_NetworkMessageId":  [
+                                            "Succeeded",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "else":  {
+                                        "actions":  {
+                                        }
+                                    },
+                                    "expression":  {
+                                        "and":  [
+                                            {
+                                                "equals":  [
+                                                    "@body('Parse_JSON_NetworkMessageId')?['match_found']",
+                                                    true
+                                                ]
+                                            },
+                                            {
+                                                "greater":  [
+                                                    "@length(trim(body('Parse_JSON_NetworkMessageId')?['matched_value']))",
+                                                    0
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type":  "If"
                                 },
                                 "Parse_JSON_NetworkMessageId":  {
                                     "runAfter":  {
@@ -248,165 +674,15 @@
                                             }
                                         }
                                     }
-                                },
-                                "Until":  {
-                                    "actions":  {
-                                        "Delay_2_minutes":  {
-                                            "runAfter":  {
-                                                "Increment_variable_LoopIndex":  [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type":  "Wait",
-                                            "inputs":  {
-                                                "interval":  {
-                                                    "count":  2,
-                                                    "unit":  "Minute"
-                                                }
-                                            }
-                                        },
-                                        "Query_to_get_systemalertid":  {
-                                            "runAfter":  {
-                                                "Delay_2_minutes":  [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type":  "ApiConnection",
-                                            "inputs":  {
-                                                "host":  {
-                                                    "connection":  {
-                                                        "name":  "@parameters('$connections')['azuremonitorlogs']['connectionId']"
-                                                    }
-                                                },
-                                                "method":  "post",
-                                                "body":  "SecurityAlert\n| where isnotempty(Entities)\n| extend MailEntities = parse_json(Entities)\n| mv-expand MailEntities\n| where MailEntities.Type == \"mailMessage\"\n| extend NetworkMessageId = tostring(MailEntities.NetworkMessageId)\n| where NetworkMessageId == \"@{variables('network_message_id')}\"\n| distinct SystemAlertId",
-                                                "path":  "/queryData",
-                                                "queries":  {
-                                                    "subscriptions":  "@parameters('SubscriptionId')",
-                                                    "resourcegroups":  "@parameters('SentinelRG')",
-                                                    "resourcetype":  "Log Analytics Workspace",
-                                                    "resourcename":  "@parameters('SentinelWorkspaceName')",
-                                                    "timerange":  "14d"
-                                                }
-                                            }
-                                        },
-                                        "Condition_Alert_Found":  {
-                                            "actions":  {
-                                                "Set_variable_systemalert_id_query_results":  {
-                                                    "type":  "SetVariable",
-                                                    "inputs":  {
-                                                        "name":  "systemalertid_query_results",
-                                                        "value":  "@body('Query_to_get_systemalertid')?['value']"
-                                                    }
-                                                }
-                                            },
-                                            "runAfter":  {
-                                                "Set_variable_AlertFound":  [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "else":  {
-                                                "actions":  {
-                                                }
-                                            },
-                                            "expression":  {
-                                                "and":  [
-                                                    {
-                                                        "equals":  [
-                                                            "@variables('AlertFound')",
-                                                            true
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            "type":  "If"
-                                        },
-                                        "Set_variable_AlertFound":  {
-                                            "runAfter":  {
-                                                "Query_to_get_systemalertid":  [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type":  "SetVariable",
-                                            "inputs":  {
-                                                "name":  "AlertFound",
-                                                "value":  "@greater(length(body('Query_to_get_systemalertid')?['value']),0)"
-                                            }
-                                        },
-                                        "Increment_variable_LoopIndex":  {
-                                            "type":  "IncrementVariable",
-                                            "inputs":  {
-                                                "name":  "LoopIndex",
-                                                "value":  1
-                                            }
-                                        }
-                                    },
-                                    "runAfter":  {
-                                        "Set_variable_defender_incident_true":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "expression":  "@equals(variables('AlertFound'),true)",
-                                    "limit":  {
-                                        "count":  8,
-                                        "timeout":  "PT20M"
-                                    },
-                                    "type":  "Until"
-                                },
-                                "Condition_-_Probably_MDO_AST_Simulation":  {
-                                    "actions":  {
-                                        "Terminate":  {
-                                            "type":  "Terminate",
-                                            "inputs":  {
-                                                "runStatus":  "Succeeded"
-                                            }
-                                        }
-                                    },
-                                    "runAfter":  {
-                                        "Compose_-_Show_LoopIndex":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "else":  {
-                                        "actions":  {
-                                        }
-                                    },
-                                    "expression":  {
-                                        "and":  [
-                                            {
-                                                "equals":  [
-                                                    "@variables('AlertFound')",
-                                                    false
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    "type":  "If"
-                                },
-                                "Compose_-_Show_LoopIndex":  {
-                                    "runAfter":  {
-                                        "Until":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "Compose",
-                                    "inputs":  "@variables('LoopIndex')"
                                 }
                             },
                             "runAfter":  {
-                                "Initialize_variable":  [
+                                "Initialize_variable_FirstLoopExec":  [
                                     "Succeeded"
                                 ]
                             },
                             "else":  {
                                 "actions":  {
-                                    "Set_variable_is_defender_incident_false":  {
-                                        "type":  "SetVariable",
-                                        "inputs":  {
-                                            "name":  "is_defender_incident",
-                                            "value":  false
-                                        }
-                                    }
                                 }
                             },
                             "expression":  {
@@ -423,7 +699,7 @@
                         },
                         "Export_email_(V2)":  {
                             "runAfter":  {
-                                "If_email_subject_contains_phishing":  [
+                                "Condition_-_Defender_incident_required_and_not_found":  [
                                     "Succeeded"
                                 ]
                             },
@@ -535,7 +811,7 @@
                             "inputs":  {
                                 "body":  "@variables('raw_email')",
                                 "function":  {
-                                    "id":  "/subscriptions/d6116047-3fe1-46f0-aa50-14dd661af84e/resourceGroups/phish-rg/providers/Microsoft.Web/sites/phishb7bd22/functions/parse_email"
+                                    "id":  "[concat('/subscriptions/', parameters('SubscriptionId'), '/resourceGroups/', parameters('FunctionAppResourceGroup'), '/providers/Microsoft.Web/sites/', parameters('FunctionAppName'), '/functions/', variables('FunctionName01'))]"
                                 }
                             }
                         },
@@ -801,7 +1077,7 @@
                                     {
                                         "name":  "raw_urls",
                                         "type":  "array",
-                                        "value":  "@body('Process_parseEmail_JSON')?['urls']"
+                                        "value":  "@sort(union(body('Process_parseEmail_JSON')?['urls'],body('Process_parseEmail_JSON')?['urls']))"
                                     }
                                 ]
                             }
@@ -818,7 +1094,8 @@
                                     {
                                         "name":  "urls",
                                         "type":  "array",
-                                        "value":  "@body('Process_parseEmail_JSON')?['urls']"
+                                        "value":  [
+                                        ]
                                     }
                                 ]
                             }
@@ -878,7 +1155,7 @@
                                 }
                             },
                             "runAfter":  {
-                                "Initialize_domains":  [
+                                "Initialize_variable_HtmlBodyFinal":  [
                                     "Succeeded"
                                 ]
                             },
@@ -895,7 +1172,7 @@
                         },
                         "Security_Copilot_Email_Analysis":  {
                             "runAfter":  {
-                                "Show_URL_array_here":  [
+                                "Condition_-_Get_Urls_reputation_on_MDTI":  [
                                     "Succeeded"
                                 ]
                             },
@@ -928,7 +1205,7 @@
                             "inputs":  {
                                 "body":  "@body('Security_Copilot_Email_Analysis')?['EvaluationResultContent']",
                                 "function":  {
-                                    "id":  "/subscriptions/d6116047-3fe1-46f0-aa50-14dd661af84e/resourceGroups/phish-rg/providers/Microsoft.Web/sites/phishb7bd22/functions/normalize_json"
+                                    "id":  "[concat('/subscriptions/', parameters('SubscriptionId'), '/resourceGroups/', parameters('FunctionAppResourceGroup'), '/providers/Microsoft.Web/sites/', parameters('FunctionAppName'), '/functions/', variables('FunctionName02'))]"
                                 }
                             }
                         },
@@ -1138,125 +1415,251 @@
                             "inputs":  {
                                 "body":  "@body('Parse_normalized_JSON')",
                                 "function":  {
-                                    "id":  "/subscriptions/d6116047-3fe1-46f0-aa50-14dd661af84e/resourceGroups/phish-rg/providers/Microsoft.Web/sites/phishb7bd22/functions/json_to_html"
+                                    "id":  "[concat('/subscriptions/', parameters('SubscriptionId'), '/resourceGroups/', parameters('FunctionAppResourceGroup'), '/providers/Microsoft.Web/sites/', parameters('FunctionAppName'), '/functions/', variables('FunctionName03'))]"
                                 }
                             }
                         },
                         "Finalization_-_If_is_defender_incident_true":  {
                             "actions":  {
-                                "Html_to_text":  {
-                                    "type":  "ApiConnection",
-                                    "inputs":  {
-                                        "host":  {
-                                            "connection":  {
-                                                "name":  "@parameters('$connections')['conversionservice-1']['connectionId']"
+                                "Condition_-_Write_comment_in_incident":  {
+                                    "actions":  {
+                                        "Html_to_text":  {
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['conversionservice-1']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "post",
+                                                "body":  "\u003cp class=\"editor-paragraph\"\u003e@{variables('HtmlBodyFinal')}\u003c/p\u003e",
+                                                "path":  "/html2text"
                                             }
                                         },
-                                        "method":  "post",
-                                        "body":  "\u003cp class=\"editor-paragraph\"\u003e@{body('Generate_HTML_report_from_JSON')}\u003c/p\u003e",
-                                        "path":  "/html2text"
-                                    }
-                                },
-                                "Alert_-_Get_incident_from_systemalertid":  {
-                                    "runAfter":  {
-                                        "Html_to_text":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "ApiConnection",
-                                    "inputs":  {
-                                        "host":  {
-                                            "connection":  {
-                                                "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
+                                        "Add_comment_to_incident_(V3)_armid":  {
+                                            "runAfter":  {
+                                                "Html_to_text":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "post",
+                                                "body":  {
+                                                    "incidentArmId":  "@body('Alert_-_Get_incident_from_systemalertid')?['id']",
+                                                    "message":  "\u003cp class=\"editor-paragraph\"\u003e********** Phishing Analysis Generated by Security Copilot **********\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e@{body('Html_to_text')}\u003c/p\u003e\u003cbr\u003e\u003cp class=\"editor-paragraph\"\u003e---\u003cbr\u003eReport generated: @{utcNow()}\u003cbr\u003e\u003ci\u003e\u003cem class=\"editor-text-italic\"\u003eGenerated with AI, check for accuracy.\u003c/em\u003e\u003c/i\u003e\u003c/p\u003e\u003cbr\u003e"
+                                                },
+                                                "path":  "/Incidents/Comment"
                                             }
                                         },
-                                        "method":  "get",
-                                        "path":  "/Incidents/subscriptions/@{encodeURIComponent(parameters('SubscriptionId'))}/resourceGroups/@{encodeURIComponent(parameters('SentinelRG'))}/workspaces/@{encodeURIComponent(parameters('SentinelWorkspaceId'))}/alerts/@{encodeURIComponent(variables('systemalertid_query_results')[0]['SystemAlertId'])}"
-                                    }
-                                },
-                                "Add_comment_to_incident_(V3)_armid":  {
-                                    "runAfter":  {
-                                        "Alert_-_Get_incident_from_systemalertid":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "ApiConnection",
-                                    "inputs":  {
-                                        "host":  {
-                                            "connection":  {
-                                                "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
-                                            }
-                                        },
-                                        "method":  "post",
-                                        "body":  {
-                                            "incidentArmId":  "@body('Alert_-_Get_incident_from_systemalertid')?['id']",
-                                            "message":  "\u003cp class=\"editor-paragraph\"\u003e********** Phishing Analysis Generated by Security Copilot **********\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e@{body('Html_to_text')}\u003c/p\u003e\u003cbr\u003e\u003cp class=\"editor-paragraph\"\u003e---\u003cbr\u003eReport generated: @{utcNow()}\u003cbr\u003e\u003ci\u003e\u003cem class=\"editor-text-italic\"\u003eGenerated with AI, check for accuracy.\u003c/em\u003e\u003c/i\u003e\u003c/p\u003e\u003cbr\u003e"
-                                        },
-                                        "path":  "/Incidents/Comment"
-                                    }
-                                },
-                                "Send_an_email_from_a_shared_mailbox_(V2)_with_incident_url":  {
-                                    "runAfter":  {
-                                        "Add_comment_to_incident_(V3)_armid":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type":  "ApiConnection",
-                                    "inputs":  {
-                                        "host":  {
-                                            "connection":  {
-                                                "name":  "@parameters('$connections')['office365-1']['connectionId']"
-                                            }
-                                        },
-                                        "method":  "post",
-                                        "body":  {
-                                            "MailboxAddress":  "@parameters('SecOpsMailboxEmailAddress')",
-                                            "To":  "@parameters('ReportRecipientsEmailAddresses')",
-                                            "Subject":  "Phishing Email Analysis [Incident] - @{variables('recipient_upn')} - @{triggerBody()?['subject']}",
-                                            "Body":  "\u003cbr\u003e\u003cp class=\"editor-paragraph\"\u003e@{body('Generate_HTML_report_from_JSON')}\u003c/p\u003e\u003cbr\u003e\u003cp class=\"editor-paragraph\"\u003e***********\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003eIncident URL:\u003c/strong\u003e\u003c/b\u003e\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e@{concat('https://security.microsoft.com/incident2/',body('Alert_-_Get_incident_from_systemalertid')?['properties']?['providerIncidentId'],'/overview')}\u003c/p\u003e\u003cbr\u003e\u003cp class=\"editor-paragraph\"\u003e***********\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e\u003ci\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold editor-text-italic\"\u003eGenerated with AI, check for accuracy.\u003c/strong\u003e\u003c/b\u003e\u003c/i\u003e\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e***********\u003c/p\u003e",
-                                            "Attachments":  [
-                                                {
-                                                    "Name":  "original_email.eml",
-                                                    "ContentBytes":  "@body('Export_email_(V2)')"
+                                        "Condition_-_Tag_Intent":  {
+                                            "actions":  {
+                                                "Update_incident_-_Add_Tag_Intent":  {
+                                                    "type":  "ApiConnection",
+                                                    "inputs":  {
+                                                        "host":  {
+                                                            "connection":  {
+                                                                "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method":  "put",
+                                                        "body":  {
+                                                            "incidentArmId":  "@body('Alert_-_Get_incident_from_systemalertid')?['id']",
+                                                            "tagsToAdd":  {
+                                                                "TagsToAdd":  [
+                                                                    {
+                                                                        "Tag":  "@replace(parameters('TagIntent'),'\u003cINTENT\u003e',body('Parse_normalized_JSON')?['final_assessment']?['category'])"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "path":  "/Incidents"
+                                                    }
                                                 }
-                                            ],
-                                            "Importance":  "Normal"
+                                            },
+                                            "runAfter":  {
+                                                "Add_comment_to_incident_(V3)_armid":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else":  {
+                                                "actions":  {
+                                                }
+                                            },
+                                            "expression":  {
+                                                "and":  [
+                                                    {
+                                                        "greater":  [
+                                                            "@length(trim(parameters('TagIntent')))",
+                                                            0
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
                                         },
-                                        "path":  "/v2/SharedMailbox/Mail"
-                                    }
+                                        "Condition_-_Tag_Mdti":  {
+                                            "actions":  {
+                                                "Update_incident_-_Add_Mdti_Evaluation":  {
+                                                    "type":  "ApiConnection",
+                                                    "inputs":  {
+                                                        "host":  {
+                                                            "connection":  {
+                                                                "name":  "@parameters('$connections')['azuresentinel']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method":  "put",
+                                                        "body":  {
+                                                            "incidentArmId":  "@body('Alert_-_Get_incident_from_systemalertid')?['id']",
+                                                            "tagsToAdd":  {
+                                                                "TagsToAdd":  [
+                                                                    {
+                                                                        "Tag":  "@parameters('TagMdtiResult')"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "path":  "/Incidents"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Condition_-_Tag_Intent":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else":  {
+                                                "actions":  {
+                                                }
+                                            },
+                                            "expression":  {
+                                                "and":  [
+                                                    {
+                                                        "greater":  [
+                                                            "@length(trim(parameters('TagMdtiResult')))",
+                                                            0
+                                                        ]
+                                                    },
+                                                    {
+                                                        "contains":  [
+                                                            "@join(variables('ResponsesFromMDTI'),',')",
+                                                            "http"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
+                                        }
+                                    },
+                                    "else":  {
+                                        "actions":  {
+                                        }
+                                    },
+                                    "expression":  {
+                                        "and":  [
+                                            {
+                                                "equals":  [
+                                                    "@parameters('WriteCommentInIncident')",
+                                                    true
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type":  "If"
+                                },
+                                "Condition_-_Send_report_by_email_with_incident_URL":  {
+                                    "actions":  {
+                                        "Send_an_email_from_a_shared_mailbox_(V2)_with_incident_url":  {
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['office365-1']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "post",
+                                                "body":  {
+                                                    "MailboxAddress":  "@parameters('SecOpsMailboxEmailAddress')",
+                                                    "To":  "@parameters('ReportRecipientsEmailAddresses')",
+                                                    "Subject":  "Phishing Email Analysis [Incident] - @{variables('recipient_upn')} - @{triggerBody()?['subject']}",
+                                                    "Body":  "\u003cp class=\"editor-paragraph\"\u003e@{replace(variables('HtmlBodyFinal'),'\u003c/body\u003e',concat('\u003cdivclass=\"section\"\u003e\u003ch2\u003eIncident URL\u003c/h2\u003e\u003cp\u003e',concat('https://security.microsoft.com/incident2/',body('Alert_-_Get_incident_from_systemalertid')?['properties']?['providerIncidentId'],'/overview'),'\u003c/p\u003e\u003cp\u003e\u003cb\u003e***********\u003cbr/\u003eGenerated with AI, check for accuracy\u003cbr/\u003e***********\u003cbr/\u003e\u003c/b\u003e\u003c/p\u003e\u003c/div\u003e\u003c/body\u003e'))}\u003c/p\u003e",
+                                                    "Importance":  "Normal"
+                                                },
+                                                "path":  "/v2/SharedMailbox/Mail"
+                                            }
+                                        }
+                                    },
+                                    "runAfter":  {
+                                        "Condition_-_Write_comment_in_incident":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else":  {
+                                        "actions":  {
+                                        }
+                                    },
+                                    "expression":  {
+                                        "and":  [
+                                            {
+                                                "equals":  [
+                                                    "@parameters('SendReportByEmail')",
+                                                    true
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type":  "If"
                                 }
                             },
                             "runAfter":  {
-                                "Generate_HTML_report_from_JSON":  [
+                                "Show_HtmlBodyFinal":  [
                                     "Succeeded"
                                 ]
                             },
                             "else":  {
                                 "actions":  {
-                                    "Send_an_email_from_a_shared_mailbox_(V2)":  {
-                                        "type":  "ApiConnection",
-                                        "inputs":  {
-                                            "host":  {
-                                                "connection":  {
-                                                    "name":  "@parameters('$connections')['office365-1']['connectionId']"
+                                    "Condition_-_Send_report_by_email":  {
+                                        "actions":  {
+                                            "Send_an_email_from_a_shared_mailbox_(V2)":  {
+                                                "type":  "ApiConnection",
+                                                "inputs":  {
+                                                    "host":  {
+                                                        "connection":  {
+                                                            "name":  "@parameters('$connections')['office365-1']['connectionId']"
+                                                        }
+                                                    },
+                                                    "method":  "post",
+                                                    "body":  {
+                                                        "MailboxAddress":  "@parameters('SecOpsMailboxEmailAddress')",
+                                                        "To":  "@parameters('ReportRecipientsEmailAddresses')",
+                                                        "Subject":  "Phishing Email Analysis - @{triggerBody()?['from']} - @{triggerBody()?['subject']}",
+                                                        "Body":  "\u003cp class=\"editor-paragraph\"\u003e@{variables('HtmlBodyFinal')}\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e\u003cbr\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e***********\u003c/strong\u003e\u003c/b\u003e\u003cbr\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003eGenerated with AI, check for accuracy.\u003c/strong\u003e\u003c/b\u003e\u003cbr\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e***********\u003c/strong\u003e\u003c/b\u003e\u003c/p\u003e",
+                                                        "Importance":  "Normal"
+                                                    },
+                                                    "path":  "/v2/SharedMailbox/Mail"
                                                 }
-                                            },
-                                            "method":  "post",
-                                            "body":  {
-                                                "MailboxAddress":  "@parameters('SecOpsMailboxEmailAddress')",
-                                                "To":  "@parameters('ReportRecipientsEmailAddresses')",
-                                                "Subject":  "Phishing Email Analysis - @{triggerBody()?['from']} - @{triggerBody()?['subject']}",
-                                                "Body":  "\u003cp class=\"editor-paragraph\"\u003e@{body('Generate_HTML_report_from_JSON')}\u003c/p\u003e\u003cp class=\"editor-paragraph\"\u003e\u003cbr\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e***********\u003c/strong\u003e\u003c/b\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e\u003cbr\u003e\u003c/strong\u003e\u003c/b\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003eGenerated with AI, check for accuracy.\u003c/strong\u003e\u003c/b\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e\u003cbr\u003e\u003c/strong\u003e\u003c/b\u003e\u003cb\u003e\u003cstrong class=\"editor-text-bold\"\u003e***********\u003c/strong\u003e\u003c/b\u003e\u003c/p\u003e",
-                                                "Attachments":  [
-                                                    {
-                                                        "Name":  "original_email.eml",
-                                                        "ContentBytes":  "@base64(triggerBody()?['body'])"
-                                                    }
-                                                ],
-                                                "Importance":  "Normal"
-                                            },
-                                            "path":  "/v2/SharedMailbox/Mail"
-                                        }
+                                            }
+                                        },
+                                        "else":  {
+                                            "actions":  {
+                                            }
+                                        },
+                                        "expression":  {
+                                            "and":  [
+                                                {
+                                                    "equals":  [
+                                                        "@parameters('SendReportByEmail')",
+                                                        true
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "type":  "If"
                                     }
                                 }
                             },
@@ -1272,9 +1675,9 @@
                             },
                             "type":  "If"
                         },
-                        "Initialize_systemalert_id_query_results":  {
+                        "Initialize_systemalert_id_query_results_and_set_to_empty":  {
                             "runAfter":  {
-                                "Initialize_network_message_id":  [
+                                "Initialize_network_message_id_and_set_to_empty":  [
                                     "Succeeded"
                                 ]
                             },
@@ -1288,9 +1691,9 @@
                                 ]
                             }
                         },
-                        "Initialize_variable_AlertFound":  {
+                        "Initialize_variable_AlertFound_and_set_to_false":  {
                             "runAfter":  {
-                                "Initialize_is_defender_incident":  [
+                                "Initialize_is_defender_incident_and_set_to_false":  [
                                     "Succeeded"
                                 ]
                             },
@@ -1305,9 +1708,9 @@
                                 ]
                             }
                         },
-                        "Initialize_variable":  {
+                        "Initialize_variable_LoopIndex_and_set_to_zero":  {
                             "runAfter":  {
-                                "Initialize_systemalert_id_query_results":  [
+                                "Initialize_systemalert_id_query_results_and_set_to_empty":  [
                                     "Succeeded"
                                 ]
                             },
@@ -1321,48 +1724,395 @@
                                     }
                                 ]
                             }
+                        },
+                        "Condition_-_Defender_incident_required_and_not_found":  {
+                            "actions":  {
+                                "Terminate_-_Incident_required_and_not_found":  {
+                                    "type":  "Terminate",
+                                    "inputs":  {
+                                        "runStatus":  "Cancelled"
+                                    }
+                                }
+                            },
+                            "runAfter":  {
+                                "If_email_subject_contains_phishing":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else":  {
+                                "actions":  {
+                                }
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "equals":  [
+                                            "@parameters('AnalyzeOnlyDefenderIncident')",
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "equals":  [
+                                            "@body('Alert_-_Get_incident_from_systemalertid')?['id']",
+                                            "@null"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Condition_-_Get_Urls_reputation_on_MDTI":  {
+                            "actions":  {
+                                "Until":  {
+                                    "actions":  {
+                                        "Set_variable_SubarrayIndicatorsForMDTI":  {
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "SubarrayIndicatorsForMDTI",
+                                                "value":  "@take(skip(variables('raw_urls'),variables('CounterIndicatorsForMDTI')),10)"
+                                            }
+                                        },
+                                        "Increment_variable_CounterIndicatorsForMDTI":  {
+                                            "runAfter":  {
+                                                "Condition_-_Call_to_SecCop_for_MDTI_successful":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "IncrementVariable",
+                                            "inputs":  {
+                                                "name":  "CounterIndicatorsForMDTI",
+                                                "value":  10
+                                            }
+                                        },
+                                        "Set_variable_CsvIndicatorsForMDTI":  {
+                                            "runAfter":  {
+                                                "Show_SubarrayIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "CsvIndicatorsForMDTI",
+                                                "value":  "@join(variables('SubarrayIndicatorsForMDTI'),', ')"
+                                            }
+                                        },
+                                        "Security_Copilot_URL_analysis_CsvIndicatorsForMDTI":  {
+                                            "runAfter":  {
+                                                "Set_variable_CsvIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['securitycopilot-1']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "post",
+                                                "body":  {
+                                                    "PromptContent":  "/GetReputationsForIndicators Excute the function call with the following comma separated list of URLs as input: @{variables('CsvIndicatorsForMDTI')}. \nReturn only the URLs known as suspicious or malicious. \nIf no URL is returned as suspicious or malicious, simply write: \"None of the submitted URLs have a reputation known in Microsoft Defender Threat Intelligence.\".   \nOtherwise, format the results as bulleted list in HTML. Start the response with the initial \"\u003cul\u003e\" and end the response with the final \"\u003c/ul\u003e\". The bullted list must have two levels. The first bullet - titled \"Knwon Malicious URLs\" (in bold) - must be included only if there are URLs recognized as malicious. Include the list of those malicious URLs as sub-bullets. \nThe second bullet - titled \"Knwon Suspicious URLs\" (in bold) - must be included only if there are URLs recognized as suspicious. Include the list of those suspicious URLs as sub-bullets. \n"
+                                                },
+                                                "path":  "/process-prompt"
+                                            }
+                                        },
+                                        "Condition_-_Call_to_SecCop_for_MDTI_successful":  {
+                                            "actions":  {
+                                                "Append_to_array_variable":  {
+                                                    "type":  "AppendToArrayVariable",
+                                                    "inputs":  {
+                                                        "name":  "ResponsesFromMDTI",
+                                                        "value":  "@body('Security_Copilot_URL_analysis_CsvIndicatorsForMDTI')?['EvaluationResultContent']"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Security_Copilot_URL_analysis_CsvIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else":  {
+                                                "actions":  {
+                                                }
+                                            },
+                                            "expression":  {
+                                                "and":  [
+                                                    {
+                                                        "equals":  [
+                                                            "@body('Security_Copilot_URL_analysis_CsvIndicatorsForMDTI')?['evaluationResultType']",
+                                                            "Success"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
+                                        },
+                                        "Show_length_raw_urls":  {
+                                            "runAfter":  {
+                                                "Show_CounterIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "Compose",
+                                            "inputs":  "@length(variables('raw_urls'))"
+                                        },
+                                        "Show_CounterIndicatorsForMDTI":  {
+                                            "runAfter":  {
+                                                "Increment_variable_CounterIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "Compose",
+                                            "inputs":  "@variables('CounterIndicatorsForMDTI')"
+                                        },
+                                        "Show_SubarrayIndicatorsForMDTI":  {
+                                            "runAfter":  {
+                                                "Set_variable_SubarrayIndicatorsForMDTI":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "Compose",
+                                            "inputs":  "@variables('SubarrayIndicatorsForMDTI')"
+                                        }
+                                    },
+                                    "expression":  "@greaterOrEquals(variables('CounterIndicatorsForMDTI'),length(variables('raw_urls')))",
+                                    "limit":  {
+                                        "count":  3,
+                                        "timeout":  "PT10M"
+                                    },
+                                    "type":  "Until"
+                                }
+                            },
+                            "runAfter":  {
+                                "Show_URL_array_here":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else":  {
+                                "actions":  {
+                                }
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "equals":  [
+                                            "@parameters('GetUrlsReputationOnMDTI')",
+                                            true
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Initialize_variable_SubarrayIndicatorsForMDTI":  {
+                            "runAfter":  {
+                                "Initialize_domains":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "SubarrayIndicatorsForMDTI",
+                                        "type":  "array"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_CounterIndicatorsForMDTI":  {
+                            "runAfter":  {
+                                "Initialize_variable_SubarrayIndicatorsForMDTI":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "CounterIndicatorsForMDTI",
+                                        "type":  "integer",
+                                        "value":  0
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_CsvIndicatorsForMDTI":  {
+                            "runAfter":  {
+                                "Initialize_variable_CounterIndicatorsForMDTI":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "CsvIndicatorsForMDTI",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_ResponsesFromMDTI":  {
+                            "runAfter":  {
+                                "Initialize_variable_CsvIndicatorsForMDTI":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "ResponsesFromMDTI",
+                                        "type":  "array",
+                                        "value":  [
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_HtmlBodyFinal":  {
+                            "runAfter":  {
+                                "Initialize_variable_ResponsesFromMDTI":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "HtmlBodyFinal",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "Condition_-_Response_include_MDTI_verdict":  {
+                            "actions":  {
+                                "Set_variable_HtmlBodyFinal_with_MDTI_verdict":  {
+                                    "runAfter":  {
+                                        "Compose_modified_body":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "SetVariable",
+                                    "inputs":  {
+                                        "name":  "HtmlBodyFinal",
+                                        "value":  "@outputs('Compose_modified_body')"
+                                    }
+                                },
+                                "Compose_modified_body":  {
+                                    "type":  "Compose",
+                                    "inputs":  "@replace(body('Generate_HTML_report_from_JSON'),'\u003c/body\u003e',concat('\u003cdivclass=\"section\"\u003e\u003ch2\u003eReputation of the URLs in MDTI\u003c/h2\u003e\u003cp\u003e',join(variables('ResponsesFromMDTI'),'\u003c/p\u003e\u003cp\u003e'),'\u003c/p\u003e\u003cbr/\u003e\u003c/div\u003e\u003c/body\u003e'))"
+                                }
+                            },
+                            "runAfter":  {
+                                "Show_body_of_Generate_HTML_report_from_JSON":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else":  {
+                                "actions":  {
+                                    "Set_variable_HtmlBodyFinal_with_no_MDTI_verdict":  {
+                                        "type":  "SetVariable",
+                                        "inputs":  {
+                                            "name":  "HtmlBodyFinal",
+                                            "value":  "@{body('Generate_HTML_report_from_JSON')}"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "equals":  [
+                                            "@parameters('GetUrlsReputationOnMDTI')",
+                                            true
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Show_HtmlBodyFinal":  {
+                            "runAfter":  {
+                                "Condition_-_Response_include_MDTI_verdict":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Compose",
+                            "inputs":  "@variables('HtmlBodyFinal')"
+                        },
+                        "Show_body_of_Generate_HTML_report_from_JSON":  {
+                            "runAfter":  {
+                                "Generate_HTML_report_from_JSON":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Compose",
+                            "inputs":  "@body('Generate_HTML_report_from_JSON')"
+                        },
+                        "Initialize_variable_FirstLoopExec":  {
+                            "runAfter":  {
+                                "Initialize_variable_LoopIndex_and_set_to_zero":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "FirstLoopExec",
+                                        "type":  "boolean",
+                                        "value":  true
+                                    }
+                                ]
+                            }
                         }
                     },
                     "outputs":  {
                     }
                 },
                 "parameters":  {
-                    "$connections":  {
-                        "value":  {
-                            "office365-1":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('Office365-1ConnectionName'))]",
-                                "connectionName":  "[variables('Office365-1ConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Office365-1')]"
+                    
+                    "$connections": {
+                        "value": {
+                            "office365-1": {
+                                "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/office365')]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('Office365-ConnectionName'))]",
+                                "connectionName": "[variables('Office365-ConnectionName')]"
                             },
-                            "azuremonitorlogs":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuremonitorlogsConnectionName'))]",
-                                "connectionName":  "[variables('AzuremonitorlogsConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuremonitorlogs')]",
-                                "connectionProperties":  {
-                                    "authentication":  {
-                                        "type":  "ManagedServiceIdentity"
+
+                            "securitycopilot-1": {
+                                "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/securitycopilot')]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('Securitycopilot-ConnectionName'))]",
+                                "connectionName": "[variables('Securitycopilot-ConnectionName')]"
+                            },
+
+                            "azuresentinel": {
+                                "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azuresentinel')]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinel-ConnectionName'))]",
+                                "connectionName": "[variables('MicrosoftSentinel-ConnectionName')]",
+                                "connectionProperties": {
+                                    "authentication": {
+                                        "type": "ManagedServiceIdentity"
                                     }
                                 }
                             },
-                            "securitycopilot-1":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('Securitycopilot-1ConnectionName'))]",
-                                "connectionName":  "[variables('Securitycopilot-1ConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Securitycopilot-1')]"
-                            },
-                            "conversionservice-1":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('Conversionservice-1ConnectionName'))]",
-                                "connectionName":  "[variables('Conversionservice-1ConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Conversionservice-1')]"
-                            },
-                            "azuresentinel":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinelConnectionName'))]",
-                                "connectionName":  "[variables('MicrosoftSentinelConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuresentinel')]",
-                                "connectionProperties":  {
-                                    "authentication":  {
-                                        "type":  "ManagedServiceIdentity"
+                            "azuremonitorlogs": {
+                                "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azuremonitorlogs')]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('AzureMonitorLogs-ConnectionName'))]",
+                                "connectionName": "[variables('AzureMonitorLogs-ConnectionName')]",
+                                "connectionProperties": {
+                                    "authentication": {
+                                        "type": "ManagedServiceIdentity"
                                     }
                                 }
+                            },
+                            "conversionservice-1": {
+                                "id": "[concat('/subscriptions/', parameters('SubscriptionId'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/conversionservice')]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('ConversionService-ConnectionName'))]",
+                                "connectionName": "[variables('ConversionService-ConnectionName')]"
                             }
                         }
                     }
@@ -1372,7 +2122,7 @@
             "type":  "Microsoft.Logic/workflows",
             "location":  "[resourceGroup().location]",
             "tags":  {
-                "hidden-SentinelTemplateName":  "UserReportedPhishing-v3",
+                "hidden-SentinelTemplateName":  "UserReportedPhishing-v4",
                 "hidden-SentinelTemplateVersion":  "1.0"
             },
             "identity":  {
@@ -1380,89 +2130,12 @@
             },
             "apiVersion":  "2017-07-01",
             "dependsOn":  [
-                "[resourceId('Microsoft.Web/connections', variables('Office365-1ConnectionName'))]",
-                "[resourceId('Microsoft.Web/connections', variables('AzuremonitorlogsConnectionName'))]",
-                "[resourceId('Microsoft.Web/connections', variables('Securitycopilot-1ConnectionName'))]",
-                "[resourceId('Microsoft.Web/connections', variables('Conversionservice-1ConnectionName'))]",
-                "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinelConnectionName'))]"
+                "[resourceId('Microsoft.Web/connections', variables('Office365-ConnectionName'))]",
+                "[resourceId('Microsoft.Web/connections', variables('AzureMonitorLogs-ConnectionName'))]",
+                "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinel-ConnectionName'))]",
+                "[resourceId('Microsoft.Web/connections', variables('Securitycopilot-ConnectionName'))]",
+                "[resourceId('Microsoft.Web/connections', variables('ConversionService-ConnectionName'))]"
             ]
-        },
-        {
-            "type":  "Microsoft.Web/connections",
-            "apiVersion":  "2016-06-01",
-            "name":  "[variables('Office365-1ConnectionName')]",
-            "location":  "[resourceGroup().location]",
-            "kind":  "V1",
-            "properties":  {
-                "displayName":  "[variables('Office365-1ConnectionName')]",
-                "customParameterValues":  {
-                },
-                "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Office365-1')]"
-                }
-            }
-        },
-        {
-            "type":  "Microsoft.Web/connections",
-            "apiVersion":  "2016-06-01",
-            "name":  "[variables('AzuremonitorlogsConnectionName')]",
-            "location":  "[resourceGroup().location]",
-            "kind":  "V1",
-            "properties":  {
-                "displayName":  "[variables('AzuremonitorlogsConnectionName')]",
-                "customParameterValues":  {
-                },
-                "parameterValueType":  "Alternative",
-                "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuremonitorlogs')]"
-                }
-            }
-        },
-        {
-            "type":  "Microsoft.Web/connections",
-            "apiVersion":  "2016-06-01",
-            "name":  "[variables('Securitycopilot-1ConnectionName')]",
-            "location":  "[resourceGroup().location]",
-            "kind":  "V1",
-            "properties":  {
-                "displayName":  "[variables('Securitycopilot-1ConnectionName')]",
-                "customParameterValues":  {
-                },
-                "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Securitycopilot-1')]"
-                }
-            }
-        },
-        {
-            "type":  "Microsoft.Web/connections",
-            "apiVersion":  "2016-06-01",
-            "name":  "[variables('Conversionservice-1ConnectionName')]",
-            "location":  "[resourceGroup().location]",
-            "kind":  "V1",
-            "properties":  {
-                "displayName":  "[variables('Conversionservice-1ConnectionName')]",
-                "customParameterValues":  {
-                },
-                "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Conversionservice-1')]"
-                }
-            }
-        },
-        {
-            "type":  "Microsoft.Web/connections",
-            "apiVersion":  "2016-06-01",
-            "name":  "[variables('MicrosoftSentinelConnectionName')]",
-            "location":  "[resourceGroup().location]",
-            "kind":  "V1",
-            "properties":  {
-                "displayName":  "[variables('MicrosoftSentinelConnectionName')]",
-                "customParameterValues":  {
-                },
-                "parameterValueType":  "Alternative",
-                "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuresentinel')]"
-                }
-            }
         }
     ]
 }
