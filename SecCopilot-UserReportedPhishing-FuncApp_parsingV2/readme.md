@@ -109,6 +109,6 @@ The Logic App deploys in a disabled state. Enable it in the Logic App Overview t
 - Regularly update Function App dependencies
 
 ## Changes made in this last version (by Stefano Pescosolido)
-- If there the reported email has the title with the expected structure (Phishing:<MessageId>|<sender>|<subject> <datetime>) but no incidents are found in Defender, the original phishing email is interpreted as created by a MDO AST simulation campaign. In that case the execution is cancelled before calling Security Copilot
+- If there the reported email has the title with the expected structure (Phishing:[MessageId]|[sender]|[subject] [datetime]) but no incidents are found in Defender, the original phishing email is interpreted as created by a MDO AST simulation campaign. In that case the execution is cancelled before calling Security Copilot
 - It has been added the possibility to investigate the links found in the body of the in MDTI (currently, the investigation is not done on the links found in the attachments) 
 - A few parameters have been added to easily modify the behavior of the app. For example, it is possible to decide if the app should analyze only incidents found in Defender, write in the incident comments, tag the incident with the result of the MDTI investigation and intent investigation, send the report by email. Please refer to the description of the parameters listed above. 
