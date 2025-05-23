@@ -7,7 +7,7 @@ Please refer to https://github.com/Azure/Security-Copilot/edit/main/Logic%20Apps
 
 ## Changes in this version:
 1. Instead of waiting for 15 minutes to find the alert ID in Log Analytics, the query is done every 2 minutes for max 8 times or 20 minutes
-2. When the email has the subject with the structure created by the report button (e.g.:Phishing:<original-message-id>>|<original-sender-address>|(<orginal-subject>) <original-date-time>) and the incident is not found in Defender/Sentinel, the suspect email is considered to be created by MDO AST (Defender for Office 365 - Attack Simulation Training). In this case, Security Copilot is not invoked.
+2. When the email has the subject with the structure created by the report button (e.g.:Phishing:original-message-id|original-sender-address|(orginal-subject) original-date-time) and the incident is not found in Defender/Sentinel, the suspect email is considered to be created by MDO AST (Defender for Office 365 - Attack Simulation Training). In this case, Security Copilot is not invoked.
 
 
 ## Deployment Steps
