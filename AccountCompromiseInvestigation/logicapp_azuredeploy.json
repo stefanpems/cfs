@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "metadata":  {
         "title":  "Account Compromize Investigation",
-        "description":  "This is a prototype of a Logic App that can be executed as a playbook on a Microsoft Sentinel incident. In combination with the custom KQL plugin Incident-Account-Investigation-Helper, it retrieves information about the accounts involved in the incident to help determine whether they are compromised. In its current version, the Logic App sends this information via email and/or adds it as a comment to the original Sentinel incident. If you prefer a different behavior, please modify the Logic App accordingly.",
+        "description":  "This is a prototype of a Logic App that can be executed as a playbook on a Microsoft Defender / Sentinel incident. In combination with the custom KQL plugin Incident-Account-Investigation-Helper, it retrieves information about the accounts involved in the incident to help determine whether they are compromised. In its current version, the Logic App sends this information via email and/or adds it as a comment to the original Sentinel incident. If you prefer a different behavior, please modify the Logic App accordingly.",
         "prerequisites":  "The Microsoft Sentinel or Microsoft Defender - NOTE: the custom plugin Incident-Account-Investigation-Helper is configured to use Microsoft Sentinel in order to enable a wider time interval when querying the SecurityAlerts table. Modify it to use Microsoft Defender if needed.",
         "postDeployment":  [
             "Set the Logic App parameters",
