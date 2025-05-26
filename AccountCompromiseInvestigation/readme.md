@@ -8,6 +8,7 @@ In combination with the custom KQL plugin Incident-Account-Investigation-Helper,
 
 The prototype of the Logic App is optimized for minimal SCU consumption. 
 
+Please refer to https://www.linkedin.com/pulse/boosting-your-soc-operations-optimized-automation-stefano-pescosolido-d4mwf/ for further details.
 
 # Prerequisites
 
@@ -18,6 +19,9 @@ The prototype of the Logic App is optimized for minimal SCU consumption.
 # Deployment
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2FAccountCompromiseInvestigation%2Flogicapp_azuredeploy.json)
+
+* To understand the meaning of each individual parameter, read the corresponding tooltip.
+* For the "Prompts" parameter, copy and paste the contents of https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/AccountCompromiseInvestigation/example%20of%20JSON%20of%20prompts.json, or provide your own JSON using the same schema as the shared example
 
 
 # PostDeployment
