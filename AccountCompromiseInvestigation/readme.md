@@ -24,7 +24,7 @@ Please refer to https://www.linkedin.com/pulse/boosting-your-soc-operations-opti
 * For the "Prompts" parameter, copy and paste the contents of https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/AccountCompromiseInvestigation/example%20of%20JSON%20of%20prompts.json, or provide your own JSON using the same schema as the shared example
 
 
-# PostDeployment
+# Post-Deployment
 
 In the Logic App:
 * Set the parameters
