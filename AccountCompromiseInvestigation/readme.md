@@ -30,3 +30,4 @@ In the Logic App:
 * Set the parameters
 * Set the credentials for the connections to Security Copilot and to Office 365
 * Assign the permission to its Managed Identity to write back the comments or tags in Sentinel (if required)
+* Authorize Sentinel on the Resource Group of the Logic App
