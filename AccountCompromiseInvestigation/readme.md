@@ -30,4 +30,12 @@ In the Logic App:
 * Set the parameters
 * Set the credentials for the connections to Security Copilot and to Office 365
 * Assign the permission to its Managed Identity to write back the comments or tags in Sentinel (if required)
+
+In Microsoft Sentinel:
 * Authorize Sentinel on the Resource Group of the Logic App
+
+In any text editor:
+* Replace every instance of the placeholders in the YAML of the custom KQL plugin with their values in your environment (tenant id, subscroptin id, sentinel resource group and sentinel workspace name)
+
+In Security Copilot:
+* Add the custom KQL plugin
