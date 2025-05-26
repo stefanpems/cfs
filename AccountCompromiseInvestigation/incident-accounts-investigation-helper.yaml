@@ -1,0 +1,459 @@
+Descriptor:
+  Name: Incident Accounts Investigation Helper
+  DisplayName: Incident Accounts Investigation Helper
+  Description: Skills to investigate the accounts involved in an incident 
+
+SkillGroups:
+
+  - Format: KQL
+    Skills:
+
+      - Name: GetDetailsForSigninsNearestTheBeginningOfTheIncident
+        DisplayName: Get the details of the signins nearest the beginning the incident   
+        Description: Get the details of the signins with IDs equal to the IDs of the signin event nearest in time to the first alert of the incident, 
+          for each of the users involved in the alerts of the incident. 
+        Inputs:
+          - Name: defender-incident-number
+            Description: The number of the incident in Defender XDR. It is used to read the list of the involved users and the FirstActivityTime. 
+            Required: true
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let incidentNumber = {{defender-incident-number}};
+            let usersUpn = (
+                SecurityIncident
+                | where TimeGenerated > ago(180d)           
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId     
+                | extend AlertIdsDynamic = todynamic(AlertIds)
+                | mv-expand AlertIdDynamic = AlertIdsDynamic
+                | extend AlertId = tolower(tostring(AlertIdDynamic))
+                | join kind=inner (
+                    SecurityAlert
+                    | where TimeGenerated > ago(180d)  
+                    | summarize arg_max(TimeGenerated, *) by SystemAlertId
+                    | extend AlertId = tolower(SystemAlertId)
+                    | mv-expand Entity = todynamic(Entities)
+                    | extend UPN = tostring(Entity.UserPrincipalName)
+                    | where isnotempty(UPN)
+                ) on AlertId
+                | distinct tolower(UPN)         
+            );
+            let offsetMinutes = 1440;
+            let incidentDetails = SecurityIncident
+                | where TimeGenerated > ago(180d)  
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId  
+                | project FirstActivityTime, LastActivityTime;
+            let firstActivityTime = toscalar(incidentDetails | project FirstActivityTime);
+            let lastActivityTime = toscalar(incidentDetails | project LastActivityTime);
+            let eventIds = (SigninLogs
+                | where tolower(UserPrincipalName) in (usersUpn)
+                | where TimeGenerated between (datetime_add('minute',-(offsetMinutes),firstActivityTime) .. datetime_add('minute',offsetMinutes, lastActivityTime))
+                | extend timeDiff = abs(datetime_diff('second', TimeGenerated, firstActivityTime))
+                | summarize arg_min(timeDiff, *) by UserPrincipalName
+                | project eventId=Id);
+            SigninLogs
+            | where Id in (eventIds)
+            | where Location != ""
+            | extend city = tostring(parse_json(LocationDetails).city)
+            | extend state = tostring(parse_json(LocationDetails).state)
+            | extend countryOrRegion = tostring(parse_json(LocationDetails).countryOrRegion)           
+            | distinct TimeGenerated, UserPrincipalName, IPAddress, Location, city, state, countryOrRegion, UserAgent, ResultType, ResultSignature, AppDisplayName, ClientAppUsed, AuthenticationRequirement, IsInteractive, ResultDescription, RiskState, RiskEventTypes, RiskLevelAggregated
+            | order by TimeGenerated desc, UserPrincipalName asc
+
+
+      - Name: GetSigninsSummaryByUsersInIncidentBeforeIncidentToNow
+        DisplayName: Get a summary of the signins events for the users in the specified incident
+        Description: Get a summary of the signins events for the users in the specified incident starting from the specified number of days before 
+          the incident until now.
+        DescriptionForModel : Get a summary of the signins events for the users in the specified incident starting from the specified number of days  
+          before the incident until now.
+          The signins are summarized by Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed and AppDisplayName.
+          For each of the considered users, this function returns a list of locations, result types (codes) and result signatures (success or failure),
+          result description (explaination of the result type), city of signin, client app used and cloud app requested, with the number of events for each of these combinations.
+          It is possible to specify as input which locations and result types should be ignored (so should not be counted) or what result types shoud be considered.
+          It is also possible to specify if the results should exclude events with success or failure (in ignoreResultSignature). When it is requested to consider only
+          successful signins, exclude result signature "failure"; viceversa, when it is requested to consider only failed signins, exclude result signature "success". 
+          Select this skill whenever the prompt requests for a list of signin locations and additional details (like client app, target app) for a set of users.    
+        Inputs:
+          - Name: defender-incident-number
+            Description: The number of the incident in Defender XDR. It is used to read the list of the involved users. It is ignored when usersUpn contains a value
+            Required: true
+          - Name: numberOfDaysBefore
+            Description: Number of days before the incident to look for signins
+            Required: true
+          - Name: ignoreLocations
+            Description: (Optional) Comma separated list of Locations to be ignored. 
+            Required: false
+          - Name: ignoreResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+          - Name: considerOnlyResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+          - Name: ignoreResultSignature
+            Description: (Optional) "SUCCESS" or "FAILURE"
+            Required: false
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
+            let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
+            let ignoreResultSignature = split(tolower('{{ignoreResultSignature}}'), ',');
+            let incidentNumber = {{defender-incident-number}};
+            let usersUpn = (
+                SecurityIncident
+                | where TimeGenerated > ago(180d)           
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId     
+                | extend AlertIdsDynamic = todynamic(AlertIds)
+                | mv-expand AlertIdDynamic = AlertIdsDynamic
+                | extend AlertId = tolower(tostring(AlertIdDynamic))
+                | join kind=inner (
+                    SecurityAlert
+                    | where TimeGenerated > ago(180d)  
+                    | summarize arg_max(TimeGenerated, *) by SystemAlertId
+                    | extend AlertId = tolower(SystemAlertId)
+                    | mv-expand Entity = todynamic(Entities)
+                    | extend UPN = tostring(Entity.UserPrincipalName)
+                    | where isnotempty(UPN)
+                ) on AlertId
+                | distinct tolower(UPN)         
+            );
+            let incidentDetails = SecurityIncident
+                | where TimeGenerated > ago(180d)  
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId  
+                | project FirstActivityTime, LastActivityTime;
+            let firstActivityTime = toscalar(incidentDetails | project FirstActivityTime);
+            let lastActivityTime = toscalar(incidentDetails | project LastActivityTime);                 
+            let currentTime = now();                
+            SigninLogs
+            | where tolower(UserPrincipalName) in (usersUpn)
+            | where TimeGenerated between (firstActivityTime .. currentTime)
+            | where tolower(Location) !in (ignoreLocations)
+            | where ResultType !in (ignoreResultTypes)
+            | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
+            | where tolower(ResultSignature) !in (ignoreResultSignature)
+            | extend City = tostring(parse_json(LocationDetails).city)           
+            | extend upnOrBlank = iif(toscalar(usersUpn|count)==1,'',UserPrincipalName)    
+            | summarize SigninEventCount = count() by UserPrincipalName=upnOrBlank, Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed, AppDisplayName
+            | order by SigninEventCount desc   
+
+      - Name: GetSigninsSummaryByUsersInTimeFrame
+        DisplayName: Get the summary of the signins events for the users involved in an incident
+        Description: Get the number of signins events summarized by different details for the users involved in a specified incident
+        DescriptionForModel : Get the number of signins in the specifiedTimeframe for the users involved in a specified incident, summarized by Location, ResultType, ResultSignature, 
+          ResultDescription, City, ClientAppUsed and AppDisplayName.
+          For each of the users involved, this function returns a list of locations, result types (codes) and result signatures (success or failure),
+          result description (explaination of the result type), city of signin, client app used and cloud app requested, with the number of events for each of these combinations.
+          It is possible to specify as input which locations and result types should be ignored (so should not be counted) or what result types shoud be considered.
+          It is also possible to specify if the results should exclude events with success or failure (in ignoreResultSignature). When it is requested to consider only
+          successful signins, exclude result signature "failure"; viceversa, when it is requested to consider only failed signins, exclude result signature "success". 
+          Select this skill whenever the prompt requests for a list of signin locations and additional details (like client app, target app) for a set of users.
+        ExamplePrompts:
+          - "/GetSigninEventDetailsSummaryByUsers List me the signin locations of yesterday for the users john@contoso.com and rick@contoso.com. Explain the results"
+          - "/GetSigninEventDetailsSummaryByUsers Get the locations with successful signins during the last hour for the users john@contoso.com and rick@contoso.com. Include the target apps."
+          - "/GetSigninEventDetailsSummaryByUsers Fetch the locations with result type 50074 and 50076 occurred today for the users john@contoso.com and rick@contoso.com. Specify the client apps and the target apps."              
+        Inputs:
+          - Name: usersUpn
+            Description: Comma separated list of UPNs to be considered. If specified, the defender-incident-number is ignored
+            Required: true
+          - Name: startDateTime
+            Description: The first date and time of the considered time frame. 
+            Required: true
+          - Name: endDateTime
+            Description: The end date and time of the considered time frame. 
+            Required: true
+          - Name: ignoreLocations
+            Description: (Optional) Comma separated list of Locations to be ignored. 
+            Required: false
+          - Name: ignoreResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be ignored. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+          - Name: considerOnlyResultTypes
+            Description: (Optional) Comma separated list of ResultTypes to be considered. To get the list of possible ResultTypes (error codes), 
+                         please refer to https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes#aadsts-error-codes (do not include the ADSTS prefix)
+            Required: false
+          - Name: ignoreResultSignature
+            Description: (Optional) "SUCCESS" or "FAILURE"
+            Required: false
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let ignoreLocations = split(tolower('{{ignoreLocations}}'), ',');
+            let ignoreResultTypes = split('{{ignoreResultTypes}}', ',');
+            let considerOnlyResultTypes = split('{{considerOnlyResultTypes}}', ',');
+            let ignoreResultSignature = split(tolower('{{ignoreResultSignature}}'), ',');
+            let usersUpn = split(tolower({{usersUpn}}), ',');
+            SigninLogs
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tolower(UserPrincipalName) in (usersUpn)
+            | where tolower(Location) !in (ignoreLocations)
+            | where ResultType !in (ignoreResultTypes)
+            | where (strlen(tostring(considerOnlyResultTypes))==4) or ResultType in (considerOnlyResultTypes)
+            | where tolower(ResultSignature) !in (ignoreResultSignature)
+            | extend City = tostring(parse_json(LocationDetails).city)             
+            | extend upnOrBlank = iif(array_length(usersUpn)==1,'',UserPrincipalName)
+            | summarize SigninEventCount = count() by UserPrincipalName=upnOrBlank, Location, ResultType, ResultSignature, ResultDescription, City, ClientAppUsed, AppDisplayName
+            | order by SigninEventCount desc 
+
+
+      - Name: GetAlertsSummaryByUsersInIncidentBeforeIncident
+        DisplayName: Get a summary of the alerts for the users involved in an incident
+        Description: Get a summary of the alerts for the users involved in the specified incident in the specified number of days before the incident
+        Inputs:
+          - Name: defender-incident-number
+            Description: The number of the incident in Defender XDR. It is used to read the list of the involved users. It is ignored when usersUpn contains a value
+            Required: true
+          - Name: numberOfDaysBefore
+            Description: Number of days before the incident to look for signins
+            Required: true
+          - Name: excludedCsvStringsInAlertTitle
+            Description: list of the excluded strings in the title of the alerts, separated by commas. Alerts including those strings in title are excluded from the results
+            Required: false
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let offsetDays = {{numberOfDaysBefore}};
+            let excludedStrings = "{{excludedCsvStringsInAlertTitle}}";
+            let excludedStrArray = iff(isnull(excludedStrings) or excludedStrings == "", dynamic([]), split(excludedStrings, ","));
+            let incidentNumber = {{defender-incident-number}};
+            let usersUpn = (
+                SecurityIncident
+                | where TimeGenerated > ago(180d)           
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId     
+                | extend AlertIdsDynamic = todynamic(AlertIds)
+                | mv-expand AlertIdDynamic = AlertIdsDynamic
+                | extend AlertId = tolower(tostring(AlertIdDynamic))
+                | join kind=inner (
+                    SecurityAlert
+                    | where TimeGenerated > ago(180d)  
+                    | summarize arg_max(TimeGenerated, *) by SystemAlertId
+                    | extend AlertId = tolower(SystemAlertId)
+                    | mv-expand Entity = todynamic(Entities)
+                    | extend UPN = tostring(Entity.UserPrincipalName)
+                    | where isnotempty(UPN)
+                ) on AlertId
+                | distinct tolower(UPN)         
+            );
+            let incidentDetails = SecurityIncident
+                | where TimeGenerated > ago(180d)  
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId  
+                | project FirstActivityTime, LastActivityTime;
+            let firstActivityTime = toscalar(incidentDetails | project FirstActivityTime);
+            let lastActivityTime = toscalar(incidentDetails | project LastActivityTime);
+            SecurityAlert
+            | summarize arg_max(TimeGenerated, *) by SystemAlertId 
+            | where TimeGenerated between (datetime_add('Day',-(offsetDays),firstActivityTime) .. firstActivityTime)
+            | where not (AlertName has_any (excludedStrArray))
+            | extend AlertId = tolower(SystemAlertId)
+            | mv-expand Entity = todynamic(Entities)
+            | extend UPN = tostring(Entity.UserPrincipalName)
+            | where tolower(UPN) in (usersUpn)   
+            | extend upnOrBlank = iif(toscalar(usersUpn|count)==1,'',UPN)
+            | summarize count() by DisplayName, UserPrincipalName=upnOrBlank
+            | order by count_ desc            
+
+      - Name: GetAlertsSummaryByUsersInTimeframe
+        DisplayName: Get a summary of the alerts for the specified users in a specified time frame
+        Description: Get a summary of the alerts for the specified users in a specified time frame
+        Inputs:
+          - Name: usersUpn
+            Description: Comma separated list of UPNs to be considered. If specified, the defender-incident-number is ignored
+            Required: true
+          - Name: startDateTime
+            Description: Start datetime for the timeframe of interest
+            Required: true
+          - Name: endDateTime
+            Description: End datetime for the timeframe of interest
+            Required: true
+          - Name: excludedCsvStringsInAlertTitle
+            Description: list of the excluded strings in the title of the alerts, separated by commas. Alerts including those strings in title are excluded from the results
+            Required: false
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let excludedStrings = "{{excludedCsvStringsInAlertTitle}}";
+            let excludedStrArray = iff(isnull(excludedStrings) or excludedStrings == "", dynamic([]), split(excludedStrings, ","));
+            let usersUpn = split(tolower({{usersUpn}}), ',');
+            SecurityAlert
+            | summarize arg_max(TimeGenerated, *) by SystemAlertId 
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where not (AlertName has_any (excludedStrArray))
+            | extend AlertId = tolower(SystemAlertId)
+            | mv-expand Entity = todynamic(Entities)
+            | extend UPN = tostring(Entity.UserPrincipalName)
+            | where tolower(UPN) in (usersUpn)       
+            | extend upnOrBlank = iif(array_length(usersUpn)==1,'',UPN)
+            | summarize count() by AlertDisplayName=DisplayName,UserPrincipalName=upnOrBlank
+            | order by count_ desc
+
+
+      - Name: GetUserActivitiesSummaryByUsersInIncidentBeforeAndDuringIncident
+        DisplayName: Get a summary of the audited events for the users involved in an incident 
+        Description: Get a summary of the audited events for the users involved in an incident in the 
+          specified number of days before the incident and during the incident
+        Inputs:
+          - Name: defender-incident-number
+            Description: The number of the incident in Defender XDR. It is used to read the list of the involved users and the FirstActivityTime. It is ignored when usersUpn contains a value
+            Required: true
+          - Name: numberOfDaysBefore
+            Description: Number of days before the incident to look for signins
+            Required: true
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let offsetDays = {{numberOfDaysBefore}};
+            let incidentNumber = {{defender-incident-number}};
+            let usersUpn = (
+                SecurityIncident
+                | where TimeGenerated > ago(180d)           
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId     
+                | extend AlertIdsDynamic = todynamic(AlertIds)
+                | mv-expand AlertIdDynamic = AlertIdsDynamic
+                | extend AlertId = tolower(tostring(AlertIdDynamic))
+                | join kind=inner (
+                    SecurityAlert
+                    | where TimeGenerated > ago(180d)  
+                    | summarize arg_max(TimeGenerated, *) by SystemAlertId
+                    | extend AlertId = tolower(SystemAlertId)
+                    | mv-expand Entity = todynamic(Entities)
+                    | extend UPN = tostring(Entity.UserPrincipalName)
+                    | where isnotempty(UPN)
+                ) on AlertId
+                | distinct tolower(UPN)         
+            );
+            let incidentDetails = SecurityIncident
+                | where TimeGenerated > ago(180d)  
+                | where ProviderIncidentId == incidentNumber
+                | summarize arg_max(TimeGenerated, *) by ProviderIncidentId  
+                | project FirstActivityTime, LastActivityTime;
+            let firstActivityTime = toscalar(incidentDetails | project FirstActivityTime);
+            let lastActivityTime = toscalar(incidentDetails | project LastActivityTime);
+            let al = AuditLogs
+            | where TimeGenerated between (datetime_add('Day',-(offsetDays),firstActivityTime) .. lastActivityTime)
+            | where TimeGenerated > ago(1d)
+            | where tostring(InitiatedBy) contains "@"
+            | extend InitiatorUpn = tostring(parse_json(InitiatedBy).user.userPrincipalName) 
+            | where tolower(InitiatorUpn) in (usersUpn)
+            | extend upnOrBlank = iif(toscalar(usersUpn|count)==1,'',InitiatorUpn)
+            | summarize ActionCount = count() by Scope="Entra", InitiatorUpn=upnOrBlank, ActivityName=ActivityDisplayName, Details=OperationName
+            | order by ActionCount desc;
+            let aa= AzureActivity            
+            | where TimeGenerated between (datetime_add('Day',-(offsetDays),firstActivityTime) .. lastActivityTime)
+            | where TimeGenerated > ago(1d)
+            | where tostring(Caller) contains "@"
+            | where tolower(Caller) in (usersUpn)
+            | extend res = tostring(parse_json(Properties).resource)          
+            | extend upnOrBlank = iif(toscalar(usersUpn|count)==1,'',Caller)
+            | summarize ActionCount = count() by Scope="Azure", InitiatorUpn=upnOrBlank, ActivityName=OperationNameValue, Details=''//res
+            | order by ActionCount desc;
+            let u = union al,aa;
+            u | order by ActionCount desc 
+
+      - Name: GetUserActivitiesSummaryByUsersInTimeframe
+        DisplayName: Get a summary of the audited events for the specified users
+        Description: Get a summary of the audited events for the specified users in a specified time frame 
+        Inputs:
+          - Name: usersUpn
+            Description: Comma separated list of UPNs to be considered. If specified, the defender-incident-number is ignored
+            Required: true
+          - Name: startDateTime
+            Description: Start datetime for the timeframe of interest
+            Required: true
+          - Name: endDateTime
+            Description: End datetime for the timeframe of interest
+            Required: true
+        Settings:
+          Target: Sentinel
+          # The ID of the AAD Organization that the Sentinel workspace is in.
+          TenantId: '<YOUR-TENANT-ID>'
+          # The id of the Azure Subscription that the Sentinel workspace is in.
+          SubscriptionId: '<YOUR-AZURE-SUBSCRIPTION-ID>'
+          # The name of the Resource Group that the Sentinel workspace is in.
+          ResourceGroupName: '<YOUR-SENTINEL-RESOURCE-GROUP-NAME>'
+          # The name of the Sentinel workspace.
+          WorkspaceName: '<YOUR-SENTINEL-WORKSPACE-GROUP-NAME>'
+          Template: |-
+            let startDateTime = datetime('{{startDateTime}}');
+            let endDateTime = datetime('{{endDateTime}}');
+            let usersUpn = split(tolower({{usersUpn}}), ',');
+            let al = AuditLogs
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tostring(InitiatedBy) contains "@"
+            | extend InitiatorUpn = tostring(parse_json(InitiatedBy).user.userPrincipalName) 
+            | where tolower(InitiatorUpn) in (usersUpn)
+            | extend upnOrBlank = iif(array_length(usersUpn)==1,'',InitiatorUpn)
+            | summarize ActionCount = count() by Scope="Entra", InitiatorUpn=upnOrBlank, ActivityName=ActivityDisplayName, Details=OperationName
+            | order by ActionCount desc;
+            let aa= AzureActivity            
+            | where TimeGenerated between (startDateTime .. endDateTime)
+            | where tostring(Caller) contains "@"
+            | where tolower(Caller) in (usersUpn)
+            | extend res = tostring(parse_json(Properties).resource)          
+            | extend upnOrBlank = iif(array_length(usersUpn)==1,'',Caller)
+            | summarize ActionCount = count() by Scope="Azure", InitiatorUpn=upnOrBlank, ActivityName=OperationNameValue, Details=''//res
+            | order by ActionCount desc;
+            let u = union al,aa;
+            u | order by ActionCount desc  
