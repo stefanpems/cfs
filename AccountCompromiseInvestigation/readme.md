@@ -11,7 +11,8 @@ The prototype of the Logic App is optimized for minimal SCU consumption.
 
 # Prerequisites
 
-The Microsoft Sentinel or Microsoft Defender. 
+* Microsoft Sentinel or Microsoft Defender
+* Capacity (SCUs) in Security Copilot 
 
 
 # Deployment
