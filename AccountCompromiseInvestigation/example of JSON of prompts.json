@@ -1,0 +1,79 @@
+[
+    {
+        "promptType": "Skill",
+        "content": "Clarify explicitly if the IP address is a TOR exit node, if it is Whitelisted, the number of distinct reporting and the date of the last report. Be concise. Use only bulleted lists, no tables. Indent sub-bullets where it improves clarity. IMPORTANT: format the output in <FormatType>",
+        "skillName": "Check IP Address",
+        "inputs": "{\"ipAddress\":\"<IP_ADDRESS>\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":20,
+        "replacePrompt":"Extract information about the first IP in the incident from AbuseIPDB"
+    },
+    {
+        "promptType": "Skill",
+        "content": "IMPORTANT: format the output in <FormatType>",
+        "skillName": "GetReputationsForIndicators",
+        "inputs": "{\"Indicators\":\"<IP_ADDRESSES>\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":30,
+        "replacePrompt":"Extract information about all the IPs in the incident from MDTI"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Organize the response into two sections: the first for locations where authentication succeeded at the first factor but failed at the second; the second for locations where both the first and second factors succeeded. For each result show the UserPrincipalName, TimeGenerated, IP Address, Result Description, Risk State, Risk Level, User Agent. IMPORTANT: format the output in <FormatType>",
+        "skillName": "GetDetailsForSigninsNearestTheBeginningOfTheIncident",
+        "inputs": "{\"defender-incident-number\":\"<INCIDENT_ID>\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":40,
+        "replacePrompt":"Retrieve the details of the sign-ins nearest to the incident start time for the users involved in the incident"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Do not include the field UserPrincipalName if empty. IMPORTANT: format the output in <FormatType>",
+        "skillName": "GetSigninsSummaryByUsersInIncidentBeforeIncidentToNow",
+        "inputs": "{\"defender-incident-number\":\"<INCIDENT_ID>\",\"numberOfDaysBefore\":\"30\",\"ignoreLocations\":\"IT\",\"ignoreResultTypes\":\"\",\"considerOnlyResultTypes\":\"\",\"ignoreResultSignature\":\"FAILURE\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":50,
+        "replacePrompt":"Summarize the successful sign-in events that originated abroad by users involved in the incident"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Do not include the field UserPrincipalName if empty. IMPORTANT: format the output in <FormatType>",
+        "skillName": "GetAlertsSummaryByUsersInIncidentBeforeIncident",
+        "inputs": "{\"defender-incident-number\":\"<INCIDENT_ID>\",\"numberOfDaysBefore\":\"30\",\"excludedCsvStringsInTitle\":\"DLP\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":60,
+        "replacePrompt":"Retrieve the alerts in the 30 days before the incident for the users involved in the incident"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Do not include the field InitiatorUpn if empty. IMPORTANT: format the output in <FormatType>",
+        "skillName": "GetUserActivitiesSummaryByUsersInIncidentBeforeAndDuringIncident",
+        "inputs": "{\"defender-incident-number\":\"<INCIDENT_ID>\",\"numberOfDaysBefore\":\"30\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":70,
+        "replacePrompt":"Retrieve the actions (in audit logs) in the 30 days before the incident and until now registered for the users involved in the incident"
+    },
+    {
+        "promptType": "Prompt",
+        "content": "/AskGPT Summarize the content of this session in a table with two columns. The left column contains the question as listed below. In the right column, provide the answers (in <Language>) as retrieved in this investigation. Format the table in <FormatType>. The questions are the following: Timestamp (Timestamp event on Defender – First Activity), User(s) (Name of user(s) involved), Source IP, Reputation IP, Geoloc IP, User Agent, Password (1st factor) Passed, MFA (2nd factor) Passed, Alarms for the user in the previous 30 days of the event, Check if the IP belongs to the TOR network (Exit node), Check SigninLogs of the user in the last 30 days, Check AuditLogs of the user in the last 30 days.",
+        "skillName": "",
+        "inputs": "",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":80,
+        "replacePrompt":"Summarize all the information retrieved"
+    }
+]
