@@ -1,0 +1,56 @@
+[
+    {
+        "promptType": "Skill",
+        "content": "Return the *unique identifiers* of the distinct entities involved in the incident summarized by type. Be concise. As unique identifier for accounts use UserPrincipalName (ignore user accounts whose UserPrincipalName is empty); for devices use DeviceName; for IP addresses, return only the IPs that have public format (no 127/8, 169.254/16, 10/8, 172.16/12, 192.168/16, ::1/128, fc00::/7, fe80::/10, ff00::/8, 2001:db8::/32). Do not format the output with tables: use only bulleted lists and sublists. After the complete response, add a graphical line followed by a text line containing 'PropBag':(property-bag), where (property-bag) is a JSON-serialized array made describing the entities identified with this prompt: [{\"EntityName\":\"(entity-type-name)\",\"EntityInstances\":\"(comma-separated-list-of-entity-unique-identifiers-for-that-entity-type)\"}]. In the property bag add the following entity type names, but only if they have instances in the incident - use exactly these names: IpAddress, UserAccount, Device, URL, Mailbox. Do not include any additional comment or word or character after the string 'PropBag':(property-bag). Do not add the line and the property bag if no entities were identified as results of this prompt.",
+        "skillName": "GetIncidentEntities",
+        "inputs": "{\"Incident\":\"<INCIDENT_ID>\"}",
+        "continueOnFailure": true,
+        "position":20,
+        "replacePrompt":"Extract the entities from the Defender incident #<INCIDENT_ID>"
+    },
+    {
+        "promptType": "Prompt",
+        "content": "Show the authentication methods setup and the risk status for each of these users: <multiple-UserAccount>. Be concise. Do not format the output with tables: use only bulleted lists and sublists.",
+        "continueOnFailure": true,
+        "position":30,
+        "replacePrompt":"Show the authentication methods setup for each user involved in that incident"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Return only the Intune-managed devices associated to the user. Be concise. As unique identifier for devices use DeviceName, possibly with FQDN. Do not format the output with tables: use only bulleted lists and sublists. After the complete response, add a graphical line followed by a text line containing 'PropBag':(property-bag), where (property-bag) is a JSON-serialized array made describing the entities identified with this prompt: [{\"EntityName\":\"(entity-type-name)\",\"EntityInstances\":\"(comma-separated-list-of-entity-unique-identifiers-for-that-entity-type)\"}]. In the property bag add only the entity of type name Device - use this exact name -, but only if related instances exist. Do not include any additional comment or word or character after the string 'PropBag':(property-bag). Do not include any additional comment or word or character after the string 'PropBag':(property-bag). Do not add the line and the property bag if no entities were identified as results of this prompt.",
+        "skillName": "GetIntuneDevices",
+        "inputs": "{\"User\":\"<UserAccount>\"}",
+        "continueOnFailure": true,
+        "position":40,
+        "replacePrompt":"Identify the computers associated with the users involved in that incident"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Return only the compliance status by compliance policy. Do not format the output with tables: use only bulleted lists and sublists.",
+        "skillName": "GetIntuneDevices",
+        "inputs": "{\"Device\":\"<Device>\"}",
+        "continueOnFailure": true,
+        "position":50,
+        "replacePrompt":"Check the compliance status of the device '<Device>'"
+    },
+    {
+        "promptType": "Skill",
+        "content": "Do not format the output with tables: use only bulleted lists and sublists.",
+        "skillName": "GetReputationsForIndicators",
+        "inputs": "{\"indicators\":\"<multiple-IpAddress>,<multiple-URL>\"}",
+        "continueOnFailure": true,
+        "position":60,
+        "replacePrompt":"Check the reputation of the indicators involved in this incident."
+    },
+    {
+        "promptType": "Skill",
+        "content": "Do not format the output with tables: use only bulleted lists and sublists.",
+        "skillName": "SummarizeData",
+        "inputs": "{\"Input\":\"Report all the information retrieved from each of the previous prompts in this investigation. Organize the content in paragraphs with focus on Accounts, Devices and Indicators.\"}",
+        "skillInputDescriptors": "",
+        "localizationId": null,
+        "continueOnFailure": true,
+        "position":60,
+        "replacePrompt":"Write a report of this investigation."
+    }
+]
