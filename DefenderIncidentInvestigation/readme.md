@@ -21,7 +21,7 @@ Please refer to ... for further details.
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fstefanpems%2Fcfs%2Frefs%2Fheads%2Fmain%2FDefenderIncidentInvestigation%2Flogicapp-azuredeploy.json)
 
 * To understand the meaning of each individual parameter, read the corresponding tooltip.
-* For the "Prompts" parameter, copy and paste the contents of [https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/AccountCompromiseInvestigation/example%20of%20JSON%20of%20prompts.json](https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/DefenderIncidentInvestigation/example%20of%20prompts%20JSON%20parameter.json), or provide your own JSON using the same schema as the shared example. Be aware of the logic and naming convention for positionating the placeholders.
+* For the "Prompts" parameter, copy and paste the contents of https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/DefenderIncidentInvestigation/example%20of%20prompts%20JSON%20parameter.json, or provide your own JSON using the same schema as the shared example. Be aware of the logic and naming convention for positionating the placeholders.
 
 
 # Post-Deployment
