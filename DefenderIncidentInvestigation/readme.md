@@ -8,7 +8,7 @@ The Logic App reads the prompts to be executed from a dedicated JSON parameter. 
 * Where necessary, the Logic App creates multiple instance of the same prompt to ensure that all the correct entity identifiers are used one by one to replace the placehoder. 
 * The Logic App also allows to set placeholders for multiple comma-separated entity identifiers.
 
-Please refer to ... for further details.
+Please refer to [this article](https://www.linkedin.com/pulse/impact-direct-skill-invocation-automations-stefano-pescosolido-o3yef/) for further details.
 
 # Prerequisites
 
