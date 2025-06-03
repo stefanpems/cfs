@@ -4,7 +4,7 @@ This is a Logic App that can be executed as a playbook in the Microsoft unfied S
 
 The Logic App reads the prompts to be executed from a dedicated JSON parameter. The part of the Logic App that read and executes the prompts applies the following logic: 
 * For minimizing the cost of execution, whenever possible each prompt references directly a skill with the related parameters. 
-* Each prompt can contain placeholder that are replaced by the actual values retrieved in the preceeding prompts. 
+* Each prompt can contain placeholder that are replaced by the actual values retrieved in the preceeding prompts. This mechanism is implemented through a Property Bag: each prompt can write entity identifiers into it so that the following prompt can reference them and retrieve them at runtime from there. 
 * Where necessary, the Logic App creates multiple instance of the same prompt to ensure that all the correct entity identifiers are used one by one to replace the placehoder. 
 * The Logic App also allows to set placeholders for multiple comma-separated entity identifiers.
 
