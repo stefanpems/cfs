@@ -66,13 +66,15 @@
             "type":  "String",
             "metadata":  {
                 "description":  "Specify if overage is allowed for Security Copilot (set 'None' or 'Unlimited' or 'Limited'). You can modify it later in the Logic App parameters list."
-            }
+            },
+            "defaultValue": "Limited"
         },
         "OverageAmount":  {
             "type":  "Int",
             "metadata":  {
                 "description":  "Enter the maximum number of SCUs that should be allowed for overage. This parameter is considered only when OverageState is set to Limited. You can modify it later in the Logic App parameters list."
-            }
+            },
+            "defaultValue": 2
         },
         "CapacityName":  {
             "type":  "String",
