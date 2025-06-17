@@ -63,7 +63,7 @@
     },
     "capacityOverageAmount": {
       "type": "int",
-      "defaultValue": "1"
+      "defaultValue": 1
     },
     "capacityName": {
       "type": "string",
