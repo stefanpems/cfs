@@ -119,7 +119,7 @@
             },
             "OverageAmount": {
               "defaultValue": "[parameters('capacityOverageAmount')]",
-              "type": "int"
+              "type": "Int"
             },
             "CapacityName": {
               "defaultValue": "[parameters('capacityName')]",
