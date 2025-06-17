@@ -175,7 +175,7 @@
                   },
                   "path": "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
                   "queries": {
-                    "x-ms-api-version": "2023-12-01-preview"
+                    "x-ms-api-version": "2024-11-01-preview"
                   }
                 }
               },
