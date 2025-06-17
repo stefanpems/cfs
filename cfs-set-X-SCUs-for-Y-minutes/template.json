@@ -95,7 +95,7 @@
             "metadata":  {
                 "description":  "Enter value for $SubscriptionID"
             },
-            "defaultValue": "[subscription().subscriptionId]"
+            "defaultValue": ""
         }
     },
     "variables":  {
