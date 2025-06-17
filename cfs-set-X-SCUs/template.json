@@ -2,15 +2,11 @@
     "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion":  "1.0.0.0",
     "metadata":  {
-        "title":  "Set X SCUs for Security Copilot",
-        "description":  "This Logic App sets the specified number of Security Compute Units (SCUs) for Security Copilot, but only if the current day is a working day. The number of desired SCUs is specified in the Logic App parameters. If the capacity already exists, the Logic App modifies its capacity - again, only during working days - according to the number of SCUs specified as a parameter. If the specified number of SCUs is zero, the Logic App deletes the capacity regardless of the day. Working days are defined by excluding non-working weekdays and listing national and local holidays.",
-        "prerequisites":  "Credit in Azure for consuming SCUs",
+      "title": "Create X Security Compute Units (SCUs) of Capacity for Security Copilot and delete them after Y minutes",
+      "description": "This Logic App creates X Security Compute Units (SCUs) of capacity for Security Copilot and deletes them after Y minutes. The values of X and Y can be specified as parameters. The logic app allows also to set the overage settings. The Logic App can be run manually or scheduled periodically.",
+        "prerequisites":  "",
         "postDeployment":  [
-            "1. Assign to the Managed Identity of the Logic App the Contributor role on the Resource Group where the Capacity has to be created or modified.",
-            "2. Set the desired recurrence (tipically every day at specified hours)",
-            "3. Set the Logic App paramters (SCU number, capacity name, etc...)",
-            "4. In the initial action titled 'Initialize National Holidays,' change the content of the array to include the list of national and local holidays for your specific country",
-            "5. Enable the Logic App"
+            "Authorize the System Assigned Managed Identity of the Logic App with the Contributor role on the Resource Group where the capacity will be created"
         ],
         "prerequisitesDeployTemplateFile":  "",
         "lastUpdateTime":  "",
@@ -23,18 +19,25 @@
             "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
         },
         "author":  {
-            "name":  "Stefano Pescosolido (https://www.linkedin.com/in/stefanopescosolido/)"
+            "name":  "Stefano Pescosolido - https://www.linkedin.com/in/stefanopescosolido/"
         }
     },
     "parameters":  {
         "PlaybookName":  {
-            "defaultValue":  "cfs-set-X-SCUs",
+            "defaultValue":  "cfs-set-X-SCUs-for-Y-minutes",
             "type":  "string"
+        },
+        "MinutesOn":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the number of minutes the capacity should remain available. This value can be changed later in the Logic App's parameters."
+            },
+            "defaultValue": 55
         },
         "NumberOfSCUs":  {
             "type":  "Int",
             "metadata":  {
-                "description":  "Enter the number of SCUs that should be set by each execution of this Logic App. You can modify it later in the Logic App parameters list."
+                "description":  "Enter the number of SCUs that should be provisioned by each execution of this Logic App. You can modify it later in the Logic App parameters list."
             },
             "defaultValue": 1
         },
@@ -59,6 +62,18 @@
             },
             "defaultValue": "westeurope"
         },
+        "OverageState":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Specify if overage is allowed for Security Copilot (set 'None' or 'Unlimited' or 'Limited'). You can modify it later in the Logic App parameters list."
+            }
+        },
+        "OverageAmount":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the maximum number of SCUs that should be allowed for overage. This parameter is considered only when OverageState is set to Limited. You can modify it later in the Logic App parameters list."
+            }
+        },
         "CapacityName":  {
             "type":  "String",
             "metadata":  {
@@ -72,16 +87,23 @@
                 "description":  "Set the name of the Resource Group where this Logic App will create or modify or delete the capacity for Security Copilot. You can modify it later in the Logic App parameters list."
             },
             "defaultValue": "CfSCapacity-RG"
+        },
+        "$SubscriptionID":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter value for $SubscriptionID"
+            },
+            "defaultValue": "[subscription().subscriptionId]"
         }
     },
     "variables":  {
-        "ArmConnectionName":  "[concat('Arm-', parameters('PlaybookName'))]"
+        "Arm-1ConnectionName":  "[concat('Arm-1-', parameters('PlaybookName'))]"
     },
     "resources":  [
         {
             "properties":  {
                 "provisioningState":  "Succeeded",
-                "state":  "Disabled",
+                "state":  "Enabled",
                 "definition":  {
                     "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
                     "contentVersion":  "1.0.0.0",
@@ -90,6 +112,10 @@
                             "defaultValue":  {
                             },
                             "type":  "Object"
+                        },
+                        "MinutesOn":  {
+                            "defaultValue":  "[parameters('MinutesOn')]",
+                            "type":  "Int"
                         },
                         "NumberOfSCUs":  {
                             "defaultValue":  "[parameters('NumberOfSCUs')]",
@@ -102,6 +128,14 @@
                         "Geo":  {
                             "defaultValue":  "[parameters('Geo')]",
                             "type":  "String"
+                        },
+                        "OverageState":  {
+                            "defaultValue":  "[parameters('OverageState')]",
+                            "type":  "String"
+                        },
+                        "OverageAmount":  {
+                            "defaultValue":  "[parameters('OverageAmount')]",
+                            "type":  "Int"
                         },
                         "CapacityName":  {
                             "defaultValue":  "[parameters('CapacityName')]",
@@ -116,7 +150,7 @@
                             "type":  "String"
                         },
                         "$SubscriptionID":  {
-                            "defaultValue":  "[subscription().subscriptionId]",
+                            "defaultValue":  "[parameters('$SubscriptionID')]",
                             "type":  "String"
                         }
                     },
@@ -128,7 +162,10 @@
                                 "timeZone":  "W. Europe Standard Time",
                                 "schedule":  {
                                     "hours":  [
-                                        "19"
+                                        "8"
+                                    ],
+                                    "minutes":  [
+                                        30
                                     ]
                                 }
                             },
@@ -138,7 +175,10 @@
                                 "timeZone":  "W. Europe Standard Time",
                                 "schedule":  {
                                     "hours":  [
-                                        "19"
+                                        "8"
+                                    ],
+                                    "minutes":  [
+                                        30
                                     ]
                                 }
                             },
@@ -146,199 +186,65 @@
                         }
                     },
                     "actions":  {
-                        "Initialize_National_Holidays":  {
-                            "runAfter":  {
-                                "Initialize_Today":  [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type":  "InitializeVariable",
-                            "inputs":  {
-                                "variables":  [
-                                    {
-                                        "name":  "Holidays",
-                                        "type":  "array",
-                                        "value":  "@createArray('2025-01-01', '2025-01-06', '2025-04-20', '2025-04-21', '2025-04-25', '2025-05-01', '2025-06-02', '2025-08-15', '2025-11-01', '2025-12-08', '2025-12-25', '2025-12-26', '2026-01-01', '2026-01-06', '2026-04-05', '2026-04-06', '2026-04-25', '2026-05-01', '2026-06-02', '2026-08-15', '2026-11-01', '2026-12-08', '2026-12-25', '2026-12-26', '2027-01-01', '2027-01-06', '2027-03-28', '2027-03-29', '2027-04-25', '2027-05-01', '2027-06-02', '2027-08-15', '2027-11-01', '2027-12-08', '2027-12-25', '2027-12-26')"
-                                    }
-                                ]
-                            }
-                        },
-                        "Initialize_IsTodayHoliday":  {
-                            "runAfter":  {
-                                "Initialize_National_Holidays":  [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type":  "InitializeVariable",
-                            "inputs":  {
-                                "variables":  [
-                                    {
-                                        "name":  "IsTodayHoliday",
-                                        "type":  "boolean",
-                                        "value":  false
-                                    }
-                                ]
-                            }
-                        },
-                        "Initialize_Today":  {
+                        "Create_Capacity":  {
                             "runAfter":  {
                             },
-                            "type":  "InitializeVariable",
+                            "type":  "ApiConnection",
                             "inputs":  {
-                                "variables":  [
-                                    {
-                                        "name":  "Today",
-                                        "type":  "string",
-                                        "value":  "@{formatDateTime(startOfDay(utcNow()),'yyyy-MM-dd')}"
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['arm-1']['connectionId']"
                                     }
-                                ]
-                            }
-                        },
-                        "Condition_Is_Create_or_Update_Capacity":  {
-                            "actions":  {
-                                "Condition_Is_Today_National_Holiday":  {
-                                    "actions":  {
-                                        "Set_IsTodayHoliday":  {
-                                            "type":  "SetVariable",
-                                            "inputs":  {
-                                                "name":  "IsTodayHoliday",
-                                                "value":  true
-                                            }
-                                        }
-                                    },
-                                    "else":  {
-                                        "actions":  {
-                                        }
-                                    },
-                                    "expression":  {
-                                        "and":  [
-                                            {
-                                                "contains":  [
-                                                    "@variables('Holidays')",
-                                                    "@variables('Today')"
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    "type":  "If"
                                 },
-                                "Condition_Is_Working_Day":  {
-                                    "actions":  {
-                                        "Create_or_Update_Capacity":  {
-                                            "type":  "ApiConnection",
-                                            "inputs":  {
-                                                "host":  {
-                                                    "connection":  {
-                                                        "name":  "@parameters('$connections')['arm']['connectionId']"
-                                                    }
-                                                },
-                                                "method":  "put",
-                                                "body":  {
-                                                    "location":  "@parameters('Location')",
-                                                    "properties":  {
-                                                        "numberOfUnits":  "@parameters('NumberOfSCUs')",
-                                                        "crossGeoCompute":  "@{parameters('CrossGeoCompute')}",
-                                                        "geo":  "@{parameters('Geo')}"
-                                                    }
-                                                },
-                                                "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
-                                                "queries":  {
-                                                    "x-ms-api-version":  "2023-12-01-preview"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "runAfter":  {
-                                        "Condition_Is_Today_National_Holiday":  [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "else":  {
-                                        "actions":  {
-                                        }
-                                    },
-                                    "expression":  {
-                                        "and":  [
-                                            {
-                                                "not":  {
-                                                    "equals":  [
-                                                        "@variables('DayOfTheWeek')",
-                                                        0
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "not":  {
-                                                    "equals":  [
-                                                        "@variables('DayOfTheWeek')",
-                                                        6
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "equals":  [
-                                                    "@variables('IsTodayHoliday')",
-                                                    "@false"
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    "type":  "If"
-                                }
-                            },
-                            "runAfter":  {
-                                "Initialize_DayOfTheWeek":  [
-                                    "Succeeded"
-                                ]
-                            },
-                            "else":  {
-                                "actions":  {
-                                    "Delete_Capacity":  {
-                                        "type":  "ApiConnection",
-                                        "inputs":  {
-                                            "host":  {
-                                                "connection":  {
-                                                    "name":  "@parameters('$connections')['arm']['connectionId']"
-                                                }
-                                            },
-                                            "method":  "delete",
-                                            "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
-                                            "queries":  {
-                                                "x-ms-api-version":  "2023-12-01-preview"
-                                            }
-                                        }
+                                "method":  "put",
+                                "body":  {
+                                    "location":  "@parameters('Location')",
+                                    "properties":  {
+                                        "numberOfUnits":  "@parameters('NumberOfSCUs')",
+                                        "crossGeoCompute":  "@{parameters('CrossGeoCompute')}",
+                                        "geo":  "@{parameters('Geo')}",
+                                        "overageState":  "@{parameters('OverageState')}",
+                                        "overageAmount":  "@parameters('OverageAmount')"
                                     }
+                                },
+                                "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
+                                "queries":  {
+                                    "x-ms-api-version":  "2024-11-01-preview"
                                 }
-                            },
-                            "expression":  {
-                                "and":  [
-                                    {
-                                        "not":  {
-                                            "equals":  [
-                                                "@parameters('NumberOfSCUs')",
-                                                0
-                                            ]
-                                        }
-                                    }
-                                ]
-                            },
-                            "type":  "If"
+                            }
                         },
-                        "Initialize_DayOfTheWeek":  {
+                        "Delay":  {
                             "runAfter":  {
-                                "Initialize_IsTodayHoliday":  [
+                                "Create_Capacity":  [
                                     "Succeeded"
                                 ]
                             },
-                            "type":  "InitializeVariable",
+                            "type":  "Wait",
                             "inputs":  {
-                                "variables":  [
-                                    {
-                                        "name":  "DayOfTheWeek",
-                                        "type":  "integer",
-                                        "value":  "@int(dayOfWeek(convertFromUtc(concat(variables('Today'),'T00:00:00.0000000Z'),'W. Europe Standard Time')))"
-                                    }
+                                "interval":  {
+                                    "count":  "@parameters('MinutesOn')",
+                                    "unit":  "Minute"
+                                }
+                            }
+                        },
+                        "Delete_Capacity":  {
+                            "runAfter":  {
+                                "Delay":  [
+                                    "Succeeded"
                                 ]
+                            },
+                            "type":  "ApiConnection",
+                            "inputs":  {
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['arm-1']['connectionId']"
+                                    }
+                                },
+                                "method":  "delete",
+                                "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
+                                "queries":  {
+                                    "x-ms-api-version":  "2024-11-01-preview"
+                                }
                             }
                         }
                     },
@@ -348,10 +254,10 @@
                 "parameters":  {
                     "$connections":  {
                         "value":  {
-                            "arm":  {
-                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('ArmConnectionName'))]",
-                                "connectionName":  "[variables('ArmConnectionName')]",
-                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm')]",
+                            "arm-1":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('Arm-1ConnectionName'))]",
+                                "connectionName":  "[variables('Arm-1ConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm-1')]",
                                 "connectionProperties":  {
                                     "authentication":  {
                                         "type":  "ManagedServiceIdentity"
@@ -365,39 +271,33 @@
             "name":  "[parameters('PlaybookName')]",
             "type":  "Microsoft.Logic/workflows",
             "location":  "[resourceGroup().location]",
-            "tags":  {
-                "hidden-SentinelTemplateName":  "cfs-set-X-SCUs",
-                "hidden-SentinelTemplateVersion":  "1.0"
-            },
             "identity":  {
                 "type":  "SystemAssigned"
             },
+            "tags":  {
+                "hidden-SentinelTemplateName":  "cfs-set-X-SCUs-for-Y-minutes",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
             "apiVersion":  "2017-07-01",
             "dependsOn":  [
-                "[resourceId('Microsoft.Web/connections', variables('ArmConnectionName'))]"
+                "[resourceId('Microsoft.Web/connections', variables('Arm-1ConnectionName'))]"
             ]
         },
         {
             "type":  "Microsoft.Web/connections",
             "apiVersion":  "2016-06-01",
-            "name":  "[variables('ArmConnectionName')]",
+            "name":  "[variables('Arm-1ConnectionName')]",
             "location":  "[resourceGroup().location]",
             "kind":  "V1",
             "properties":  {
-                "displayName":  "[variables('ArmConnectionName')]",
+                "displayName":  "[variables('Arm-1ConnectionName')]",
                 "customParameterValues":  {
                 },
                 "parameterValueType":  "Alternative",
                 "api":  {
-                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm')]"
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm-1')]"
                 }
             }
         }
-    ],
-    "outputs": {
-      "subscriptionIdOutput": {
-        "type": "string",
-        "value": "[subscription().subscriptionId]"
-      }
-    }
+    ]
 }
