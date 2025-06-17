@@ -1,263 +1,303 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "metadata": {
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
       "title": "Create X Security Compute Units (SCUs) of Capacity for Security Copilot and delete them after Y minutes",
-      "description": "This Logic App creates X Security Compute Units (SCUs) of capacity for Security Copilot and deletes them after Y minutes. The values of X and Y can be specified as parameters. The Logic App can be run manually or scheduled periodically.",
-      "prerequisites": "",
-      "postDeployment": ["Authorize the System Assigned Managed Identity of the Logic App with the Contributor role on the Resource Group where the capacity will be created"],
-      "prerequisitesDeployTemplateFile": "",
-      "lastUpdateTime": "",
-      "entities": [],
-      "tags": [],
-      "author": {
-          "name": "Stefano Pescosolido"
-      }
-  },
-  "parameters": {
-    "logicAppName": {
-      "type": "string",
-      "defaultValue": "cfs-set-X-SCUs-for-Y-minutes",
-      "metadata": {
-        "description": "Name of the Logic App."
-      }
-    },
-    "RecurrenceFrequency": {
-      "type": "string",
-      "defaultValue": "Day"
-    },
-    "RecurrenceInterval": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "RecurrenceTimeZone": {
-      "type": "string",
-      "defaultValue": "W. Europe Standard Time"
-    },
-    "RecurrenceSchedule": {
-      "type": "Object",
-      "defaultValue": {
-        "hours": [
-          "8"
+      "description": "This Logic App creates X Security Compute Units (SCUs) of capacity for Security Copilot and deletes them after Y minutes. The values of X and Y can be specified as parameters. The logic app allows also to set the overage settings. The Logic App can be run manually or scheduled periodically.",
+        "prerequisites":  "",
+        "postDeployment":  [
+            "Authorize the System Assigned Managed Identity of the Logic App with the Contributor role on the Resource Group where the capacity will be created"
         ],
-        "minutes": [
-          30
-        ]
-      }
-    },
-    "numberOfSecurityComputeUnits": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "crossGeoCompute": {
-      "type": "string",
-      "defaultValue": "Allowed"
-    },
-    "capacityGeo": {
-      "type": "string",
-      "defaultValue": "EU"
-    },
-    "capacityOverageState": {
-      "type": "string",
-      "defaultValue": "None"
-    },
-    "capacityOverageAmount": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "capacityName": {
-      "type": "string",
-      "defaultValue": "CfSCapacity"
-    },
-    "capacityResourceGroup": {
-      "type": "string",
-      "defaultValue": "CfSCapacity-RG"
-    },
-    "capacityLocation": {
-      "type": "string",
-      "defaultValue": "westeurope"
-    },
-    "subscriptionId": {
-      "type": "string",
-      "defaultValue": "[subscription().subscriptionId]"
-    }
-  },
-  "variables": {},
-  "resources": [
-    {
-      "type": "Microsoft.Logic/workflows",
-      "apiVersion": "2019-05-01",
-      "name": "[parameters('logicAppName')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/connections', 'miConnectionToArm')]"
-      ],
-      "properties": {
-        "definition": {
-          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-          "contentVersion": "1.0.0.0",
-          "parameters": {
-            "MinutesOn": {
-                "defaultValue": 50,
-                "type": "Int"
-            },
-            "NumberOfSCUs": {
-              "defaultValue": "[parameters('numberOfSecurityComputeUnits')]",
-              "type": "Int"
-            },
-            "CrossGeoCompute": {
-              "defaultValue": "[parameters('crossGeoCompute')]",
-              "type": "String"
-            },
-            "Geo": {
-              "defaultValue": "[parameters('capacityGeo')]",
-              "type": "String"
-            },
-            "OverageState": {
-              "defaultValue": "[parameters('capacityOverageState')]",
-              "type": "String"
-            },
-            "OverageAmount": {
-              "defaultValue": "[parameters('capacityOverageAmount')]",
-              "type": "Int"
-            },
-            "CapacityName": {
-              "defaultValue": "[parameters('capacityName')]",
-              "type": "String"
-            },
-            "ResourceGroup": {
-              "defaultValue": "[parameters('capacityResourceGroup')]",
-              "type": "String"
-            },
-            "Location": {
-              "defaultValue": "[parameters('capacityLocation')]",
-              "type": "String"
-            },
-            "$SubscriptionID": {
-              "defaultValue": "[subscription().subscriptionId]",
-              "type": "String"
-            },
-            "$connections": {
-              "defaultValue": {},
-              "type": "Object"
-            }
-          },
-          "triggers": {
-            "Recurrence": {
-              "recurrence": {
-                "interval": "[parameters('RecurrenceInterval')]",
-                "frequency": "[parameters('RecurrenceFrequency')]",
-                "timeZone": "[parameters('RecurrenceTimeZone')]",
-                "schedule": "[parameters('RecurrenceSchedule')]"
-              },
-              "type": "Recurrence"
-            }
-          },
-          "actions": {
-              "Create_Capacity": {
-                "type": "ApiConnection",
-                "inputs": {
-                  "host": {
-                    "connection": {
-                      "name": "@parameters('$connections')['arm-1']['connectionId']"
-                    }
-                  },
-                  "method": "put",
-                  "body": {
-                    "location": "@parameters('Location')",
-                    "properties": {
-                      "numberOfUnits": "@parameters('NumberOfSCUs')",
-                      "crossGeoCompute": "@{parameters('CrossGeoCompute')}",
-                      "geo": "@{parameters('Geo')}",
-                      "overageState": "@{parameters('OverageState')}",
-                      "overageAmount": "@{parameters('OverageAmount')}"
-                    }
-                  },
-                  "path": "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
-                  "queries": {
-                    "x-ms-api-version": "2024-11-01-preview"
-                  }
-                }
-              },
-              "Delay": {
-                  "runAfter": {
-                      "Create_Capacity": [
-                          "Succeeded"
-                      ]
-                  },
-                  "type": "Wait",
-                  "inputs": {
-                      "interval": {
-                          "count": "@parameters('MinutesOn')",
-                          "unit": "Minute"
-                      }
-                  }
-              },
-              "Delete_Capacity": {
-
-                "runAfter": {
-                  "Delay": [
-                      "Succeeded"
-                  ]
-                },                
-                "type": "ApiConnection",
-                "inputs": {
-                  "host": {
-                    "connection": {
-                      "name": "@parameters('$connections')['arm-1']['connectionId']"
-                    }
-                  },
-                  "method": "delete",
-                  "path": "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
-                  "queries": {
-                    "x-ms-api-version": "2024-11-01-preview"
-                  }
-                }
-              }
-            },
-          "outputs": {}
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
         },
-        "parameters": {
-          "$connections": {
-            "value": {
-              "arm-1": {
-                "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',resourceGroup().location,'/managedApis/arm')]",
-                "connectionId": "[resourceId('Microsoft.Web/connections', 'miConnectionToArm')]",
-                "connectionName": "miConnectionToArm",
-                "connectionProperties": {
-                  "authentication": {
-                    "type": "ManagedServiceIdentity"
-                  }
-                }
-              }
-            }
-          }
+        "author":  {
+            "name":  "Stefano Pescosolido - https://www.linkedin.com/in/stefanopescosolido/"
         }
-      },
-      "identity": {
-        "type": "SystemAssigned"
-      }
     },
-    {
-      "type": "Microsoft.Web/connections",
-      "apiVersion": "2016-06-01",
-      "location": "[resourceGroup().location]",
-      "name": "miConnectionToArm",
-      "properties": {
-        "api": {
-          "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',resourceGroup().location,'/managedApis/arm')]"
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "cfs-set-X-SCUs-for-Y-minutes",
+            "type":  "string"
         },
-        "displayName": "Managed Identity Connection To ARM API",
-        "parameterValueType": "Alternative",
-        "parameterValues": {          
+        "MinutesOn":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the number of minutes the capacity should remain available. This value can be changed later in the Logic App's parameters."
+            },
+            "defaultValue": 55
+        },
+        "NumberOfSCUs":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the number of SCUs that should be provisioned by each execution of this Logic App. You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": 1
+        },
+        "CrossGeoCompute":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Specify if cross-geo compute for Security Copilot is allowed (set 'allowed' or 'NotAllowed'). You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "Allowed"
+        },
+        "Geo":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the desired geo for Security Copilot: ANZ, EU, UK, US (check the documentation for additional geos in the future). You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "EU"
+        },
+        "Location":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the desired location for Security Copilot: australiaeast, eastus, uksouth, westeurope (check the documentation for additional locations in the future). You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "westeurope"
+        },
+        "OverageState":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Specify if overage is allowed for Security Copilot (set 'None' or 'Unlimited' or 'Limited'). You can modify it later in the Logic App parameters list."
+            }
+        },
+        "OverageAmount":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the maximum number of SCUs that should be allowed for overage. This parameter is considered only when OverageState is set to Limited. You can modify it later in the Logic App parameters list."
+            }
+        },
+        "CapacityName":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the name of the capacity for Security Copilot that will be created or modified or deleted by each execution of this Logic App. You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "CfSCapacity"
+        },
+        "ResourceGroup":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Set the name of the Resource Group where this Logic App will create or modify or delete the capacity for Security Copilot. You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "CfSCapacity-RG"
+        },
+        "$SubscriptionID":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Enter value for $SubscriptionID"
+            },
+            "defaultValue": "[subscription().subscriptionId]"
         }
-      }
-    }
-  ],
-  "outputs": {
-    "subscriptionIdOutput": {
-      "type": "string",
-      "value": "[subscription().subscriptionId]"
-    }
-  }
+    },
+    "variables":  {
+        "Arm-1ConnectionName":  "[concat('Arm-1-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        },
+                        "MinutesOn":  {
+                            "defaultValue":  "[parameters('MinutesOn')]",
+                            "type":  "Int"
+                        },
+                        "NumberOfSCUs":  {
+                            "defaultValue":  "[parameters('NumberOfSCUs')]",
+                            "type":  "Int"
+                        },
+                        "CrossGeoCompute":  {
+                            "defaultValue":  "[parameters('CrossGeoCompute')]",
+                            "type":  "String"
+                        },
+                        "Geo":  {
+                            "defaultValue":  "[parameters('Geo')]",
+                            "type":  "String"
+                        },
+                        "OverageState":  {
+                            "defaultValue":  "[parameters('OverageState')]",
+                            "type":  "String"
+                        },
+                        "OverageAmount":  {
+                            "defaultValue":  "[parameters('OverageAmount')]",
+                            "type":  "Int"
+                        },
+                        "CapacityName":  {
+                            "defaultValue":  "[parameters('CapacityName')]",
+                            "type":  "String"
+                        },
+                        "ResourceGroup":  {
+                            "defaultValue":  "[parameters('ResourceGroup')]",
+                            "type":  "String"
+                        },
+                        "Location":  {
+                            "defaultValue":  "[parameters('Location')]",
+                            "type":  "String"
+                        },
+                        "$SubscriptionID":  {
+                            "defaultValue":  "[parameters('$SubscriptionID')]",
+                            "type":  "String"
+                        }
+                    },
+                    "triggers":  {
+                        "Recurrence":  {
+                            "recurrence":  {
+                                "interval":  1,
+                                "frequency":  "Day",
+                                "timeZone":  "W. Europe Standard Time",
+                                "schedule":  {
+                                    "hours":  [
+                                        "8"
+                                    ],
+                                    "minutes":  [
+                                        30
+                                    ]
+                                }
+                            },
+                            "evaluatedRecurrence":  {
+                                "interval":  1,
+                                "frequency":  "Day",
+                                "timeZone":  "W. Europe Standard Time",
+                                "schedule":  {
+                                    "hours":  [
+                                        "8"
+                                    ],
+                                    "minutes":  [
+                                        30
+                                    ]
+                                }
+                            },
+                            "type":  "Recurrence"
+                        }
+                    },
+                    "actions":  {
+                        "Create_Capacity":  {
+                            "runAfter":  {
+                            },
+                            "type":  "ApiConnection",
+                            "inputs":  {
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['arm-1']['connectionId']"
+                                    }
+                                },
+                                "method":  "put",
+                                "body":  {
+                                    "location":  "@parameters('Location')",
+                                    "properties":  {
+                                        "numberOfUnits":  "@parameters('NumberOfSCUs')",
+                                        "crossGeoCompute":  "@{parameters('CrossGeoCompute')}",
+                                        "geo":  "@{parameters('Geo')}",
+                                        "overageState":  "@{parameters('OverageState')}",
+                                        "overageAmount":  "@parameters('OverageAmount')"
+                                    }
+                                },
+                                "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
+                                "queries":  {
+                                    "x-ms-api-version":  "2024-11-01-preview"
+                                }
+                            }
+                        },
+                        "Delay":  {
+                            "runAfter":  {
+                                "Create_Capacity":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Wait",
+                            "inputs":  {
+                                "interval":  {
+                                    "count":  "@parameters('MinutesOn')",
+                                    "unit":  "Minute"
+                                }
+                            }
+                        },
+                        "Delete_Capacity":  {
+                            "runAfter":  {
+                                "Delay":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "ApiConnection",
+                            "inputs":  {
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['arm-1']['connectionId']"
+                                    }
+                                },
+                                "method":  "delete",
+                                "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
+                                "queries":  {
+                                    "x-ms-api-version":  "2024-11-01-preview"
+                                }
+                            }
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "arm-1":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('Arm-1ConnectionName'))]",
+                                "connectionName":  "[variables('Arm-1ConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm-1')]",
+                                "connectionProperties":  {
+                                    "authentication":  {
+                                        "type":  "ManagedServiceIdentity"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "tags":  {
+                "hidden-SentinelTemplateName":  "cfs-set-X-SCUs-for-Y-minutes",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('Arm-1ConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('Arm-1ConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('Arm-1ConnectionName')]",
+                "customParameterValues":  {
+                },
+                "parameterValueType":  "Alternative",
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Arm-1')]"
+                }
+            }
+        }
+    ]
 }
