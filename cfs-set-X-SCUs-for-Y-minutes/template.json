@@ -89,13 +89,6 @@
                 "description":  "Set the name of the Resource Group where this Logic App will create or modify or delete the capacity for Security Copilot. You can modify it later in the Logic App parameters list."
             },
             "defaultValue": "CfSCapacity-RG"
-        },
-        "$SubscriptionID":  {
-            "type":  "String",
-            "metadata":  {
-                "description":  "Enter value for $SubscriptionID"
-            },
-            "defaultValue": ""
         }
     },
     "variables":  {
@@ -152,7 +145,7 @@
                             "type":  "String"
                         },
                         "$SubscriptionID":  {
-                            "defaultValue":  "[parameters('$SubscriptionID')]",
+                            "defaultValue":  "[subscription().subscriptionId]",
                             "type":  "String"
                         }
                     },
