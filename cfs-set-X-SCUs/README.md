@@ -58,7 +58,7 @@ For example, in a complex scenario, your organization might use:
 > - Grant the Managed Identity access to the target Resource Group  
 > - Set the recurrence schedule  
 > - Define the desired SCU count  
->  
+ 
 > When cloning, it’s best to initially disable the Logic App to prevent it from running before permissions are assigned.
 
 In smaller organizations with limited security staff and no 24/7 automation readiness, we’ve seen successful use of just two Logic App instances, as shown below:
