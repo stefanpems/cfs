@@ -41,14 +41,18 @@ Working days are defined by excluding weekends and listing national and local ho
 
 ### Additional Instructions
 
-Once configured, you can clone the Logic App (via the **Clone** button on its Overview page) to create additional instances scheduled at different times, each setting a different SCU count.
+Once configured, you can clone the Logic App (using the **Clone** button on its Overview page) to create additional instances scheduled at different times, each setting a different SCU count and, if needed, customized Overage settings. While Overage settings can theoretically be modified at each execution of the Logic App, they are typically kept consistent across all runs (i.e., not changed over time).
 
 For example, in a complex scenario, your organization might use:
 
-* One instance, named "Baseline", firing at 7 am and 6 pm that set 2 SCUs
-* A second instance (a clone of the baseline), named "Level 1", firing at 6 am and 12 pm, that set 4 SCUs
-* A third instance (another clone of the baseline), named "Level 2", firing at 8 am, that set 5 SCUs
-* A fourth instance (another clone of the baseline), named "Level 3", firing at 5 am and 5 pm, that set 6 SCUs
+* One instance, named "Baseline", firing at 7 am and 6 pm that set 2 SCUs (+ Overage settings)
+* A second instance (a clone of the baseline), named "Level 1", firing at 6 am and 12 pm, that set 4 SCUs (+ Overage settings)
+* A third instance (another clone of the baseline), named "Level 2", firing at 8 am, that set 5 SCUs (+ Overage settings)
+* A fourth instance (another clone of the baseline), named "Level 3", firing at 5 am and 5 pm, that set 6 SCUs (+ Overage settings)
+
+The following image visually represents the described scenario.  
+For simplicity, the figure does not include the Overage range above the provisioned SCUs.
+
 
 ![Img1](./timing_sample.png)
 
