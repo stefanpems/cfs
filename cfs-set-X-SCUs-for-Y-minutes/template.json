@@ -57,6 +57,14 @@
       "type": "string",
       "defaultValue": "EU"
     },
+    "capacityOverageState": {
+      "type": "string",
+      "defaultValue": "None"
+    },
+    "capacityOverageAmount": {
+      "type": "int",
+      "defaultValue": "1"
+    },
     "capacityName": {
       "type": "string",
       "defaultValue": "CfSCapacity"
@@ -105,6 +113,14 @@
               "defaultValue": "[parameters('capacityGeo')]",
               "type": "String"
             },
+            "OverageState": {
+              "defaultValue": "[parameters('capacityOverageState')]",
+              "type": "String"
+            },
+            "OverageAmount": {
+              "defaultValue": "[parameters('capacityOverageAmount')]",
+              "type": "int"
+            },
             "CapacityName": {
               "defaultValue": "[parameters('capacityName')]",
               "type": "String"
@@ -152,7 +168,9 @@
                     "properties": {
                       "numberOfUnits": "@parameters('NumberOfSCUs')",
                       "crossGeoCompute": "@{parameters('CrossGeoCompute')}",
-                      "geo": "@{parameters('Geo')}"
+                      "geo": "@{parameters('Geo')}",
+                      "overageState": "@{parameters('OverageState')}",
+                      "overageAmount": "@{parameters('OverageAmount')}"
                     }
                   },
                   "path": "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
@@ -192,7 +210,7 @@
                   "method": "delete",
                   "path": "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
                   "queries": {
-                    "x-ms-api-version": "2023-12-01-preview"
+                    "x-ms-api-version": "2024-11-01-preview"
                   }
                 }
               }
