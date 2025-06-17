@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "metadata":  {
         "title":  "Set X SCUs for Security Copilot",
-        "description":  "This Logic App sets the specified number of Security Compute Units (SCUs) for Security Copilot, but only if the current day is a working day. The number of desired SCUs is specified in the Logic App parameters. If the capacity already exists, the Logic App modifies its capacity - again, only during working days - according to the number of SCUs specified as a parameter. If the specified number of SCUs is zero, the Logic App deletes the capacity regardless of the day. Working days are defined by excluding non-working weekdays and listing national and local holidays.",
+        "description":  "This Logic App sets the specified number of Security Compute Units (SCUs) for Security Copilot (also with the settings related to the overage), but only if the current day is a working day. The number of desired SCUs is specified in the Logic App parameters. If the capacity already exists, the Logic App modifies its capacity - again, only during working days - according to the number of SCUs specified as a parameter. If the specified number of SCUs is zero, the Logic App deletes the capacity regardless of the day. Working days are defined by excluding non-working weekdays and listing national and local holidays.",
         "prerequisites":  "Credit in Azure for consuming SCUs",
         "postDeployment":  [
             "1. Assign to the Managed Identity of the Logic App the Contributor role on the Resource Group where the Capacity has to be created or modified.",
@@ -59,6 +59,20 @@
             },
             "defaultValue": "westeurope"
         },
+        "OverageState":  {
+            "type":  "String",
+            "metadata":  {
+                "description":  "Specify if overage is allowed for Security Copilot (set 'None' or 'Unlimited' or 'Limited'). You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": "Limited"
+        },
+        "OverageAmount":  {
+            "type":  "Int",
+            "metadata":  {
+                "description":  "Enter the maximum number of SCUs that should be allowed for overage. This parameter is considered only when OverageState is set to Limited. You can modify it later in the Logic App parameters list."
+            },
+            "defaultValue": 2
+        },
         "CapacityName":  {
             "type":  "String",
             "metadata":  {
@@ -102,6 +116,14 @@
                         "Geo":  {
                             "defaultValue":  "[parameters('Geo')]",
                             "type":  "String"
+                        },
+                        "OverageState":  {
+                            "defaultValue":  "[parameters('OverageState')]",
+                            "type":  "String"
+                        },
+                        "OverageAmount":  {
+                            "defaultValue":  "[parameters('OverageAmount')]",
+                            "type":  "Int"
                         },
                         "CapacityName":  {
                             "defaultValue":  "[parameters('CapacityName')]",
@@ -238,12 +260,14 @@
                                                     "properties":  {
                                                         "numberOfUnits":  "@parameters('NumberOfSCUs')",
                                                         "crossGeoCompute":  "@{parameters('CrossGeoCompute')}",
-                                                        "geo":  "@{parameters('Geo')}"
+                                                        "geo":  "@{parameters('Geo')}",
+                                                        "overageState":  "@{parameters('OverageState')}",
+                                                        "overageAmount":  "@parameters('OverageAmount')"
                                                     }
                                                 },
                                                 "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
                                                 "queries":  {
-                                                    "x-ms-api-version":  "2023-12-01-preview"
+                                                    "x-ms-api-version":  "2024-11-01-preview"
                                                 }
                                             }
                                         }
@@ -304,7 +328,7 @@
                                             "method":  "delete",
                                             "path":  "/subscriptions/@{encodeURIComponent(parameters('$SubscriptionID'))}/resourcegroups/@{encodeURIComponent(parameters('ResourceGroup'))}/providers/@{encodeURIComponent('Microsoft.SecurityCopilot')}/@{encodeURIComponent('capacities/',parameters('CapacityName'))}",
                                             "queries":  {
-                                                "x-ms-api-version":  "2023-12-01-preview"
+                                                "x-ms-api-version":  "2024-11-01-preview"
                                             }
                                         }
                                     }
