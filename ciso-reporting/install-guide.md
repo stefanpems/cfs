@@ -155,7 +155,7 @@ On the Azure portal, accessed with credentials with an administrative role:
    > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/eX5VCtuWTac" target="_blank">Mini-video showing the first execution of the Incidents Analysis automation (4m): [CISO Reporting with Security Copilot - Prototype setup - **#6** Run Incidents Analysis]</a>
 
    On the Security Copilot portal, accessed with credentials with the Security Copilot Automation Account:
-   - [**STEP 6.1**] Ensure that all the custom plugins just installed are enabled.
+   - [NO LONGER USED AND NEEDED] [**STEP 6.1**] Ensure that all the custom plugins just installed are enabled.
      Optionally, test the [ciso-get-users-status.json](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-get-users-status.json) Logic App
      by invoking the "CISO Get Users Staus" skill in the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml).
      For this purpose, use the following inputs:
