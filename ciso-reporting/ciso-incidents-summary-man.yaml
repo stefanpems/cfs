@@ -3,20 +3,7 @@ Descriptor:
   DisplayName: CISO Incidents Summary
   Description: Skills to get a summary view on the status of the incidents in Defender   
 
-  SupportedAuthTypes:
-    - ApiKey
-
-  Authorization:
-    Type: APIKey
-    Key: sig
-    Location: QueryParams
-    AuthScheme: '' 
-
 SkillGroups:
-
-  - Format: API
-    Settings:
-      OpenApiSpecUrl: <YOUR-REPO-URL>/ciso-incidents-summary-api-spec.yaml
 
   - Format: KQL
     Skills:
