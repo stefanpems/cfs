@@ -112,9 +112,11 @@ On the Azure portal, accessed with credentials with an administrative role:
 
 ## [**STEP 5**] Deploy the Custom Plugins
 
-   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://youtu.be/SKWVNzeDx6g" target="_blank">Mini-video showing the creation of the Custom Plugins (8m): [CISO Reporting with Security Copilot - Prototype setup - **#5** Custom plugins]</a>
+   > This procedure is now much simpler: the custom API skill group has been removed from the plugin so the deployment of its Open API Specification file is no longer needed. You can skp the initial part of the video below and start at minute [3'24''](https://www.youtube.com/watch?v=SKWVNzeDx6g&t=204s) by deploying directly the [ciso-incidents-summary-man.yaml](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml) plugin downloaded from this repository. Stop watching the video at minute 3'54'' (there is no longer a key parameter to be set). 
+
+   > <img src="https://raw.githubusercontent.com/stefanpems/cfs/refs/heads/main/ciso-reporting/images/yt.png" alt="YouTube" width="28" height="20"> <a href="https://www.youtube.com/watch?v=SKWVNzeDx6g&t=204s" target="_blank">Mini-video showing the creation of the Custom Plugins (8m): [CISO Reporting with Security Copilot - Prototype setup - **#5** Custom plugins]</a>
   
-  - Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
+  - [NO LONGER USED AND NEEDED] Prepare and deploy the [ciso-incidents-summary-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-man.yaml)
     custom plugin (used by the "**CISO Incidents Analysis**" automation)  
     NOTES:
     - This manifest assumes that you have a Defender environment connected to Sentinel. If your environment contains only a Sentinel workspace without Defender, use this manifest instead: [ciso-incidents-summary-SENTINEL-man](https://github.com/stefanpems/cfs/blob/main/ciso-reporting/ciso-incidents-summary-SENTINEL-man.yaml)
