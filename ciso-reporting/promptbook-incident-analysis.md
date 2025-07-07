@@ -83,7 +83,7 @@ Respond by returning the list of "user principal names" of the identified impact
 
 ## Prompt 11
 ```
-Call the CisoGetUsersStatus skill of the CisoIncidentsSummaryApiHelper plugin. Pass these values to the input parameters: api-version=2016-10-01 , sp=/triggers/AnalyzeUPNsCall/run , sv=1.0. Pass to the users_upn input parameter the comma separated list of UPNs that you returned in the previous response. Read in the body of the response of this call and return the values of EntraStatus and RiskStatus for these users.
+By using the Microsoft Entra Plugin, read the the user risk status (call it RiskStatus) of the users in the comma separated list of UPNs that you returned in the previous response. Expected values for RiskStatus are: At Risk (High, Medium, Low), None (Remediated or Dismissed), Unknown. Read also if these users are enabled or not (call it EntraStatus). Read in the body of the response of this call and return the values of EntraStatus and RiskStatus for these users.
 ```
 
 ## Prompt 12
