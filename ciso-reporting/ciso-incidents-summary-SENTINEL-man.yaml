@@ -32,6 +32,9 @@ Descriptor:
         SettingType: String
         Required: true
 
+  SupportedAuthTypes:
+    - None
+    
 SkillGroups:
 
   - Format: KQL
