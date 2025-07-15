@@ -3,15 +3,6 @@ Descriptor:
   DisplayName: CISO Incidents Summary
   Description: Skills to get a summary view on the status of the incidents in Defender   
 
-  SupportedAuthTypes:
-    - ApiKey
-
-  Authorization:
-    Type: APIKey
-    Key: sig
-    Location: QueryParams
-    AuthScheme: '' 
-
   Settings:
       - Name: TenantId
         Label: TenantId
@@ -42,10 +33,6 @@ Descriptor:
         Required: true
 
 SkillGroups:
-
-  - Format: API
-    Settings:
-      OpenApiSpecUrl: <URL>
 
   - Format: KQL
     Skills:
