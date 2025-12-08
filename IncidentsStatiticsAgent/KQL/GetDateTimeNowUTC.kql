@@ -1,0 +1,1 @@
+print strcat(replace_string(format_datetime(now(), "yyyy-MM-dd HH:mm:ss")," ","T"), "Z")
