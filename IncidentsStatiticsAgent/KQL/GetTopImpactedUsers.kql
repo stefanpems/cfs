@@ -1,0 +1,46 @@
+// GetTopImpactedUsers
+// Get the list of the users impacted by the biggest number of alerts created in the specified period.
+// Retrieves also the number of incidents associated to those alerts.
+// The summary can optionally be filtered by severity, status, and classification. Valid values:
+// - severities: "High", "Medium", "Low", "Informational" (use empty array as default)
+// - status: "New", "InProgress", "Resolved" (use empty array as default)
+// - classificationResults: "truePositive", "falsePositive", "informationalExpectedActivity", "" (use array with only "truePositive" as default)
+let start_time = datetime({start_date}); //E.g.: ago(24h); datetime(2025-11-01T00:00:00Z);
+let end_time = datetime({end_date}); //E.g. now(); 
+let severities = dynamic([{csv_of_severities}]);  //E.g.: dynamic(["High","Medium","Low","Informational"]); dynamic([]);
+let status = dynamic([{csv_of_status}]);  //E.g.: dynamic(["New","InProgress","Resolved"]); dynamic([]);
+let classificationResults = dynamic([{csv_of_classifications}]);  //E.g.: dynamic(["truePositive","falsePositive","informationalExpectedActivity"]); dynamic([]);
+let top_users_number = int({top_users_number}); //E.g.: int(10)
+let filtered_alerts = SecurityAlert
+| where TimeGenerated between (start_time .. end_time)
+| where coalesce(array_length(severities), 0) == 0 
+  or AlertSeverity in~ (severities)
+| where coalesce(array_length(status), 0) == 0 
+  or Status in~ (status)
+| extend Classification = tostring(parse_json(ExtendedProperties).Classification)
+| where coalesce(array_length(classificationResults), 0) == 0 
+  or Classification in~ (classificationResults)
+| extend EntitiesList = parse_json(Entities)
+| mv-expand EntitiesList
+| extend EntityType = tostring(EntitiesList.Type)
+| where EntityType in ('account', 'user')
+| extend UserId = coalesce(
+    tostring(EntitiesList.UserPrincipalName),
+    tostring(EntitiesList.Name),
+    tostring(EntitiesList.AccountName)
+)
+| where isnotempty(UserId);
+let associated_incidents = filtered_alerts
+| extend IncidentId = tostring(parse_json(ExtendedProperties).IncidentId)
+| where isnotempty(IncidentId);
+let real_incidents = SecurityIncident
+| summarize arg_max(LastModifiedTime, *) by IncidentName
+| extend alertsCount = toint(parse_json((AdditionalData).alertsCount))
+| where alertsCount > 0; 
+filtered_alerts
+| join kind=leftouter (associated_incidents) on UserId
+| join kind=inner real_incidents on $left.IncidentId == $right.ProviderIncidentId
+| summarize AlertsCount = dcount(SystemAlertId), IncidentsCount = dcount(IncidentId) by UserId
+| project UserId, AlertsCount, IncidentsCount
+| top top_users_number by AlertsCount desc
+| order by AlertsCount desc, IncidentsCount desc, UserId asc
