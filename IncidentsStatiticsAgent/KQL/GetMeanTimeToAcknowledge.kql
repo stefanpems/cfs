@@ -1,0 +1,35 @@
+// GetMeanTimeToAcknowledge
+// Calculates the Mean Time to Acknowledge (MTTA) for incidents created within the specified period and compares it to the MTTA for the entire previous month.
+// MTTA is defined as the average time (in minutes) between incident creation and the first modification.
+// Returns: 
+// - MTTA for the specified period
+// - MTTA for the previous month
+// - Exact start and end dates of the two time windows used for the calculation.
+let start_time = datetime({start_date}); //E.g.: ago(24h); datetime(2025-11-01T00:00:00Z);
+let end_time = datetime({end_date}); //E.g. now(); 
+let lastMonthStart = startofmonth(datetime_add('month', -1, now()));
+let lastMonthEnd = endofmonth(datetime_add('month', -1, now()));
+let timeWindowMTTA = SecurityIncident
+| summarize arg_max(LastModifiedTime, *) by IncidentName
+| extend alertsCount = toint(parse_json((AdditionalData).alertsCount))
+| where Status != "Closed" or (Status =~ "Closed" and alertsCount > 0)
+| where CreatedTime  between (start_time .. end_time)
+| extend AcknowledgeTime = datetime_diff('minute', FirstModifiedTime, CreatedTime)
+| where isnotnull(AcknowledgeTime)
+| summarize MTTA = round(avg(AcknowledgeTime),0)
+| extend j = "forcedjoin"
+| project timeWindowMTTA = MTTA, j;
+let lastMonthMTTA = SecurityIncident
+| summarize arg_max(LastModifiedTime, *) by IncidentName
+| extend alertsCount = toint(parse_json((AdditionalData).alertsCount))
+| where Status != "Closed" or (Status =~ "Closed" and alertsCount > 0)
+| where CreatedTime between (lastMonthStart .. lastMonthEnd)
+| extend AcknowledgeTime = datetime_diff('minute', FirstModifiedTime, CreatedTime)
+| where isnotnull(AcknowledgeTime)
+| summarize MTTA = round(avg(AcknowledgeTime),0)
+| extend j = "forcedjoin"
+| project lastMonthMTTA = MTTA, j;
+timeWindowMTTA
+| join lastMonthMTTA on j
+| extend PercentageChange = round(((timeWindowMTTA - lastMonthMTTA) * 100.0 / lastMonthMTTA), 0)
+| project MTTAinMin = timeWindowMTTA, LastMonthMTTAinMin = lastMonthMTTA, PercentageChange, start_time, end_time, lastMonthStart, lastMonthEnd
