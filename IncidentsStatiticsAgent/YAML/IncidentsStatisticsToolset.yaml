@@ -1,0 +1,14 @@
+Descriptor:
+  Name: IncidentsStatisticsToolset
+  DisplayName: Incidents Statistics Toolset
+  Description: Set of tools that allows retrieving statistical information related to incidents
+  DescriptionForModel: Set of tools allow retrieving statistical information related to incidents in Microsoft Defender and Sentinel, used to obtain evidence such as the number of incidents - grouped by severity and title - counted by statuses and classifications, MTTR or MTTA for a specific period, SOC operators managing the largest number of incidents, and internal users or devices most affected.
+SkillGroups:
+- Format: MCP
+  Settings:
+    Endpoint: https://sentinel.microsoft.com/mcp/custom/IncidentStatistics
+    TokenScope: 4500ebfb-89b6-4b14-a480-7f749797bfcd/.default
+    UseStreamableHttp: true
+    UsePluginAuth: false
+    AllowedTools: GetIncidentsCountStats,GetMeanTimeToResolve,GetMeanTimeToAcknowledge,GetTopIncidentsOwners,GetTopImpactedUsers,GetTopImpactedDevices,GetDateTimeNowUTC
+    TimeoutInSeconds: 300
