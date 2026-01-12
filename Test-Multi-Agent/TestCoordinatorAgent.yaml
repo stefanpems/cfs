@@ -1,0 +1,81 @@
+Descriptor:
+  Name: TestCoordinatorAgentPlugin
+  Description: Answers user questions.
+  DisplayName: Test Coordinator Agent Plugin
+  CatalogScope: UserWorkspace
+  Enabled: true
+  Prerequisites:
+    - MSLearnDocumentationAgentPlugin
+  Icon: ''
+SkillGroups:
+  - Format: Agent
+    Skills:
+      - Name: TestCoordinatorAgentTool
+        DisplayName: Test Coordinator Agent Tool
+        Description: Answers user questions.
+        Inputs:
+          - Name: UserRequest
+            Description: The user's question.
+            DefaultValue: ''
+            Required: true
+        SuggestedPrompts:    # Starter prompts
+        - Prompt: Summarize the page http://someurl.com
+          Title: Summarize a web page
+          Personas:
+          - 3
+          IsStarterAgent: true
+        - Prompt: How do I build agents in Security Copilot?
+          Title: Building Agents
+          Personas:
+          - 3
+          IsStarterAgent: true
+        
+        Settings:
+          OrchestratorSkill: DefaultAgentOrchestrator
+          Instructions: >
+            # Mission - You are here to answer users questions.
+
+            # Workflow  
+            1. Receive the user's question as input. 
+            Determine if the question is related to Microsoft technologies or retrieving the content of a web page. 
+            NEVER try to answer the question directly yourself.
+
+            2. If the question is related to Microsoft technologies, invoke the MSLearnDocumentationAgentTool skill 
+            with the user's question in the UserRequest paramter.
+            Return exactly the response received from the MSLearnDocumentationAgentTool skill: 
+            do not change any part of the response. Just add in front: "[From MSLearnDocumentationAgentTool] ".   
+            
+            3. If the question is related to retrieving the content of a
+            web page, invoke the FetchUrl skill with the user's question.
+            Retrieve the response from the FetchUrl skill.  
+            Return the result of the skill invocation accordingly to the user request (summarized, modified or as is).
+            Add in front of the response: "[From FetchUrl] ".
+
+            4. If the answer is not related to Microsoft technologies or retrieving the content of a web page, 
+            or if you were not able to get a response from the invoked skills, state that
+            you weren't able to respond.
+
+            # Output - Return the output as retrieved according to the instructions.
+        ChildSkills:
+          - FetchUrl
+          - MicrosoftLearnDocsAgentTool
+AgentDefinitions:
+  - Name: TestCoordinatorAgentDef
+    DisplayName: Test Coordinator Agent Definition
+    Description: Answers user questions.
+    Product: SecurityCopilot
+    Publisher: Custom
+    Settings:
+      - Name: UserRequest
+        Description: The user's question.
+        Required: true
+    Triggers:
+      - Name: Default
+        DefaultPollPeriodSeconds: 0
+        ProcessSkill: TestCoordinatorAgentDef.TestCoordinatorAgentTool
+    PromptSkill: TestCoordinatorAgentDef.TestCoordinatorAgentTool
+    RequiredSkillsets:
+      - MicrosoftLearnDocsAgentDefinition
+    PreviewState: Private
+    PublisherSource: Custom
+    AgentSingleInstanceConstraint: None
