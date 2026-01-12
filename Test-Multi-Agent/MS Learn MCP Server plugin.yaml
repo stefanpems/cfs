@@ -1,0 +1,11 @@
+Descriptor:
+  Name: MSLearnDocumentationMCPServer
+  DisplayName: Microsoft Learn MCP Server developer reference documentation
+  Description: Microsoft Learn MCP Server developer reference documentation
+  DescriptionForModel: Microsoft Learn MCP Server developer reference documentation
+SkillGroups:
+  - Format: MCP
+    Settings:
+      Endpoint:  https://learn.microsoft.com/api/mcp
+      TimeoutInSeconds: 120
+      AllowedTools: microsoft_docs_search, microsoft_docs_fetch 
